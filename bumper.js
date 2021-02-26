@@ -18,7 +18,7 @@ const init = async () => {
         })
 
         b.on('message', msg => {
-            if(!msg.author.bot && msg.content.includes('пора продвигать сервер в топы! Пропиши') && (msg.author.id == process.env.PINGERID || msg.author.id == process.env.MYID)) {
+            if(msg.content.includes('пора продвигать сервер в топы! Пропиши') && (msg.author.id == process.env.PINGERID || msg.author.id == process.env.MYID)) {
                 var index = msg.content.indexOf('Пропиши') + 10
                 var command = msg.content.slice(index, msg.content.length - 1)
                 if(command)
