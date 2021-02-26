@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 /**@param {Discord.Client} */
 const getTime = (client) => {
     var date = new Date(client.uptime)
-    var hours = date.getHours() - 3
+    var hours = date.getHours()
     var minutes = date.getMinutes()
     var seconds = date.getSeconds()
 
