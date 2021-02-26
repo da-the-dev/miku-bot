@@ -1,1 +1,1 @@
-worker: node bumper.js
+worker: node index.js
