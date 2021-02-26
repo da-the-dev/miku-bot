@@ -37,12 +37,12 @@ module.exports =
         var info = new Discord.RichEmbed()
             .setColor('#2F3136')
             .setImage("https://i.imgur.com/IHWGhCi.gif")
-            .addField('\`\`\`Author\`\`\`', `\`\`\`${client.users.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
-            .addField('\`\`\`Prefix\`\`\`', '```.```', true)
-            .addField('\`\`\`RAM usage\`\`\`', `\`\`\`${memoryUsed.toFixed(2)} MB\`\`\``, true)
-            .addField('\`\`\`Prog. Lang.\`\`\`', '```JavaScript```', true)
-            .addField('\`\`\`Ping\`\`\`', `\`\`\`${Math.floor(client.ping)}\`\`\``, true)
-            .addField('\`\`\`Uptime\`\`\`', `\`\`\`${getTime(client)}\`\`\``, true)
+            .addField('```Author```', `\`\`\`${client.users.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
+            .addField('```Prefix```', '```.```', true)
+            .addField('```RAM usage```', `\`\`\`${memoryUsed.toFixed(2)} MB\`\`\``, true)
+            .addField('```Prog. Lang.```', '```JavaScript```', true)
+            .addField('```Ping```', `\`\`\`${Math.floor(client.ping)}\`\`\``, true)
+            .addField('```Uptime```', `\`\`\`${getTime(client)}\`\`\``, true)
 
         msg.channel.send(info)
     }
