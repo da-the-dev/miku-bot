@@ -3,7 +3,9 @@ const Discord = require('discord.js')
 /**@param {Discord.Client} */
 const getTime = (client) => {
     var date = new Date(client.uptime)
-    var hours = date.getHours()
+    console.log(date.getTimezoneOffset())
+    var hours = date.getHours() + date.getTimezoneOffset() / 60
+    console.log(hours)
     var minutes = date.getMinutes()
     var seconds = date.getSeconds()
 
@@ -43,6 +45,6 @@ module.exports =
             .addField('```Prog. Lang.```', '```JavaScript```', true)
             .addField('```Ping```', `\`\`\`${Math.floor(client.ping)}\`\`\``, true)
             .addField('```Uptime```', `\`\`\`${getTime(client)}\`\`\``, true)
-
+        console.log('coll')
         msg.channel.send(info)
     }
