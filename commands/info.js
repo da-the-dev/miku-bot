@@ -36,7 +36,7 @@ module.exports =
     (args, msg, client) => {
         var memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
 
-        var info = new Discord.RichEmbed()
+        var info = new Discord.MessageEmbed()
             .setColor('#2F3136')
             .setImage("https://i.imgur.com/IHWGhCi.gif")
             .addField('```Author```', `\`\`\`${client.users.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
