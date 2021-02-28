@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "startbot": "node index.js",
-    "startbumper": "node bumper.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "da_dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/da-the-dev/miku-bot.git"
+  },
+  "author": "da_the_dev",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/da-the-dev/miku-bot/issues"
+  },
+  "homepage": "https://github.com/da-the-dev/miku-bot#readme",
   "dependencies": {
-    "@discordjs/uws": "^10.149.0",
-    "discord.js": "^11.5.1",
-    "dotenv": "^8.2.0",
-    "npm": "^7.6.0"
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
   }
 }

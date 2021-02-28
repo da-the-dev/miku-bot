@@ -1,111 +1,124 @@
 const Discord = require('discord.js')
 const roles = require('../roles.json')
+const embeds = require('../embeds.js')
 module.exports =
     /**
-    * @param  Array<string>} args Command argument
+    * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
     * @description Usage: .v <arg> 
     */
 
     async (args, msg, client) => {
-        var guild = msg.guild
-        /**@type {Discord.CategoryChannel} */
-        var category = guild.channels.find(c => c.name == "Chillzone")
-        /**@type {Discord.VoiceChannel} */
-        var room
-        if(msg.member.permissions.has('CREATE_INSTANT_INVITE'))
-            room = msg.member.voiceChannel
-        if(!room) {
-            msg.reply("you don't have any private rooms at your disposal! Go create one first!")
+        if(!msg.member.roles.cache.has(client.ownerRole.id)) {
+            msg.channel.send(embeds.verror(msg.member, 'У Вас нет прав на эту команду!'))
             return
         }
 
-        // room.permissionOverwrites.find(p => p.id == msg.member.id)
+        var guild = msg.guild
+        /**@type {Discord.CategoryChannel} */
+        var category = guild.channels.cache.find(c => c.name == "Chillzone")
+        /**@type {Discord.VoiceChannel} */
+        var room = msg.member.voice.channel
 
-        if(msg.member.permissions.has('CREATE_INSTANT_INVITE')) {
-            console.log('has perms')
-            switch(args[1]) {
-                case 'lock':
-                    var mMember = msg.mentions.members.first()
+        if(!room) {
+            msg.channel.send(embeds.verror(msg.member, 'У Вас нет приватной комнаты!'))
+            return
+        }
 
-                    if(mMember) {
-                        room.overwritePermissions(mMember.id, {
-                            'CONNECT': false
-                        })
-                        room.members.forEach(m => {
-                            if(m.id == mMember.id)
-                                m.setVoiceChannel(null)
-                        })
-                    } else {
-                        msg.reply('no member specified!')
-                    }
+        switch(args[1]) {
+            case 'ban':
+                var mMember = msg.mentions.members.first()
+
+                if(mMember) {
+                    room.createOverwrite(mMember.id, {
+                        'CONNECT': false
+                    })
+                    room.members.forEach(m => {
+                        if(m.id == mMember.id)
+                            m.voice.setChannel(null)
+                    })
+                    msg.channel.send(embeds.vlock(msg.member, mMember))
+                } else {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали пользователя!'))
+                }
+                break
+
+            case 'unban':
+                var mMember = msg.mentions.members.first()
+
+                if(mMember) { // Member mentioned
+                    room.createOverwrite(mMember.id, {
+                        'CONNECT': true
+                    })
+                    msg.channel.send(embeds.vunlock(msg.member, mMember))
+                } else {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали пользователя!'))
+                }
+                break
+
+            case 'limit':
+                var limit = Number(args[2])
+                if(limit == null) {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали лимит!'))
                     break
+                }
 
-                case 'unlock':
-                    var mMember = msg.mentions.members.first()
-
-                    if(mMember) { // Member mentioned
-                        room.overwritePermissions(mMember.id, {
-                            'CONNECT': true
-                        })
-                    } else {
-                        msg.reply('no member specified!')
-                    }
+                if(limit > 0 && limit < 100 && Number.isInteger(limit)) {
+                    room.setUserLimit(limit)
+                    msg.channel.send(embeds.vlimit(msg.member, limit))
                     break
+                } else if(limit == 0) {
+                    room.setUserLimit(null)
+                    msg.channel.send(embeds.vlimitzero(msg.member))
+                    break
+                } else if(limit >= 100) {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы указали слишком большой лимит!'))
+                    break
+                }
+                else {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы указали неверное число!'))
+                    break
+                }
 
-                case 'limit':
-                    console.log(args[2])
-                    var limit = Number(args[2])
-                    console.log(limit)
-                    if(limit == null) {
-                        msg.reply('no limit specified!')
-                        break
-                    }
+            case 'owner':
+                var mMember = msg.mentions.members.first()
 
-                    if(limit > 0 && Number.isInteger(limit)) {
-                        room.setUserLimit(limit)
-                        break
-                    } else if(limit == 0) {
-                        room.setUserLimit(null)
-                        break
-                    } else {
-                        msg.reply('not a valid limit number')
-                        break
-                    }
-
-                case 'owner':
-                    var mMember = msg.mentions.members.first()
-
-                    if(mMember) { // Member mentioned
-                        var oldOwner = room.members.find(m => m.permissions.has('CREATE_INSTANT_INVITE'))
+                if(mMember) { // Member mentioned
+                    if(mMember.voice.channelID == room.id) {
+                        var oldOwner = msg.member
                         var mMember = msg.mentions.members.first()
 
-                        room.overwritePermissions(mMember.id, {
-                            'CREATE_INSTANT_INVITE': true
-                        })
-                        room.overwritePermissions(oldOwner.id, {
-                            'CREATE_INSTANT_INVITE': false
-                        })
-                    } else {
-                        msg.reply('no member specified!')
-                    }
-                    break
+                        console.log(oldOwner.user.username)
+                        console.log(mMember.user.username)
 
-                case 'name':
-                    args.shift()
-                    args.shift()
-                    var newName = args.join(' ')
-
-                    if(newName) {
-                        room.setName(newName)
+                        await oldOwner.roles.remove(client.ownerRole.id)
+                        await mMember.roles.add(client.ownerRole.id)
+                        msg.channel.send(embeds.vowner(msg.member, mMember))
                     } else {
-                        msg.reply('no new name specified!')
+                        msg.channel.send(embeds.verror(msg.member, 'Пользователь не находится в Вашей комнате!'))
+                        break
                     }
+                } else {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали пользователя!'))
                     break
-            }
-        }
-        else {
-            console.log('doent have perms')
+                }
+                break
+
+            case 'name':
+                args.shift()
+                args.shift()
+                var newName = args.join(' ')
+
+                if(newName && newName.length <= 31) {
+                    room.setName(newName)
+                    msg.channel.send(embeds.vname(msg.member, newName))
+                } else if(newName && newName.length > 31) {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы указали слишком длинное имя комнаты!'))
+                    break
+                } else {
+                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали имя комнаты!'))
+                    break
+                }
         }
     }

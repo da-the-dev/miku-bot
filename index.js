@@ -3,30 +3,6 @@ const fs = require('fs')
 const dotenv = require('dotenv').config()
 const roles = require('./roles.json')
 
-// Bumbers
-var bumpers = Array()
-const tokens = [process.env.TOKEN1, process.env.TOKEN2, process.env.TOKEN3]
-
-for(i = 0; i < 3; i++) {
-    /**@type {Discord.Client} */
-    var b = bumpers[i]
-    b = new Discord.Client()
-
-    b.login(tokens[i])
-    b.on('ready', () => {
-        console.log(`Bot bumper${i} ready`)
-    })
-
-    b.on('message', msg => {
-        if(msg.content.includes('пора продвигать сервер в топы! Пропиши') && (msg.author.id == process.env.PINGERID || msg.author.id == process.env.MYID)) {
-            var index = msg.content.indexOf('Пропиши') + 10
-            var command = msg.content.slice(index, msg.content.length - 1)
-            if(command)
-                msg.channel.send(command)
-        }
-    })
-}
-
 // Client
 const prefix = "$"
 const client = new Discord.Client()
@@ -49,14 +25,16 @@ client.once('ready', () => {
     console.log("beta online")
 
     // Create 'createRoom'
-    var guild = client.guilds.find(g => g.name == 'noir. reserve')
+    var guild = client.guilds.cache.find(g => g.name == 'noir. reserve')
+    client.ownerRole = guild.roles.cache.find(r => r.name == "^")
+    console.log(client.ownerRole.name)
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
-    var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name == "Chillzone")
+    var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "Chillzone")
     /**@type {Discord.VoiceChannel} */
     var privateCreator = privateRoomCategory.children.find(c => c.type == 'voice' && c.name == "createRoom")
     if(!privateCreator)
-        privateCreator = guild.createChannel('createRoom',
+        privateCreator = guild.channels.create('createRoom',
             {
                 type: "voice",
                 permissionOverwrites:
@@ -70,47 +48,66 @@ client.once('ready', () => {
             })
 })
 
-client.on('voiceStateUpdate', (oldMember, newMember) => {
+client.on('voiceStateUpdate', (oldState, newState) => {
+    var oldMember = oldState.member
+    var newMember = newState.member
+
+    // Ignore if channel didn't change
+    if(oldState.channelID == newState.channelID) {
+        return
+    }
+
     // Create private room
-    if(newMember.voiceChannel) {
-        var creator = newMember.voiceChannel
+    if(newMember.voice.channel) {
+        var creator = newMember.voice.channel
         if(creator.name == 'createRoom' && creator.parent.name == 'Chillzone') {
             var guild = newMember.guild
-            var category = guild.channels.find(c => c.name == 'Chillzone')
-            guild.createChannel(newMember.user.username,
+            var category = guild.channels.cache.find(c => c.name == 'Chillzone')
+            guild.channels.create(newMember.user.username,
                 {
                     type: 'voice',
                     permissionOverwrites:
                         [
                             {
                                 id: roles.star,
-                                deny: ['CONNECT', 'CREATE_INSTANT_INVITE']
+                                deny: ['CONNECT']
                             },
                             {
                                 id: newMember.user.id,
-                                allow: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
+                                allow: ['CONNECT']
                             }
                         ],
                     parent: category
                 }).then(c => {
-                    newMember.setVoiceChannel(c)
+                    newMember.voice.setChannel(c)
+                    newMember.roles.add(client.ownerRole.id)
                 })
         }
     }
 
-    // Ignore if channel didn't change
-    if(oldMember.voiceChannelID == newMember.voiceChannelID) {
-        return
-    }
+    if(oldState.channel) {
+        var channel = oldState.channel
 
-    // Delete empty room
-    if(oldMember.voiceChannel) {
-        console.log('old room')
-        var room = oldMember.voiceChannel
-        category = oldMember.guild.channels.find(c => c.name == 'Chillzone')
-        if(category)
-            if(room.parentID == category.id && room.name != 'createRoom' && room.members.array().length <= 0)
-                room.delete()
+        var role = oldState.member.roles.cache.get(client.ownerRole.id)
+        if(!role)
+            role = newState.member.roles.cache.get(client.ownerRole.id)
+
+        // Delete if owner left
+        if(role && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
+            console.log('delete owner room cause dis')
+            oldState.member.roles.remove(client.ownerRole)
+            channel.delete()
+                .catch(console.log('fail to delete'))
+            return
+        }
+
+        // Delete empty room
+        if(channel.members.size <= 0 && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
+            console.log('delete empty room')
+            channel.delete()
+                .catch(console.log('fail to delete'))
+            return
+        }
     }
 })
 
