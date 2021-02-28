@@ -3,9 +3,7 @@ const Discord = require('discord.js')
 /**@param {Discord.Client} */
 const getTime = (client) => {
     var date = new Date(client.uptime)
-    console.log(date.getTimezoneOffset())
     var hours = date.getHours() + date.getTimezoneOffset() / 60
-    console.log(hours)
     var minutes = date.getMinutes()
     var seconds = date.getSeconds()
 
@@ -39,12 +37,11 @@ module.exports =
         var info = new Discord.MessageEmbed()
             .setColor('#2F3136')
             .setImage("https://i.imgur.com/IHWGhCi.gif")
-            .addField('```Author```', `\`\`\`${client.users.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
+            .addField('```Author```', `\`\`\`${client.users.cache.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
             .addField('```Prefix```', '```.```', true)
             .addField('```RAM usage```', `\`\`\`${memoryUsed.toFixed(2)} MB\`\`\``, true)
             .addField('```Prog. Lang.```', '```JavaScript```', true)
-            .addField('```Ping```', `\`\`\`${Math.floor(client.ping)}\`\`\``, true)
+            .addField('```Ping```', `\`\`\`${Math.floor(client.ws.ping)}\`\`\``, true)
             .addField('```Uptime```', `\`\`\`${getTime(client)}\`\`\``, true)
-        console.log('coll')
         msg.channel.send(info)
     }
