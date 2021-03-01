@@ -40,11 +40,23 @@ module.exports = {
             .setColor('#2F3136')
             .setFooter(`Выполнил(-а) ${member1.user.tag}`, member1.user.avatarURL())
     },
-    'verror': (member1, error) => {
+    'error': (member1, error) => {
         return new Discord.MessageEmbed()
             .setDescription(error)
             .setColor('#2F3136')
             .setFooter(`Запросил(-а) ${member1.user.tag}`, member1.user.avatarURL())
+    },
+    'mute': (client, member1, notif, time) => {
+        return new Discord.MessageEmbed()
+            .setDescription(`<@${member1.user.id}> ${notif} \`${time}\` сек`)
+            .setColor('#2F3136')
+            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+    },
+    'unmute': (client, member1, notif) => {
+        return new Discord.MessageEmbed()
+            .setDescription(`<@${member1.user.id}> ${notif}`)
+            .setColor('#2F3136')
+            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     }
 
 }

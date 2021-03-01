@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 const fs = require('fs')
 const dotenv = require('dotenv').config()
 const roles = require('./roles.json')
+const embeds = require('./embeds')
+const redis = require('redis')
 
 // Client
 const prefix = "$"
@@ -27,7 +29,6 @@ client.once('ready', () => {
     // Create 'createRoom'
     var guild = client.guilds.cache.find(g => g.name == 'noir. reserve')
     client.ownerRole = guild.roles.cache.find(r => r.name == "^")
-    console.log(client.ownerRole.name)
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
     var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "Chillzone")
@@ -42,10 +43,36 @@ client.once('ready', () => {
                         {
                             id: roles.star,
                             allow: ['VIEW_CHANNEL', 'CONNECT']
+                        },
+                        {
+                            id: roles.muted,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
                         }
                     ],
                 parent: privateRoomCategory
             })
+
+    // Unmute muted
+    const pub = redis.createClient(process.env.RURL)
+    pub.send_command('config', ['set', 'notify-keyspace-events', 'Ex'], SubscribeExpired)
+    function SubscribeExpired(e, r) {
+        sub = redis.createClient(process.env.RURL)
+        const expired_subKey = '__keyevent@0__:expired'
+        sub.subscribe(expired_subKey, function() {
+            console.log(' [i] Subscribed to "' + expired_subKey + '" event channel : ' + r)
+            sub.on('message', function(chan, msg) {
+                if(msg.startsWith('muted-')) {
+                    var data = msg.split('-')
+                    data.shift()
+                    console.log(data)
+                    var guild = client.guilds.cache.get(data[1])
+                    var member = guild.members.cache.get(data[0])
+                    member.roles.remove(roles.muted)
+                    guild.channels.cache.get(data[2]).send(embeds.unmute(client, member, 'был размьючен'))
+                }
+            })
+        })
+    }
 })
 
 client.on('voiceStateUpdate', (oldState, newState) => {

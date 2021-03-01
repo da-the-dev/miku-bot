@@ -11,7 +11,7 @@ module.exports =
 
     async (args, msg, client) => {
         if(!msg.member.roles.cache.has(client.ownerRole.id)) {
-            msg.channel.send(embeds.verror(msg.member, 'У Вас нет прав на эту команду!'))
+            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав на эту команду!'))
             return
         }
 
@@ -22,7 +22,7 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            msg.channel.send(embeds.verror(msg.member, 'У Вас нет приватной комнаты!'))
+            msg.channel.send(embeds.error(msg.member, 'У Вас нет приватной комнаты!'))
             return
         }
 
@@ -40,7 +40,7 @@ module.exports =
                     })
                     msg.channel.send(embeds.vlock(msg.member, mMember))
                 } else {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали пользователя!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя!'))
                 }
                 break
 
@@ -53,14 +53,14 @@ module.exports =
                     })
                     msg.channel.send(embeds.vunlock(msg.member, mMember))
                 } else {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали пользователя!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя!'))
                 }
                 break
 
             case 'limit':
                 var limit = Number(args[2])
                 if(limit == null) {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали лимит!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы не указали лимит!'))
                     break
                 }
 
@@ -73,11 +73,11 @@ module.exports =
                     msg.channel.send(embeds.vlimitzero(msg.member))
                     break
                 } else if(limit >= 100) {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы указали слишком большой лимит!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы указали слишком большой лимит!'))
                     break
                 }
                 else {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы указали неверное число!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы указали неверное число!'))
                     break
                 }
 
@@ -96,11 +96,11 @@ module.exports =
                         await mMember.roles.add(client.ownerRole.id)
                         msg.channel.send(embeds.vowner(msg.member, mMember))
                     } else {
-                        msg.channel.send(embeds.verror(msg.member, 'Пользователь не находится в Вашей комнате!'))
+                        msg.channel.send(embeds.error(msg.member, 'Пользователь не находится в Вашей комнате!'))
                         break
                     }
                 } else {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали пользователя!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя!'))
                     break
                 }
                 break
@@ -114,10 +114,10 @@ module.exports =
                     room.setName(newName)
                     msg.channel.send(embeds.vname(msg.member, newName))
                 } else if(newName && newName.length > 31) {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы указали слишком длинное имя комнаты!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы указали слишком длинное имя комнаты!'))
                     break
                 } else {
-                    msg.channel.send(embeds.verror(msg.member, 'Вы не указали имя комнаты!'))
+                    msg.channel.send(embeds.error(msg.member, 'Вы не указали имя комнаты!'))
                     break
                 }
         }
