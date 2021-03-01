@@ -48,7 +48,13 @@ module.exports = {
     },
     'mute': (client, member1, notif, time) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> ${notif} \`${time}\` сек`)
+            .setDescription(`<@${member1.user.id}> ${notif} \`${time}\``)
+            .setColor('#2F3136')
+            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+    },
+    'permamute': (client, member1, notif, time) => {
+        return new Discord.MessageEmbed()
+            .setDescription(`<@${member1.user.id}> ${notif}`)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     },

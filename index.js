@@ -64,14 +64,18 @@ client.once('ready', () => {
                 if(msg.startsWith('muted-')) {
                     var data = msg.split('-')
                     data.shift()
-                    console.log(data)
                     var guild = client.guilds.cache.get(data[1])
                     var member = guild.members.cache.get(data[0])
                     member.roles.remove(roles.muted)
                     guild.channels.cache.get(data[2]).send(embeds.unmute(client, member, 'был размьючен'))
                 }
             })
+            TestKey()
         })
+    }
+    function TestKey() {
+        pub.set('testing', 'redis notify-keyspace-events : expired')
+        pub.expire('testing', 10)
     }
 })
 
