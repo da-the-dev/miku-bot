@@ -2,7 +2,6 @@ const Discord = require('discord.js')
 const roles = require('../roles.json')
 const embeds = require('../embeds')
 const redis = require('redis')
-const redisTools = require('../redis')
 const moment = require('moment')
 
 /**
