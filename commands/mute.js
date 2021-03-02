@@ -27,9 +27,9 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-    */
-    //$mute <@user> [<time> <mod>]
-    //$mute <@user> 5s 5m 5h
+     * @description Usage: .mute <member> <time>
+     * @example .mute @daym bro 5h 
+     */
     async (args, msg, client) => {
         var moderatorRole = msg.guild.roles.cache.get(roles.moder)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position && r.id != roles.star)) {

@@ -30,6 +30,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
+     * @description Usage: .info
     */
     (args, msg, client) => {
         var memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
