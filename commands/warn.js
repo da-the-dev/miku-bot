@@ -32,48 +32,45 @@ module.exports =
             const rClient = redis.createClient(process.env.RURL)
 
             var avalible = false
-            rClient.get(msg.member.id, (err, reply) => {
+            rClient.get(mMember.user.id, (err, res) => {
                 if(err)
                     console.error(err)
 
-                // If first warn
-                if(reply == null)
-                    rClient.set(msg.member.id, JSON.stringify({
-                        'warns': reason.toString()
-                    }), err => {
+                // If no user data
+                if(res == null)
+
+                    rClient.set(mMember.user.id, JSON.stringify(
+                        {
+                            [msg.guild.id]: {
+                                'warns': [reason]
+                            }
+                        }
+                    ), err => {
                         if(err)
                             console.error(err)
                         msg.member.roles.add(roles.offender)
                         rClient.quit()
                     })
-                else
-                    rClient.get(msg.member.id, (err, reply) => {
+                else {
+                    var userData = JSON.parse(res)
+
+                    if(userData[msg.guild.id].warns.length == 3) { // Refuse to add more than 3 warns
+                        msg.reply('already three warns')
+                        return
+                    }
+
+                    userData[msg.guild.id].warns.push(reason)
+
+                    if(userData[msg.guild.id].warns.length == 3) { // Alert when maxed out on number of warns
+                        msg.reply('there are 3 warns')
+                    }
+
+                    rClient.set(msg.member.user.id, JSON.stringify(userData), err => {
                         if(err)
                             console.error(err)
-
-                        /**@type {Array<object>} */
-                        var warns = JSON.parse(reply).warns.split('||')
-
-                        if(warns.length == 3) { // Refuse to add more than 3 warns
-                            msg.reply('three warns already')
-                            warns.push(reason)
-                            rClient.quit()
-                            return
-                        }
-
-                        warns.push(reason)
-
-                        rClient.set(msg.member.id, JSON.stringify({
-                            'warns': warns.join('||')
-                        }))
-
-                        if(warns.length == 3) { // As soon as there are 3 warns
-                            msg.reply('three warns now')
-                            rClient.quit()
-                            return
-                        }
                         rClient.quit()
                     })
+                }
             })
 
             // msg.channel.send(embeds.warn(mMember, msg.member, reason))

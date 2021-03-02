@@ -12,9 +12,18 @@ module.exports =
         if(msg.member.user.id == process.env.MYID) {
             const rClient = redis.createClient(process.env.RURL)
             try {
-                rClient.DEL(msg.member.id, err => {
-                    if(err)
-                        console.error(err)
+                rClient.get(args[1], (err, reply) => {
+                    console.log('getting key...')
+                    if(err) {
+                        console.log(err)
+                        return
+                    }
+                    if(reply) {
+                        console.log(reply)
+                        // msg.reply(warns)
+                    } else {
+                        msg.reply('no data')
+                    }
                 })
             } finally {
                 rClient.quit()

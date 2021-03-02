@@ -11,19 +11,14 @@ module.exports =
     async (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
         try {
-            rClient.get(msg.member.id, (err, reply) => {
-                console.log('getting warn...')
-                if(err) {
-                    console.log(err)
-                    return
-                }
-                if(reply) {
-                    var warns = JSON.parse(reply).warns.split('||')
-                    console.log(warns)
-                    msg.reply(warns)
-                } else {
+            rClient.get(msg.member.id, (err, res) => {
+                if(err)
+                    console.error(err)
+
+                if(res)
+                    msg.reply(JSON.parse(res)[msg.guild.id].warns)
+                else
                     msg.reply('no warns')
-                }
             })
         } finally {
             rClient.quit()

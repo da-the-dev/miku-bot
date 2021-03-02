@@ -77,8 +77,28 @@ client.once('ready', () => {
                     data.shift()
                     var guild = client.guilds.cache.get(data[1])
                     var member = guild.members.cache.get(data[0])
+
                     member.roles.remove(roles.muted)
-                    guild.channels.cache.get(data[2]).send(embeds.unmute(client, member, 'был размьючен'))
+
+                    const rClient = redis.createClient(process.env.RURL)
+                    rClient.get(member.user.id, (err, res) => {
+                        if(err)
+                            console.error(err)
+                        var userData = JSON.parse(res)
+                        console.log(userData)
+                        var channel = guild.channels.cache.get(userData[guild.id].mute)
+                        delete userData[guild.id].mute
+                        console.log(userData)
+
+                        rClient.set(member.user.id, JSON.stringify(userData), err => {
+                            if(err)
+                                console.error(err)
+                            rClient.quit()
+                        })
+                        rClient.quit()
+
+                        channel.send(embeds.unmute(client, member, 'был размьючен'))
+                    })
                 }
             })
             TestKey()

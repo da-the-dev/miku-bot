@@ -47,7 +47,7 @@ module.exports =
             }
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
-                msg.channel.send(embeds.error(msg.member, 'Неверный формат времени! 0'))
+                msg.channel.send(embeds.error(msg.member, 'Неверный формат времени!'))
                 return
             }
 
@@ -80,7 +80,7 @@ module.exports =
                 time = -1
 
             if(time == 0) {
-                msg.channel.send(embeds.error(msg.member, 'Неверный формат времени! 1'))
+                msg.channel.send(embeds.error(msg.member, 'Неверный формат времени!'))
                 return
             }
 
@@ -88,7 +88,7 @@ module.exports =
             const rClient = redis.createClient(process.env.RURL)
             if(time == -1) {
                 try {
-                    rClient.set('muted-' + mMember.user.id + '-' + msg.guild + '-' + msg.channel.id, true)
+                    rClient.set('muted-' + mMember.user.id + '-' + msg.guild, true)
                 } finally {
                     rClient.quit()
                 }
@@ -109,12 +109,45 @@ module.exports =
 
                 // console.log(mmD, mmH, mmM, mmS)
 
-                try {
-                    rClient.set('muted-' + mMember.user.id + '-' + msg.guild + '-' + msg.channel.id, true)
-                    rClient.expire('muted-' + mMember.user.id + '-' + msg.guild + '-' + msg.channel.id, time)
-                } finally {
-                    rClient.quit()
-                }
+                // Set shadow key
+                rClient.set('muted-' + mMember.user.id + '-' + msg.guild.id, true)
+                rClient.expire('muted-' + mMember.user.id + '-' + msg.guild.id, time)
+
+                // Update user data accordingly 
+                rClient.get(mMember.user.id, (err, res) => {
+                    if(err)
+                        console.error(err)
+
+                    // If no user data
+                    var guildID = msg.guild.id
+                    if(res == null) {
+                        rClient.set(mMember.user.id, JSON.stringify(
+                            {
+                                [msg.guild.id]: {
+                                    'mute': msg.channel.id
+                                }
+                            }
+                        ), err => {
+                            if(err)
+                                console.error(err)
+                            rClient.quit()
+                        })
+                    }
+                    // If user data exists already
+                    else {
+                        var userData = JSON.parse(res)
+                        console.log(userData)
+                        userData[msg.guild.id].mute = msg.channel.id
+                        console.log(userData)
+                        console.log(JSON.stringify(userData))
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => {
+                            if(err)
+                                console.error(err)
+                            rClient.quit()
+                        })
+                    }
+                })
+
                 msg.channel.send(embeds.mute(client, mMember, 'был замьючен на', muteMsg.trim()))
                 // msg.reply(time)
             }
