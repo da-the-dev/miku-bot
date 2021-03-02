@@ -23,6 +23,17 @@ commandNames.forEach(c => {
 })
 
 client.login(process.env.BOTTOKEN)
+
+client.on('guildMemberAdd', (member) => {
+    const rClient = redis.createClient(process.env.RURL)
+    rClient.get(member.id, (err, res) => {
+        if(err)
+            console.error(err)
+        if(res)
+            member.roles.add(roles.offender)
+    })
+})
+
 client.once('ready', () => {
     console.log("beta online")
 
@@ -127,16 +138,18 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         if(role && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
             console.log('delete owner room cause dis')
             oldState.member.roles.remove(client.ownerRole)
-            channel.delete()
-                .catch(console.log('fail to delete'))
+            if(channel)
+                channel.delete()
+                    .catch(console.log('fail to delete'))
             return
         }
 
         // Delete empty room
         if(channel.members.size <= 0 && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
             console.log('delete empty room')
-            channel.delete()
-                .catch(console.log('fail to delete'))
+            if(channel)
+                channel.delete()
+                    .catch(console.log('fail to delete'))
             return
         }
     }
