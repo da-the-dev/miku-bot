@@ -9,19 +9,23 @@ module.exports =
     */
 
     async (args, msg, client) => {
-        if(msg.member.user.id == process.env.MYID) {
-            const rClient = redis.createClient(process.env.RURL)
-            try {
-                rClient.get(msg.member.id, (err, reply) => {
-                    console.log('getting warn...')
-                    if(err) {
-                        console.log(err)
-                        return
-                    }
-                    console.log(JSON.parse(reply).warns.split(','))
-                })
-            } finally {
-                rClient.quit()
-            }
+        const rClient = redis.createClient(process.env.RURL)
+        try {
+            rClient.get(msg.member.id, (err, reply) => {
+                console.log('getting warn...')
+                if(err) {
+                    console.log(err)
+                    return
+                }
+                if(reply) {
+                    var warns = JSON.parse(reply).warns.split('||')
+                    console.log(warns)
+                    msg.reply(warns)
+                } else {
+                    msg.reply('no warns')
+                }
+            })
+        } finally {
+            rClient.quit()
         }
     }

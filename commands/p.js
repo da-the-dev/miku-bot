@@ -24,26 +24,32 @@ module.exports =
             if(a.type == "CUSTOM_STATUS") {
                 act += a.state + '\n'
             } else {
-                var type = a.type.toString().toLowerCase()
-                type = type[0].toUpperCase() + type.slice(1)
+                var type = a.type.toString()
+                switch(type) {
+                    case 'PLAYING':
+                        type = 'Играет в'
+                        break
+                    case 'STREAMING':
+                        type = 'Стримит'
+                        break
+                    case 'LISTENING':
+                        type = 'Слушает'
+                        break
+                    case 'WATCHING':
+                        type = 'Смотрит'
+                        break
+                    case 'COMPETING':
+                        type = 'Соревнуется'
+                        break
+                }
                 act += type + ' ' + a.name + '\n'
             }
         })
-        // if(actNumber > 0) {
-        //     var type = msg.member.user.presence.activities[0].type.toString().toLowerCase()
-        //     type = type[0].toUpperCase() + type.slice(1)
-        //     if(type == "Custom_status")
-        //         type = ""
-
-        //     var content = msg.member.user.presence.activities[0].name
-        //     if(content == 'Custom Status')
-        //         content = msg.member.user.presence.activities[0].state
-
-        //     act = type + ' ' + msg.member.user.presence.activities[0].name
-        // }
-
+        var nickname = msg.member.nickname
+        if(!nickname)
+            nickname = msg.member.user.username
         var embed = new Discord.MessageEmbed()
-            .setAuthor(`Информация о ${msg.member.user.tag}`, 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
+            .setAuthor(`Информация о ${nickname}`, 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
             // .setDescription(`Информация о ${msg.member.user.tag}`)
             .addFields([
                 {
@@ -85,7 +91,7 @@ module.exports =
             .setColor('#2F3136')
             .setFooter(`Запросил(-а) ${msg.member.user.tag}`, msg.member.user.avatarURL())
         msg.channel.send(embed)
-        console.log(msg.member.user.presence)
+        // console.log(msg.member.user.presence)
     }
 // {
 //     "author": {
