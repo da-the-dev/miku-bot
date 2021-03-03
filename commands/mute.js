@@ -92,7 +92,7 @@ module.exports =
                 } finally {
                     rClient.quit()
                 }
-                msg.channel.send(embeds.permamute(client, mMember, 'был замьючен навсегда'))
+                msg.channel.send(embeds.permamute(client, mMember))
                 // msg.reply(time)
             } else {
 
@@ -136,10 +136,7 @@ module.exports =
                     // If user data exists already
                     else {
                         var userData = JSON.parse(res)
-                        console.log(userData)
                         userData[msg.guild.id].mute = msg.channel.id
-                        console.log(userData)
-                        console.log(JSON.stringify(userData))
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => {
                             if(err)
                                 console.error(err)
@@ -148,7 +145,7 @@ module.exports =
                     }
                 })
 
-                msg.channel.send(embeds.mute(client, mMember, 'был замьючен на', muteMsg.trim()))
+                msg.channel.send(embeds.mute(client, mMember, muteMsg.trim()))
                 // msg.reply(time)
             }
 

@@ -33,12 +33,13 @@ module.exports =
                         }
                     })
 
-                    // Shadow key guaranties that userData exists
+                    // Shadow key means that userData might exist
                     rClient.get(mMember.user.id, (err, res) => {
                         if(err)
                             console.error(err)
 
                         if(res) {
+                            msg.member.roles.remove(roles.muted)
                             // Update it
                             var userData = JSON.parse(res)
                             var mute = userData[msg.guild.id].mute
@@ -49,6 +50,12 @@ module.exports =
                                     console.error(err)
                                 rClient.quit()
                             })
+                        }
+                        // If not it was a permamute
+                        else {
+                            msg.member.roles.remove(roles.muted)
+                            msg.channel.send(embeds.unmute(client, mMember))
+                            rClient.quit()
                         }
                     })
                 } else {

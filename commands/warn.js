@@ -38,7 +38,6 @@ module.exports =
 
                 // If no user data
                 if(res == null)
-
                     rClient.set(mMember.user.id, JSON.stringify(
                         {
                             [msg.guild.id]: {
@@ -53,6 +52,12 @@ module.exports =
                     })
                 else {
                     var userData = JSON.parse(res)
+
+                    // User has some data, but not warn related, create new 'warns' array
+                    if(!userData[msg.guild.id].warns) {
+                        userData[msg.guild.id].warns = []
+                        msg.member.roles.add(roles.offender)
+                    }
 
                     if(userData[msg.guild.id].warns.length == 3) { // Refuse to add more than 3 warns
                         msg.reply('already three warns')

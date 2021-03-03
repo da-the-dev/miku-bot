@@ -46,21 +46,21 @@ module.exports = {
             .setColor('#2F3136')
             .setFooter(`Запросил(-а) ${member1.user.tag}`, member1.user.avatarURL())
     },
-    'mute': (client, member1, notif, time) => {
+    'mute': (client, member1, time) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> ${notif} \`${time}\``)
+            .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) на \`${time}\``)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     },
-    'permamute': (client, member1, notif, time) => {
+    'permamute': (client, member1) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> ${notif}`)
+            .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) навсегда`)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     },
-    'unmute': (client, member1, notif) => {
+    'unmute': (client, member1) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> ${notif}`)
+            .setDescription(`<@${member1.user.id}> был(-а) размьючен(-а)`)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     }

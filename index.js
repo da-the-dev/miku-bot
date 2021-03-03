@@ -29,8 +29,14 @@ client.on('guildMemberAdd', (member) => {
     rClient.get(member.id, (err, res) => {
         if(err)
             console.error(err)
-        if(res)
-            member.roles.add(roles.offender)
+        if(res) {
+            var userData = JSON.parse(res)
+
+            if(userData[member.guild.id].mute) // Mute if was muted prior to joining
+                member.roles.add(roles.muted)
+            if(userData[member.guild.id].warns) // Mute if was muted prior to joining
+                member.roles.add(roles.offender)
+        }
     })
 })
 
@@ -85,10 +91,8 @@ client.once('ready', () => {
                         if(err)
                             console.error(err)
                         var userData = JSON.parse(res)
-                        console.log(userData)
                         var channel = guild.channels.cache.get(userData[guild.id].mute)
                         delete userData[guild.id].mute
-                        console.log(userData)
 
                         rClient.set(member.user.id, JSON.stringify(userData), err => {
                             if(err)
@@ -97,16 +101,11 @@ client.once('ready', () => {
                         })
                         rClient.quit()
 
-                        channel.send(embeds.unmute(client, member, 'был размьючен'))
+                        channel.send(embeds.unmute(client, member))
                     })
                 }
             })
-            TestKey()
         })
-    }
-    function TestKey() {
-        pub.set('testing', 'redis notify-keyspace-events : expired')
-        pub.expire('testing', 10)
     }
 })
 
