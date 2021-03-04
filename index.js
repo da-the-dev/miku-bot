@@ -1,11 +1,14 @@
 const Discord = require('discord.js')
 const fs = require('fs')
 const dotenv = require('dotenv').config()
+const redis = require('redis')
+
 const roles = require('./roles.json')
 const embeds = require('./embeds')
-const redis = require('redis')
+
 const anticrash = require('./anti-crash')
 const reactionHandler = require('./reactionHandler')
+const reactions = require('./reactions')
 
 // Client
 const prefix = "$"
@@ -24,20 +27,6 @@ commandNames.forEach(c => {
         'foo': require(__dirname + '/commands/' + c)
     })
 })
-
-// // Reactions
-// client.reactions = new Array()
-// var reactionsNames = fs.readdirSync(__dirname + '/commands')
-// reactionsNames.forEach(c => {
-//     client.commands.push({
-//         'name': c.slice(0, c.length - 3),
-//         'foo': require(__dirname + '/reactions/' + c)
-//     })
-//     console.log({
-//         'name': c.slice(0, c.length - 3),
-//         'foo': require(__dirname + '/reactions/' + c)
-//     })
-// })
 
 client.login(process.env.BOTTOKEN)
 
@@ -207,10 +196,16 @@ client.on('message', msg => {
     if(!msg.author.bot && msg.content[0] == prefix) {
         var args = msg.content.slice(1).split(" ")
 
-        client.commands.forEach(c => {
-            if(c.name == args[0])
+        /// Regular commands
+        for(i = 0; i < client.commands.length; i++) {
+            var c = client.commands[i]
+            if(c.name == args[0]) {
                 c.foo(args, msg, client)
-            return
-        })
+                return
+            }
+        }
+
+        // Reactions
+        reactionHandler(args, msg, client)
     }
 })

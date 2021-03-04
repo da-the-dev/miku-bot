@@ -51,7 +51,7 @@ module.exports =
                         if(reactions.first().emoji.name == '✅') {
                             m.edit(new Discord.MessageEmbed()
                                 .setDescription(`<@${msg.member.id}> поцеловал(-а) <@${mMember.id}>`)
-                                .setImage(Reactions.kissReactions[Math.floor(Math.random() * 7) + 1])
+                                .setImage(Reactions.kissReactions[Math.floor(Math.random() * 7)])
                                 .setColor('#2F3136')
                             )
                             m.reactions.removeAll()
