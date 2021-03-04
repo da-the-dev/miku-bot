@@ -9,7 +9,7 @@ module.exports =
     * @description Usage: .bak
     */
     async (args, msg, client) => {
-        if(msg.member.user.id == process.env.MYID || msg.member.user.id == process.env.SERID || msg.member.user.id == process.env.ROMID) {
+        if(msg.member.user.id == process.env.MYID || msg.member.user.id == process.env.SERID) {
             const rClient = redis.createClient(process.env.RURL)
             rClient.get('botautokick', (err, res) => {
                 if(err) throw err
