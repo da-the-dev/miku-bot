@@ -27,7 +27,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .mute <member> <time>
+     * @description Usage: .mute <member> <time> reason:"<reason>"
      * @example .mute @daym bro 5h 
      */
     async (args, msg, client) => {
@@ -42,7 +42,7 @@ module.exports =
             args.shift()
 
             if(args.length == 0) { // If no settings were provided
-                msg.channel.send(embeds.error(msg.member, 'Вы не указали время, на которые замутить человека!'))
+                msg.channel.send(embeds.error(msg.member, 'Вы не указали время, на которое замутить человека!'))
                 return
             }
 
