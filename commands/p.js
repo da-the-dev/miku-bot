@@ -50,7 +50,6 @@ module.exports =
             nickname = msg.member.user.username
         var embed = new Discord.MessageEmbed()
             .setAuthor(`Информация о ${nickname}`, 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
-            // .setDescription(`Информация о ${msg.member.user.tag}`)
             .addFields([
                 {
                     name: "Полное имя",
@@ -84,7 +83,7 @@ module.exports =
                 },
                 {
                     "name": "⠀",
-                    "value": `**Список ролей:** ${parsedRoles}`,
+                    "value": `Роли: ${parsedRoles}`,
                     "inline": false
                 }
             ])
@@ -93,51 +92,3 @@ module.exports =
         msg.channel.send(embed)
         // console.log(msg.member.user.presence)
     }
-// {
-//     "author": {
-//         "name": "Информация о r8d#0001",
-//             "icon_url": "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png"
-//     },
-//     "color": 3092790,
-//         "footer": {
-//         "text": "Запросил(-а) r8d#0001",
-//             "icon_url": "https://cdn.discordapp.com/avatars/793038961588961300/a_71a7c0a89df91db5267c8262ff988747.gif?size=2048"
-//     },
-//     "fields": [
-//         {
-//             "name": "Полное имя",
-//             "value": "r8d#0001",
-//             "inline": true
-//         },
-//         {
-//             "name": "ID пользователя",
-//             "value": "793038961588961300",
-//             "inline": true
-//         },
-//         {
-//             "name": "Присоединился к серверу",
-//             "value": "15.02.21",
-//             "inline": true
-//         },
-//         {
-//             "name": "Аккаунт создан",
-//             "value": "28.12.20",
-//             "inline": true
-//         },
-//         {
-//             "name": "Последнее сообщение",
-//             "value": ".p",
-//             "inline": true
-//         },
-//         {
-//             "name": "Активности (1)",
-//             "value": "Слушает Spotify",
-//             "inline": true
-//         },
-//         {
-//             "name": "⠀",
-//             "value": "Список ролей: @𝚛𝚘𝚝𝚝𝚎𝚗 𝚒𝚗𝚜𝚒𝚍𝚎 @Ⲙⲓ𝓵ⲕⲩ Ⲱⲁⲩ @verify.",
-//             "inline": false
-//         }
-//     ]
-// }
