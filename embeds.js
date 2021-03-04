@@ -75,19 +75,11 @@ module.exports = {
 
         return message
     },
-    'susBotAdd': (client) => {
+    'sus': (client, reason) => {
         return new Discord.MessageEmbed()
-            .setColor('#ffff00')
-            .setTitle('С Вас были сняты роли за подозрительную деятельность')
-            .setDescription('С Вас были сняты все роли с правами администратора за подозрительную деятельность: `несанкцианированное добавление бота`')
-            .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения вопроса`, client.user.avatarURL())
-    },
-    'susAdminPrivilages': (client) => {
-        return new Discord.MessageEmbed()
-            .setColor('#ffff00')
-            .setTitle('С Вас были сняты роли за подозрительную деятельность')
-            .setDescription('С Вас были сняты все роли с правами администратора за подозрительную деятельность: `выдача роли администраторских прав`')
-            .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения вопроса`, client.user.avatarURL())
+            .setColor('#2F3136')
+            .setAuthor('С Вас были сняты роли за подозрительную деятельность', 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
+            .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: \`${reason}\``)
+            .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения обстоятельств`, client.user.avatarURL())
     }
-
 }

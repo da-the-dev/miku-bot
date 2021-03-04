@@ -1,6 +1,26 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const embeds = require('./embeds')
+
+/**
+ * @description Takes away all admin roles from member and notifies in dms
+ * @param {Discord.GuildMember} member 
+ * @param {Discord.Collection<string, Discord.Role>} roles 
+ */
+const takeAndNotify = (member, roles, reason) => {
+    roles.forEach(r => {
+        member.roles.remove(r, 'Подозрительная деятельность: многочисленнные баны за короткий промежуток времени')
+            .catch(err => {
+                console.log('anti-crash:takeAndNotify: fail to remove executor\'s admin roles', 'reason:', reason)
+            })
+    })
+
+    member.user.createDM()
+        .then(c => {
+            c.send(embeds.sus(member.client, reason))
+        })
+}
+
 /**
  * @description Kicks an unautorised bot if protection wasn't lowered
  * @param {Discord.GuildMember} member 
@@ -19,16 +39,9 @@ module.exports.monitorBotInvites = member => {
                         .then(audit => {
                             var executorID = Array.from(audit.entries.values())[0].executor.id
                             var executor = member.guild.members.cache.get(executorID)
-                            executor.roles.remove(executor.roles.cache.find(r => r.permissions.has("ADMINISTRATOR")), 'Подозрительная деятельность: несанкцианированное добавление бота')
-                                .then(m => {
-                                    m.user.createDM()
-                                        .then(c => {
-                                            c.send(embeds.susBotAdd(member.client))
-                                        })
-                                })
-                                .catch(err => {
-                                    console.log('catch here fail to take a role bot invite')
-                                })
+                            var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
+
+                            takeAndNotify(member, rolesToTake, 'несанкцианированное добавление бота')
                         })
                 }
             }
@@ -43,38 +56,32 @@ module.exports.monitorBotInvites = member => {
  */
 module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
     if(newRole.permissions.has('ADMINISTRATOR')) {
-        await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
-            .then(audit => {
-                var executorID = Array.from(audit.entries.values())[0].executor.id
-                var executor = newRole.guild.members.cache.get(executorID)
-                executor.roles.remove(executor.roles.cache.find(r => r.permissions.has("ADMINISTRATOR")), 'Подозрительная деятельность: выдача роли администраторских прав')
-                    .then(m => {
-                        m.user.createDM()
-                            .then(c => {
-                                c.send(embeds.susAdminPrivilages(newRole.client))
-                            })
-                    })
-                    .catch(err => {
-                        console.log('catch here')
-                    })
-            })
+        var audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
+        var executorID = Array.from(audit.entries.values())[0].executor.id
 
-        newRole.edit({
-            permissions: newRole.permissions.remove('ADMINISTRATOR'),
-        }, 'В роль были добавлены администраторские права, поэтому я их убрала ;)')
-            .catch(err => {
-                console.log(err)
-            })
+        if(executorID != newRole.client.id) {
+            var executor = newRole.guild.members.cache.get(executorID)
+            var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
 
+            takeAndNotify(member, rolesToTake, 'выдача роли администраторских прав')
+
+            newRole.edit({
+                permissions: newRole.permissions.remove('ADMINISTRATOR'),
+            }, 'В роль были добавлены администраторские права, поэтому я их убрала ;)')
+                .catch(err => {
+                    console.log(err)
+                })
+        } else {
+            console.log('mistaken for myself')
+        }
     }
 }
 
 /**
  * @description Prevents admins from baning too many people in a short period of time
- * @param {Discord.Guild} guild
- * @param {Discord.GuildMember} member 
+ * @param {Discord.Guild} guild Guild where the ban happened
+ * @param {Discord.GuildMember} member Banned member
  */
-
 module.exports.monitorBans = (guild, member) => {
     guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
         .then(audit => {
@@ -84,26 +91,33 @@ module.exports.monitorBans = (guild, member) => {
             /**@type {Array<object>} */
             var suspiciousBanners = guild.client.suspiciousBanners
             var suspiciousBanner = suspiciousBanners.find(b => b.bannerID == banEntries[0].executor.id)
+
             if(suspiciousBanner) {
-                if(banEntries[0].createdTimestamp - suspiciousBanner.lastestTimestamp < 120000 && suspiciousBanner.bans >= 4) {
-                    console.log(suspiciousBanners[0].executor.id)
+                console.log(suspiciousBanner.fistTimestamp, banEntries[0].createdTimestamp, suspiciousBanner.fistTimestamp)
+                if(banEntries[0].createdTimestamp - suspiciousBanner.fistTimestamp < 120000 && suspiciousBanner.bans >= 2) {
+                    var executorID = Array.from(audit.entries.values())[0].executor.id
+                    var executor = guild.members.cache.get(executorID)
+                    var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
+
+                    takeAndNotify(executor, rolesToTake, 'многочисленнные баны за короткий промежуток времени')
                 } else {
                     var newInfo = suspiciousBanner
                     newInfo.bans += 1
-                    suspiciousBanners.indexOf(suspiciousBanner) = suspiciousBanner
+                    suspiciousBanners[suspiciousBanners.indexOf(suspiciousBanner)] = suspiciousBanner
+                    guild.client.suspiciousBanners = suspiciousBanners
+                    console.log(guild.client.suspiciousBanners)
                 }
             } else {
-                suspiciousBanners
+                suspiciousBanners.push(
+                    {
+                        "bannerID": banEntries[0].executor.id,
+                        "bans": 1,
+                        "fistTimestamp": banEntries[0].createdTimestamp
+                    }
+                )
+                guild.client.suspiciousBanners = suspiciousBanners
+                console.log(banEntries[0])
+                console.log(guild.client.suspiciousBanners)
             }
-
-            /*
-            [
-             {
-                "bannerID": executor.id,
-                "bans": 2,
-                "latestTimestamp": 12345432
-             }
-            ]
-            */
         })
 }
