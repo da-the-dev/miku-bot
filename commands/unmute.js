@@ -48,12 +48,14 @@ module.exports =
                             rClient.set(mMember.user.id, JSON.stringify(userData), err => {
                                 if(err)
                                     console.error(err)
+                                mMember.roles.remove(roles.muted)
+                                msg.channel.send(embeds.unmute(client, mMember))
                                 rClient.quit()
                             })
                         }
                         // If not it was a permamute
                         else {
-                            msg.member.roles.remove(roles.muted)
+                            mMember.roles.remove(roles.muted)
                             msg.channel.send(embeds.unmute(client, mMember))
                             rClient.quit()
                         }
