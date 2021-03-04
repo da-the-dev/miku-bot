@@ -5,13 +5,15 @@ const roles = require('./roles.json')
 const embeds = require('./embeds')
 const redis = require('redis')
 const anticrash = require('./anti-crash')
+const reactionHandler = require('./reactionHandler')
 
 // Client
 const prefix = "$"
 const client = new Discord.Client()
+client.prefix = prefix
+// Commands
 var commandNames = fs.readdirSync(__dirname + '/commands')
 client.commands = new Array()
-client.prefix = prefix
 commandNames.forEach(c => {
     client.commands.push({
         'name': c.slice(0, c.length - 3),
@@ -22,6 +24,20 @@ commandNames.forEach(c => {
         'foo': require(__dirname + '/commands/' + c)
     })
 })
+
+// // Reactions
+// client.reactions = new Array()
+// var reactionsNames = fs.readdirSync(__dirname + '/commands')
+// reactionsNames.forEach(c => {
+//     client.commands.push({
+//         'name': c.slice(0, c.length - 3),
+//         'foo': require(__dirname + '/reactions/' + c)
+//     })
+//     console.log({
+//         'name': c.slice(0, c.length - 3),
+//         'foo': require(__dirname + '/reactions/' + c)
+//     })
+// })
 
 client.login(process.env.BOTTOKEN)
 
@@ -164,24 +180,25 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         if(!role)
             role = newState.member.roles.cache.get(client.ownerRole.id)
 
+        // Delete empty room
+        if(channel.members.size <= 0 && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
+            console.log('delete empty room')
+            if(channel)
+                channel.delete()
+                    .catch(console.log('index.voiceStateUpdate: fail to delete after room empty'))
+            return
+        }
+
         // Delete if owner left
         if(role && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
             console.log('delete owner room cause dis')
             oldState.member.roles.remove(client.ownerRole)
             if(channel)
                 channel.delete()
-                    .catch(console.log('fail to delete'))
+                    .catch(console.log('index.voiceStateUpdate: fail to delete after owner left'))
             return
         }
 
-        // Delete empty room
-        if(channel.members.size <= 0 && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
-            console.log('delete empty room')
-            if(channel)
-                channel.delete()
-                    .catch(console.log('fail to delete'))
-            return
-        }
     }
 })
 
