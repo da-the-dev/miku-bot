@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config()
 const roles = require('./roles.json')
 const embeds = require('./embeds')
 const redis = require('redis')
+const anticrash = require('./anti-crash')
 
 // Client
 const prefix = "$"
@@ -38,11 +39,21 @@ client.on('guildMemberAdd', (member) => {
                 member.roles.add(roles.offender)
         }
     })
+    anticrash.monitorBotInvites(member)
+})
+
+client.on('roleUpdate', (oldRole, newRole) => {
+    anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)
+})
+client.on('guildBanAdd', (guild, member) => {
+    anticrash.monitorBans(guild, member)
 })
 
 client.once('ready', () => {
     console.log("beta online")
 
+    /**@type {Array<string>} */
+    client.suspiciousBanners = [] // Ban watchlist for suspicious admins
     // Create 'createRoom'
     var guild = client.guilds.cache.find(g => g.name == 'noir. reserve')
     client.ownerRole = guild.roles.cache.find(r => r.name == "^")

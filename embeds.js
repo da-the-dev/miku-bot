@@ -63,6 +63,31 @@ module.exports = {
             .setDescription(`<@${member1.user.id}> был(-а) размьючен(-а)`)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+    },
+    'botautokick': (member1, value) => {
+        var message = new Discord.MessageEmbed()
+            .setColor('#FF0000')
+            .setFooter(`Выполнил(-а) ${member1.user.tag}`, member1.user.avatarURL())
+        if(value)
+            message.setDescription(`Автокик ботов был включен!`)
+        else
+            message.setDescription(`Автокик ботов был выключен!`)
+
+        return message
+    },
+    'susBotAdd': (client) => {
+        return new Discord.MessageEmbed()
+            .setColor('#ffff00')
+            .setTitle('С Вас были сняты роли за подозрительную деятельность')
+            .setDescription('С Вас были сняты все роли с правами администратора за подозрительную деятельность: `несанкцианированное добавление бота`')
+            .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения вопроса`, client.user.avatarURL())
+    },
+    'susAdminPrivilages': (client) => {
+        return new Discord.MessageEmbed()
+            .setColor('#ffff00')
+            .setTitle('С Вас были сняты роли за подозрительную деятельность')
+            .setDescription('С Вас были сняты все роли с правами администратора за подозрительную деятельность: `выдача роли администраторских прав`')
+            .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения вопроса`, client.user.avatarURL())
     }
 
 }
