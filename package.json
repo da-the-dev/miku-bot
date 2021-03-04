@@ -20,6 +20,8 @@
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "moment": "^2.29.1",
+    "node-redis-scan": "^1.2.1",
+    "node-schedule": "^2.0.0",
     "redis": "^3.0.2"
   }
 }
