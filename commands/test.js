@@ -9,5 +9,5 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID)
-            anticrash.monitorBans(msg.guild)
+            anticrash.monitorKicks(msg.guild)
     }

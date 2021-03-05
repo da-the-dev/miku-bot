@@ -53,6 +53,9 @@ client.on('roleUpdate', (oldRole, newRole) => {
 client.on('guildBanAdd', (guild, member) => {
     anticrash.monitorBans(guild, member)
 })
+client.on('guildMemberRemove', member => {
+    anticrash.monitorKicks(member)
+})
 
 client.once('ready', () => {
     console.log("beta online")

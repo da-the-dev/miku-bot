@@ -72,10 +72,11 @@ module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
         }
     }
 }
+
 const banPool = 10 - 1
 /**
  * @description Prevents admins from baning too many people in a short period of time
- * 
+ * @param {Discord.GuildMember}
  * @param {Discord.Guild} guild
  */
 module.exports.monitorBans = (guild, member) => {
@@ -91,7 +92,7 @@ module.exports.monitorBans = (guild, member) => {
                 return 0
             })
 
-            // Save only 'banPool last entries
+            // Save only 'banPool' last entries
             /**@type {Array<Discord.GuildAuditLogsEntry>} */
             var lastEBEs = Array.from(eBE.values()).slice(0, banPool + 1)
 
@@ -102,5 +103,38 @@ module.exports.monitorBans = (guild, member) => {
 
             if(eBENew.createdTimestamp - eBEOld.createdTimestamp < 120000)
                 takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные баны за короткий промежуток времени')
+        })
+}
+
+const kickPool = 10 - 1
+/**
+ * @description Prevents admins from kicking too many people in a short period of time
+ * @param {Discord.GuildMember} member
+ */
+module.exports.monitorKicks = (member) => {
+    var guild = member.guild
+    guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
+        .then(audit => {
+            var executor = audit.entries.first().executor
+
+            // Executor Kick Entries
+            var eKE = audit.entries.filter(e => e.executor.id == executor.id)
+            eKE = eKE.sort((a, b) => { // Sort from OLD to NEW
+                if(a.createdTimestamp > b.createdTimestamp) return -1
+                if(a.createdTimestamp < b.createdTimestamp) return 1
+                return 0
+            })
+
+            // Save only 'kickPool' last entries
+            /**@type {Array<Discord.GuildAuditLogsEntry>} */
+            var lastEKEs = Array.from(eKE.values()).slice(0, kickPool + 1)
+
+            var eKEOld = lastEKEs[kickPool]
+            var eKENew = lastEKEs[0]
+
+            console.log((eKENew.createdTimestamp - eKEOld.createdTimestamp) / 1000)
+
+            if(eKENew.createdTimestamp - eKEOld.createdTimestamp < 120000)
+                takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные кики за короткий промежуток времени')
         })
 }
