@@ -60,7 +60,7 @@ client.once('ready', () => {
     /**@type {Array<string>} */
     client.suspiciousBanners = [] // Ban watchlist for suspicious admins
     // Create 'createRoom'
-    var guild = client.guilds.cache.find(g => g.name == 'noir. reserve')
+    var guild = client.guilds.cache.find(g => g.name == 'miku Bot Community')
     client.ownerRole = guild.roles.cache.find(r => r.name == "^")
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
@@ -196,7 +196,7 @@ client.on('message', msg => {
     if(!msg.author.bot && msg.content[0] == prefix) {
         var args = msg.content.slice(1).split(" ")
 
-        /// Regular commands
+        // Regular commands
         for(i = 0; i < client.commands.length; i++) {
             var c = client.commands[i]
             if(c.name == args[0]) {
@@ -206,9 +206,15 @@ client.on('message', msg => {
             }
         }
 
+        // say exeption
+        if(msg.content.startsWith(`${prefix}say`)) {
+            client.commands.find(c => c.name == "say").foo(args, msg, client)
+            msg.delete()
+            return
+        }
+
         // Reactions
         reactionHandler(args, msg, client)
-
     }
     // Selfy moderation
     if(msg.channel.id == '817329624228560937') {
