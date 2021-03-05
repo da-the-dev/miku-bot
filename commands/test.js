@@ -8,5 +8,12 @@ module.exports =
     * @description Usage: .warn <member> <reason>
     */
     async (args, msg, client) => {
-        anticrash.monitorBans(msg.guild, msg.member)
+        msg.guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
+            .then(audit => {
+                // Get all ban entries
+                var banEntries = Array.from(audit.entries.values())
+                banEntries.forEach(b => {
+                    console.log(b.createdTimestamp)
+                })
+            })
     }
