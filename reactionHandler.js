@@ -8,15 +8,16 @@ const reactions = require('./reactions')
  * @param {Array<string>} reactions
  * @param {string} desc
  */
-const buildMessage = async (msg, reactions, desc) => {
+const buildMessage = async (msg, reactions, desc, name) => {
     msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
-    console.log(reactions.length, rand)
     msg.channel.send((new Discord.MessageEmbed()
+        .setAuthor(`Реакция: ${name}`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
         .setDescription(`<@${msg.member.id}> ${desc}`)
         .setImage(reactions[rand])
         .setColor('#2F3136')
+        .setFooter(`Cегодня, в ${msg.createdAt.getHours()}:${msg.createdAt.getMinutes()}`)
     ))
 }
 
@@ -31,17 +32,18 @@ module.exports =
         var mMember = msg.mentions.members.first()
         switch(args[0]) {
             case 'angry':
-                buildMessage(msg, reactions.angryReactions, 'злой(-ая)')
+                if(mMember)
+                    buildMessage(msg, reactions.angryReactions, `разозлился(-ась) на <@${mMember.id}>`, "Злость")
                 break
             case 'hit':
                 if(mMember)
-                    buildMessage(msg, reactions.hitReactions, `ударяет <@${mMember.id}>`)
+                    buildMessage(msg, reactions.hitReactions, `ударил(-а) <@${mMember.id}>`, "Удар")
                 break
             case 'hug':
-                buildMessage(msg, reactions.hugReactions, `обнимает <@${mMember.id}>`)
+                buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, "Объятие")
                 break
             case 'sad':
-                buildMessage(msg, reactions.sadReactions, 'грустит')
+                buildMessage(msg, reactions.sadReactions, 'грустит', "Грусть")
                 break
         }
     }

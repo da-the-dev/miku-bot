@@ -23,6 +23,7 @@ module.exports =
 
         var firstEmbed = new Discord.MessageEmbed()
             .setDescription(`<@${mMember.id}>, с тобой хочет поцеловаться <@${msg.member.id}>, что ответишь?`)
+            .setColor('#2F3136')
 
         msg.channel.send(firstEmbed)
             .then(async m => {
@@ -30,7 +31,7 @@ module.exports =
                 await m.react('❌')
                 const filter = (reaction, user) =>
                     user.id == mMember.user.id
-                m.awaitReactions(filter, { time: 10000, max: 1 })
+                m.awaitReactions(filter, { time: 60000, max: 1 })
                     .then(reactions => {
                         if(reactions.array().length == 0) {
                             m.edit(new Discord.MessageEmbed()
@@ -50,9 +51,11 @@ module.exports =
                         }
                         if(reactions.first().emoji.name == '✅') {
                             m.edit(new Discord.MessageEmbed()
+                                .setAuthor(`Реакция: Поцелуй`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
                                 .setDescription(`<@${msg.member.id}> поцеловал(-а) <@${mMember.id}>`)
                                 .setImage(Reactions.kissReactions[Math.floor(Math.random() * 7)])
                                 .setColor('#2F3136')
+                                .setFooter(`Cегодня, в ${m.createdAt.getHours()}:${m.createdAt.getMinutes()}`)
                             )
                             m.reactions.removeAll()
                             return
