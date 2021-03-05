@@ -22,11 +22,11 @@ module.exports =
 
         // Activities
         var act = ""
-        var actNumber = msg.member.user.presence.activities.length
+        var actNumber = msg.author.presence.activities.length
         if(actNumber == 0)
             act = "-"
 
-        msg.member.user.presence.activities.forEach(a => {
+        msg.author.presence.activities.forEach(a => {
             if(a.type == "CUSTOM_STATUS") {
                 act += a.state + '\n'
             } else {
@@ -53,18 +53,18 @@ module.exports =
         })
         var nickname = msg.member.nickname
         if(!nickname)
-            nickname = msg.member.user.username
+            nickname = msg.author.username
         var embed = new Discord.MessageEmbed()
             .setAuthor(`Информация о ${nickname}`, 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
             .addFields([
                 {
                     name: "Полное имя",
-                    value: msg.member.user.tag,
+                    value: msg.author.tag,
                     inline: true
                 },
                 {
                     "name": "ID пользователя",
-                    "value": msg.member.user.id,
+                    "value": msg.author.id,
                     "inline": true
                 },
                 {
@@ -74,7 +74,7 @@ module.exports =
                 },
                 {
                     "name": "Аккаунт создан",
-                    "value": msg.member.user.createdAt.getDate().toString().padStart(2, '0') + '.' + msg.member.user.createdAt.getMonth().toString().padStart(2, '0') + '.' + msg.member.user.createdAt.getFullYear().toString().slice(2),
+                    "value": msg.author.createdAt.getDate().toString().padStart(2, '0') + '.' + msg.author.createdAt.getMonth().toString().padStart(2, '0') + '.' + msg.author.createdAt.getFullYear().toString().slice(2),
                     "inline": true
                 },
                 {
@@ -94,7 +94,7 @@ module.exports =
                 }
             ])
             .setColor('#2F3136')
-            .setFooter(`Запросил(-а) ${msg.member.user.tag}`, msg.member.user.avatarURL())
+            .setFooter(`Запросил(-а) ${msg.author.tag}`, msg.author.avatarURL())
         msg.channel.send(embed)
-        // console.log(msg.member.user.presence)
+        // console.log(msg.author.presence)
     }

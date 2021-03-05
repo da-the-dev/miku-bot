@@ -70,7 +70,7 @@ module.exports =
                         msg.reply('there are 3 warns')
                     }
 
-                    rClient.set(msg.member.user.id, JSON.stringify(userData), err => {
+                    rClient.set(msg.author.id, JSON.stringify(userData), err => {
                         if(err)
                             console.error(err)
                         rClient.quit()

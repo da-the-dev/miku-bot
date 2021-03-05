@@ -9,7 +9,7 @@ module.exports =
     */
 
     async (args, msg, client) => {
-        if(msg.member.user.id == process.env.MYID) {
+        if(msg.author.id == process.env.MYID) {
             const rClient = redis.createClient(process.env.RURL)
             try {
                 rClient.DEL(args[1], err => {

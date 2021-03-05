@@ -16,7 +16,7 @@ module.exports =
 
         var name1 = msg.member.nickname
         if(!name1)
-            name1 = msg.member.user.username
+            name1 = msg.author.username
         var name2 = mMember.nickname
         if(!name2)
             name2 = mMember.user.username

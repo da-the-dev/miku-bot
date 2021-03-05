@@ -11,9 +11,9 @@ module.exports =
      * @description Usage: .unmute <member>
      */
     async (args, msg, client) => {
-        if(msg.member.user.id == process.env.MYID) {
+        if(msg.author.id == process.env.MYID) {
             const rClient = redis.createClient(process.env.RURL)
-            rClient.get(msg.member.user.id, (err, res) => {
+            rClient.get(msg.author.id, (err, res) => {
                 if(err)
                     console.error(err)
                 if(res) {
