@@ -201,6 +201,7 @@ client.on('message', msg => {
             var c = client.commands[i]
             if(c.name == args[0]) {
                 c.foo(args, msg, client)
+                msg.delete()
                 return
             }
         }
@@ -213,5 +214,7 @@ client.on('message', msg => {
     if(msg.channel.id == '817329624228560937') {
         if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg'))
             msg.delete()
+        else
+            msg.react('👍')
     }
 })

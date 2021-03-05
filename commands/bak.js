@@ -29,6 +29,5 @@ module.exports =
                     })
                 }
             })
-            msg.delete()
         }
     }
