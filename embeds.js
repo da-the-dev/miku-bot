@@ -81,5 +81,10 @@ module.exports = {
             .setAuthor('С Вас были сняты роли за подозрительную деятельность', 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
             .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: \`${reason}\``)
             .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения обстоятельств`, client.user.avatarURL())
+    },
+    'embedBuilder': () => {
+        return new Discord.MessageEmbed()
+            .setDescription("\n`安`[EmbedBuilder](https://embedbuilder.nadekobot.me/)\n\n\n\n")
+            .setColor('#2F3136')
     }
 }
