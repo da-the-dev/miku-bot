@@ -9,7 +9,13 @@ module.exports =
     async (args, msg, client) => {
         // Parse roles
         var parsedRoles = []
-        msg.member.roles.cache.forEach(r => {
+        var cachedRoles = msg.member.roles.cache
+        cachedRoles.sort((a, b) => {
+            if(b.position > a.position) return 1
+            if(b.position < a.position) return -1
+            return 0
+        })
+        cachedRoles.forEach(r => {
             if(r.id != msg.guild.id)
                 parsedRoles += `<@&${r.id}> `
         })
