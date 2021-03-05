@@ -10,16 +10,14 @@ const reactions = require('./reactions')
  */
 const buildMessage = async (msg, reactions, desc) => {
     msg.delete()
-    // var rand = Math.floor(Math.random() * (reactions.length + 1))
-    var rand = 0
+    var rand = Math.floor(Math.random() * reactions.length)
+
     console.log(reactions.length, rand)
     msg.channel.send((new Discord.MessageEmbed()
         .setDescription(`<@${msg.member.id}> ${desc}`)
         .setImage(reactions[rand])
         .setColor('#2F3136')
-    )).then(m => {
-        console.log(m.embeds[0].image)
-    })
+    ))
 }
 
 module.exports =
@@ -40,10 +38,10 @@ module.exports =
                     buildMessage(msg, reactions.hitReactions, `ударяет <@${mMember.id}>`)
                 break
             case 'hug':
-                buildMessage(msg, reactions.angryReactions, `обнимает <@${mMember.id}>`)
+                buildMessage(msg, reactions.hugReactions, `обнимает <@${mMember.id}>`)
                 break
             case 'sad':
-                buildMessage(msg, reactions.angryReactions, 'грустит')
+                buildMessage(msg, reactions.sadReactions, 'грустит')
                 break
         }
     }
