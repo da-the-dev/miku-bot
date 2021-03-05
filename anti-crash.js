@@ -41,7 +41,7 @@ module.exports.monitorBotInvites = member => {
                             var executor = member.guild.members.cache.get(executorID)
                             var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
 
-                            takeAndNotify(member, rolesToTake, 'несанкцианированное добавление бота')
+                            takeAndNotify(executor, rolesToTake, 'несанкцианированное добавление бота')
                         })
                 }
             }
@@ -63,7 +63,7 @@ module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
             var executor = newRole.guild.members.cache.get(executorID)
             var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
 
-            takeAndNotify(member, rolesToTake, 'выдача роли администраторских прав')
+            takeAndNotify(executor, rolesToTake, 'выдача роли администраторских прав')
 
             newRole.edit({
                 permissions: newRole.permissions.remove('ADMINISTRATOR'),
