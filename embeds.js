@@ -46,6 +46,12 @@ module.exports = {
             .setColor('#2F3136')
             .setFooter(`Запросил(-а) ${member1.user.tag}`, member1.user.avatarURL())
     },
+    'success': (member1, success) => {
+        return new Discord.MessageEmbed()
+            .setDescription(success)
+            .setColor('#2F3136')
+            .setFooter(`Выполнил(-а) ${member1.user.tag}`, member1.user.avatarURL())
+    },
     'mute': (client, member1, time) => {
         return new Discord.MessageEmbed()
             .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) на \`${time}\``)
