@@ -8,6 +8,7 @@ const embeds = require('./embeds')
 
 const anticrash = require('./anti-crash')
 const pRs = require('./privateRooms')
+const moneyGet = require('./moneyGet')
 const reactionHandler = require('./reactionHandler')
 const reactions = require('./reactions')
 
@@ -105,38 +106,42 @@ client.once('ready', () => {
 
 client.on('voiceStateUpdate', (oldState, newState) => {
     pRs.roomDeletion(oldState, newState, client)
+    moneyGet.voiceActivity(oldState, newState)
 })
 
 client.on('message', msg => {
     // Bot commands
-    if(!msg.author.bot && msg.content[0] == prefix) {
-        var args = msg.content.slice(1).split(" ")
+    if(!msg.author.bot) {
+        moneyGet.chatActivity(msg)
+        if(msg.content[0] == prefix) {
+            var args = msg.content.slice(1).split(" ")
 
-        // Regular commands
-        for(i = 0; i < client.commands.length; i++) {
-            var c = client.commands[i]
-            if(c.name == args[0]) {
-                c.foo(args, msg, client)
+            // Regular commands
+            for(i = 0; i < client.commands.length; i++) {
+                var c = client.commands[i]
+                if(c.name == args[0]) {
+                    c.foo(args, msg, client)
+                    msg.delete()
+                    return
+                }
+            }
+
+            // say exeption
+            if(msg.content.startsWith(`${prefix}say`)) {
+                client.commands.find(c => c.name == "say").foo(args, msg, client)
                 msg.delete()
                 return
             }
-        }
 
-        // say exeption
-        if(msg.content.startsWith(`${prefix}say`)) {
-            client.commands.find(c => c.name == "say").foo(args, msg, client)
-            msg.delete()
-            return
+            // Reactions
+            reactionHandler(args, msg, client)
         }
-
-        // Reactions
-        reactionHandler(args, msg, client)
-    }
-    // Selfy moderation
-    if(msg.channel.id == '817329624228560937') {
-        if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
-            msg.delete()
-        else
-            msg.react('👍')
+        // Selfy moderation
+        if(msg.channel.id == '817329624228560937') {
+            if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
+                msg.delete()
+            else
+                msg.react('👍')
+        }
     }
 })
