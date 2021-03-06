@@ -9,7 +9,7 @@ const reactions = require('./reactions')
  * @param {string} desc
  */
 const buildMessage = async (msg, reactions, desc, name) => {
-    msg.delete()
+    if(msg) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
     msg.channel.send((new Discord.MessageEmbed()
