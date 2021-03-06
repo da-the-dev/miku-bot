@@ -6,7 +6,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .give <member> <ammount>
+    * @description Usage: .bal
     */
     async (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
