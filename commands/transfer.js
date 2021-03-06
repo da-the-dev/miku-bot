@@ -6,7 +6,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .give <member> <ammount>
+    * @description Usage: .transfer <member> <ammount>
     */
     async (args, msg, client) => {
         var mMember = msg.mentions.members.first()

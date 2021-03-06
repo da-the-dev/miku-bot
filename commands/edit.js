@@ -5,7 +5,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .say <jsonData>
+    * @description Usage: .edit <id>\n<jsonData>
     */
     async (args, msg, client) => {
         args.shift()
