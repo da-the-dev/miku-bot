@@ -14,9 +14,10 @@ module.exports =
             if(err) throw err
             if(res) {
                 var userData = JSON.parse(res)
-                msg.channel.send(embeds.success(msg.member, `Твой балланс: \`${userData.money}\``))
+                console.log(userData.money)
+                msg.channel.send(embeds.success(msg.member, `У тебя на счету **${userData.money}** <:__:817493251321102347>`))
             } else
-                msg.channel.send(embeds.success(msg.member, 'Твой балланс: `0`'))
+                msg.channel.send(embeds.success(msg.member, `У тебя на счету **0** <:__:817493251321102347>`))
             rClient.quit()
         })
     }

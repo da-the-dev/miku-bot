@@ -28,7 +28,7 @@ module.exports =
             }
 
             const rClient = redis.createClient(process.env.RURL)
-            rClient.get(msg.author.id, (err, res) => {
+            rClient.get(mMember.user.id, (err, res) => {
                 if(err) throw err
                 if(res) {
                     var userData = JSON.parse(res)
@@ -39,15 +39,16 @@ module.exports =
                         userData.money += amount
                     console.log(userData)
 
-                    rClient.set(msg.author.id, JSON.stringify(userData), err => {
+                    rClient.set(mMember.user.id, JSON.stringify(userData), err => {
                         if(err) throw err
-                        msg.channel.send(embeds.success(msg.member, `Успешно обновлен баланс пользователя ${msg.author.username} (\`${userData.money}\`)!`))
+                        msg.channel.send(embeds.success(msg.member, `Обновлен баланс пользователя <@${mMember.user.id}> **${userData.money}**<:__:817493251321102347>`))
                         rClient.quit()
                     })
                 } else {
-                    rClient.set(msg.author.id, JSON.stringify({ 'money': amount }), err => {
+                    rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => {
                         if(err) throw err
-                        msg.channel.send(embeds.success(msg.member, `Успешно установлена сумма \`${amount}\` пользователю ${msg.author.username}!`))
+                        //Обновлен баланс пользователя @member 42 :__~7:
+                        msg.channel.send(embeds.success(msg.member, `Обновлен баланс пользователя <@${mMember.user.id}> **${amount}**<:__:817493251321102347>`))
                         rClient.quit()
                     })
                 }

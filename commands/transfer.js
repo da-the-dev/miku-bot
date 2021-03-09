@@ -36,10 +36,9 @@ module.exports =
             if(res) {
                 var userData = JSON.parse(res)
                 console.log(userData)
-                if(amount > userData.money) { // If too much money is requested 
+                if(amount > userData.money)  // If too much money is requested 
                     msg.channel.send(embeds.error(msg.member, 'У тебя недостаточно средств для перевода!'))
-                    rClient.quit()
-                } else {
+                else {
                     rClient.get(mMember.user.id, (err, rres) => {
                         if(err) throw err
                         if(rres) { // If receiver HAS data
@@ -49,22 +48,19 @@ module.exports =
 
                             rClient.set(mMember.user.id, JSON.stringify(receiverData), err => { if(err) throw err })
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
-                            rClient.quit()
 
-                            msg.channel.send(embeds.success(msg.member, `Успешно переведено \`${amount}\` конфет пользователю ${mMember.user.username}!`))
+                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:817493251321102347> пользователю <@${mMember.user.id}>`))
+                            rClient.quit()
                         } else { // If receiver DOES NOT have user data
                             rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => { if(err) throw err })
                             rClient.set(msg.author.id, JSON.stringify({ 'money': userData.money - amount }), err => { if(err) throw err })
                             rClient.quit()
 
-                            msg.channel.send(embeds.success(msg.member, `Успешно переведено \`${amount}\` конфет пользователю ${mMember.user.username}!`))
+                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:817493251321102347> пользователю <@${mMember.user.id}>`))
                         }
                     })
                 }
-            } else {
+            } else
                 msg.channel.send(embeds.error(msg.member, 'У тебя нет средств для перевода!'))
-                rClient.quit()
-            }
-            rClient.quit()
         })
     }
