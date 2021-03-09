@@ -25,5 +25,7 @@ module.exports =
             return
         }
 
-        msg.channel.send(new Discord.MessageEmbed(jsonData))
+        var embed = new Discord.MessageEmbed(jsonData)
+        if(jsonData.image) embed.setImage(jsonData.image)
+        msg.channel.send(embed)
     }
