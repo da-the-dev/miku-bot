@@ -13,7 +13,7 @@ const reactionHandler = require('./reactionHandler')
 const reactions = require('./reactions')
 
 // Client
-const prefix = "$"
+const prefix = "."
 const client = new Discord.Client()
 client.prefix = prefix
 // Commands
