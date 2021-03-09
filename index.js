@@ -35,14 +35,13 @@ client.login(process.env.BOTTOKEN)
 client.on('guildMemberAdd', (member) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(member.id, (err, res) => {
-        if(err)
-            console.error(err)
+        if(err) throw err
         if(res) {
             var userData = JSON.parse(res)
 
-            if(userData[member.guild.id].mute) // Mute if was muted prior to joining
+            if(userData.mute) // Mute if was muted prior to joining
                 member.roles.add(roles.muted)
-            if(userData[member.guild.id].warns) // Mute if was muted prior to joining
+            if(userData.warns) // Add offeder role if was marked prior to joining
                 member.roles.add(roles.offender)
         }
     })
@@ -74,30 +73,24 @@ client.once('ready', () => {
             console.log(' [i] Subscribed to "' + expired_subKey + '" event channel : ' + r)
             sub.on('message', function(chan, msg) {
                 if(msg.startsWith('muted-')) {
+                    /**@type {Array<string>} */
                     var data = msg.split('-')
                     data.shift()
-                    var guild = client.guilds.cache.get(data[1])
+                    var guild = client.guilds.cache.find(c => c.name == "miku Bot Community")
                     var member = guild.members.cache.get(data[0])
-
-                    member.roles.remove(roles.muted)
-
                     const rClient = redis.createClient(process.env.RURL)
-                    rClient.get(member.user.id, (err, res) => {
-                        if(err)
-                            console.error(err)
+                    rClient.get(data[0], (err, res) => {
+                        if(err) throw err
                         var userData = JSON.parse(res)
-                        var channel = guild.channels.cache.get(userData[guild.id].mute)
-                        delete userData[guild.id].mute
+                        var channel = guild.channels.cache.get(userData.mute[0])
+                        delete userData.mute
 
-                        rClient.set(member.user.id, JSON.stringify(userData), err => {
-                            if(err)
-                                console.error(err)
-                            rClient.quit()
-                        })
+                        rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
 
                         channel.send(embeds.unmute(client, member))
                     })
+                    member.roles.remove(roles.muted)
                 }
             })
         })
