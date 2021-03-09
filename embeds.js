@@ -52,9 +52,9 @@ module.exports = {
             .setColor('#2F3136')
             .setFooter(`Выполнил(-а) ${member1.user.tag}`, member1.user.avatarURL())
     },
-    'mute': (client, member1, time) => {
+    'mute': (client, member1, time, reason) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) на \`${time}\``)
+            .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) на \`${time}\`. Причина: \`${reason}\``)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     },
@@ -67,6 +67,12 @@ module.exports = {
     'unmute': (client, member1) => {
         return new Discord.MessageEmbed()
             .setDescription(`<@${member1.user.id}> был(-а) размьючен(-а)`)
+            .setColor('#2F3136')
+            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+    },
+    'warn': (client, member1, reason) => {
+        return new Discord.MessageEmbed()
+            .setDescription(`<@${member1.user.id}> был добавлен варн, причина: \`${reason}\``)
             .setColor('#2F3136')
             .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
     },
