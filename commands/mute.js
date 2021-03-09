@@ -46,12 +46,13 @@ module.exports =
                 return
             }
 
-            var reasonIndex = args.findIndex(r => r.startsWith('"'))
+            var reasonIndex = args.findIndex(r => r.startsWith('-'))
             if(reasonIndex == -1) {
                 msg.channel.send(embeds.error(msg.member, 'Не указана причина мута!'))
                 return
             }
             var reason = args.slice(reasonIndex, args.length).join(' ')
+            reason = reason.slice(1)
             args = args.slice(0, reasonIndex)
             console.log(args)
 
@@ -101,7 +102,7 @@ module.exports =
                 } finally {
                     rClient.quit()
                 }
-                msg.channel.send(embeds.permamute(client, mMember))
+                msg.channel.send(embeds.permamute(mMember, msg.member, reason))
                 // msg.reply(time)
             } else {
 
@@ -111,10 +112,10 @@ module.exports =
                 var mmS = Math.floor(time - (mmD * 60 * 60 * 24 + mmH * 60 * 60 + mmM * 60))
                 var muteMsg = ''
 
-                if(mmD) muteMsg += mmD.toString() + " д "
-                if(mmH) muteMsg += mmH.toString() + " ч "
-                if(mmM) muteMsg += mmM.toString() + " мин "
-                if(mmS) muteMsg += mmS.toString() + " сек "
+                if(mmD) muteMsg += '**' + mmD.toString() + '**' + "d "
+                if(mmH) muteMsg += '**' + mmH.toString() + '**' + "h "
+                if(mmM) muteMsg += '**' + mmM.toString() + '**' + "m "
+                if(mmS) muteMsg += '**' + mmS.toString() + '**' + "s "
 
                 // console.log(mmD, mmH, mmM, mmS)
 
@@ -138,7 +139,7 @@ module.exports =
                     }
                 })
 
-                msg.channel.send(embeds.mute(client, mMember, muteMsg.trim(), reason))
+                msg.channel.send(embeds.mute(mMember, msg.member, muteMsg.trim(), reason))
             }
         } else {
             msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))

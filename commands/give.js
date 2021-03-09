@@ -26,6 +26,7 @@ module.exports =
                 msg.channel.send(embeds.error(msg.member, 'Указана неверная сумма!'))
                 return
             }
+            console.log(amount)
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, (err, res) => {
@@ -53,5 +54,7 @@ module.exports =
                     })
                 }
             })
+        } else {
+            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
         }
     }

@@ -37,7 +37,8 @@ module.exports.voiceActivity = (oldState, newState) => {
                     }
                 })
             }, interval)
-            voiceActIntervals.set(newState.member.id, inter)
+            if(!voiceActIntervals.get(newState.member.id))
+                voiceActIntervals.set(newState.member.id, inter)
         } else { // User left a voicechannel
             console.log(newState.member.user.username, 'left')
             clearInterval(voiceActIntervals.get(newState.member.id))

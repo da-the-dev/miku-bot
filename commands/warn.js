@@ -33,32 +33,30 @@ module.exports =
                 if(err) throw err
 
                 if(res == null) {
-                    rClient.set(mMember.user.id, JSON.stringify({ 'warns': [reason] }), err => { if(err) throw err })
-                    msg.member.roles.add(roles.offender)
+                    rClient.set(mMember.user.id, JSON.stringify({ 'warns': [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] }), err => { if(err) throw err })
+                    // mMember.roles.add(roles.offender)
+                    msg.channel.send(embeds.warn(mMember, msg.member, 1, reason))
                     rClient.quit()
                 } else {
                     console.log(res)
                     var userData = JSON.parse(res)
                     if(!userData.warns) { // Never have been warned before
-                        console.log('Never have been warned before')
                         userData.warns = []
-                        msg.member.roles.add(roles.offender)
+                        // mMember.roles.add(roles.offender)
+                        console.log('never has been warned')
                     }
 
-                    if(userData.warns.length == 3) { // Refuse to add more than 3 warns
-                        msg.channel.send(embeds.error(msg.member, 'У обвиняемого уже есть 3 варна!'))
-                        return
+                    userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
+
+                    if(userData.warns.length == 4) {// Alert when maxed out on number of warns
+                        userData.warns = []
+                        userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
                     }
-
-                    userData.warns.push(reason)
-
-                    if(userData.warns.length == 3) // Alert when maxed out on number of warns
-                        console.log('three warns')
                     // msg.channel.send(embeds.success(msg.member, 'У обвиняемого теперь есть 3 варна'))
 
-                    rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                    rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                     rClient.quit()
-                    msg.channel.send(embeds.warn(client, mMember, reason))
+                    msg.channel.send(embeds.warn(mMember, msg.member, userData.warns.length, reason))
                 }
             })
         } else {

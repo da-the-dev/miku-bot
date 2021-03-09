@@ -44,7 +44,7 @@ module.exports =
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
 
-                        msg.channel.send(embeds.unmute(client, mMember))
+                        msg.channel.send(embeds.unmute(mMember, msg.member))
                     })
                 } else {
                     msg.channel.send(embeds.error(msg.member, 'Пользователь не был замьючен в первую очередь!'))

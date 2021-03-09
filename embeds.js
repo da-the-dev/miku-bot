@@ -52,29 +52,29 @@ module.exports = {
             .setColor('#2F3136')
             .setFooter(`Выполнил(-а) ${member1.user.tag}`, member1.user.avatarURL())
     },
-    'mute': (client, member1, time, reason) => {
+    'mute': (member1, member2, time, reason) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) на \`${time}\`. Причина: \`${reason}\``)
+            .setDescription(`Пользователь <@${member1.user.id}> получил(-а) **мут** на ${time} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             .setColor('#2F3136')
-            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+            .setFooter(`Выполнил(-а) ${member2.user.tag}`, member2.user.avatarURL())
     },
-    'permamute': (client, member1) => {
+    'permamute': (member1, member2, reason) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> был(-а) замьючен(-а) навсегда`)
+            .setDescription(`Пользователь <@${member1.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             .setColor('#2F3136')
-            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+            .setFooter(`Выполнил(-а) ${member2.user.tag}`, member2.user.avatarURL())
     },
-    'unmute': (client, member1) => {
+    'unmute': (member1, member2) => {
         return new Discord.MessageEmbed()
             .setDescription(`<@${member1.user.id}> был(-а) размьючен(-а)`)
             .setColor('#2F3136')
-            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+            .setFooter(`Выполнил(-а) ${member2.user.tag}`, member2.user.avatarURL())
     },
-    'warn': (client, member1, reason) => {
+    'warn': (member1, member2, count, reason) => {
         return new Discord.MessageEmbed()
-            .setDescription(`<@${member1.user.id}> был добавлен варн, причина: \`${reason}\``)
+            .setDescription(`Пользователю <@${member1.user.id}> было выдано предупреждение **#${count}** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             .setColor('#2F3136')
-            .setFooter(`Уведомила ${client.user.username}`, client.user.avatarURL())
+            .setFooter(`Выполнил(-а) ${member2.user.tag}`, member2.user.avatarURL())
     },
     'botautokick': (member1, value) => {
         var message = new Discord.MessageEmbed()
