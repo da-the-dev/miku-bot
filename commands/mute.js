@@ -110,17 +110,18 @@ module.exports =
                 // console.log(mmD, mmH, mmM, mmS)
 
                 // Set shadow key
-                rClient.set('muted-' + mMember.user.id + '-' + msg.guild.id, true)
-                rClient.expire('muted-' + mMember.user.id + '-' + msg.guild.id, time)
+                rClient.set('muted-' + mMember.user.id, true)
+                rClient.expire('muted-' + mMember.user.id, time)
 
                 // Update user data accordingly 
                 rClient.get(mMember.user.id, (err, res) => {
-                    if(err)
-                        console.error(err)
+                    if(err) throw err
+                    if(res) { // If user data exists already 
+                        var userData = JSON.parse(res)
+                        userData.mute = msg.channel.id
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.quit()
 
-                    // If no user data
-                    var guildID = msg.guild.id
-                    if(res == null) {
                         rClient.set(mMember.user.id, JSON.stringify(
                             {
                                 [msg.guild.id]: {
@@ -133,15 +134,9 @@ module.exports =
                             rClient.quit()
                         })
                     }
-                    // If user data exists already
+                    // If no user data
                     else {
-                        var userData = JSON.parse(res)
-                        userData[msg.guild.id].mute = msg.channel.id
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => {
-                            if(err)
-                                console.error(err)
-                            rClient.quit()
-                        })
+
                     }
                 })
 
