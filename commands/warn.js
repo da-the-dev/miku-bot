@@ -28,57 +28,39 @@ module.exports =
                 return
             }
 
-            // Added the warn to the history
             const rClient = redis.createClient(process.env.RURL)
-
-            var avalible = false
             rClient.get(mMember.user.id, (err, res) => {
-                if(err)
-                    console.error(err)
+                if(err) throw err
 
-                // If no user data
-                if(res == null)
-                    rClient.set(mMember.user.id, JSON.stringify(
-                        {
-                            [msg.guild.id]: {
-                                'warns': [reason]
-                            }
-                        }
-                    ), err => {
-                        if(err)
-                            console.error(err)
-                        msg.member.roles.add(roles.offender)
-                        rClient.quit()
-                    })
-                else {
+                if(res == null) {
+                    rClient.set(mMember.user.id, JSON.stringify({ 'warns': [reason] }), err => { if(err) throw err })
+                    msg.member.roles.add(roles.offender)
+                    rClient.quit()
+                } else {
+                    console.log(res)
                     var userData = JSON.parse(res)
-
-                    // User has some data, but not warn related, create new 'warns' array
-                    if(!userData[msg.guild.id].warns) {
-                        userData[msg.guild.id].warns = []
+                    if(!userData.warns) { // Never have been warned before
+                        console.log('Never have been warned before')
+                        userData.warns = []
                         msg.member.roles.add(roles.offender)
                     }
 
-                    if(userData[msg.guild.id].warns.length == 3) { // Refuse to add more than 3 warns
-                        msg.reply('already three warns')
+                    if(userData.warns.length == 3) { // Refuse to add more than 3 warns
+                        msg.channel.send(embeds.error(msg.member, 'У обвиняемого уже есть 3 варна!'))
                         return
                     }
 
-                    userData[msg.guild.id].warns.push(reason)
+                    userData.warns.push(reason)
 
-                    if(userData[msg.guild.id].warns.length == 3) { // Alert when maxed out on number of warns
-                        msg.reply('there are 3 warns')
-                    }
+                    if(userData.warns.length == 3) // Alert when maxed out on number of warns
+                        console.log('three warns')
+                    // msg.channel.send(embeds.success(msg.member, 'У обвиняемого теперь есть 3 варна'))
 
-                    rClient.set(msg.author.id, JSON.stringify(userData), err => {
-                        if(err)
-                            console.error(err)
-                        rClient.quit()
-                    })
+                    rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                    rClient.quit()
+                    msg.channel.send(embeds.warn(client, mMember, reason))
                 }
             })
-
-            // msg.channel.send(embeds.warn(mMember, msg.member, reason))
         } else {
             msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
         }
