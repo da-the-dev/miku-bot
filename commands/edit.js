@@ -41,5 +41,6 @@ module.exports =
 
         var embed = new Discord.MessageEmbed(jsonData)
         if(jsonData.image) embed.setImage(jsonData.image)
-        editMsg.edit(embed)
+        if(jsonData.plainText) editMsg.edit(jsonData.plainText, embed)
+        else editMsg.edit(embed)
     }
