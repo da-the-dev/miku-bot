@@ -38,5 +38,8 @@ module.exports =
             msg.channel.send(embeds.error(msg.member, 'Не найдено сообщение! Проверьте ID!'))
             return
         }
-        editMsg.edit(new Discord.MessageEmbed(jsonData))
+
+        var embed = new Discord.MessageEmbed(jsonData)
+        if(jsonData.image) embed.setImage(jsonData.image)
+        editMsg.edit(embed)
     }
