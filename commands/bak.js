@@ -16,12 +16,14 @@ module.exports =
 
                 if(res) {
                     var set = (res == 'true')
+                    console.log('set', !set)
                     rClient.set('botautokick', String(!set), (err, res) => {
                         if(err) throw err
                         msg.channel.send(embeds.botautokick(msg.member, !set))
                         rClient.quit()
                     })
                 } else {
+                    console.log('first set')
                     rClient.set('botautokick', true, (err, res) => {
                         if(err) throw err
                         msg.channel.send(embeds.botautokick(msg.member, true))
