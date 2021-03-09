@@ -28,6 +28,6 @@ module.exports =
         var embed = new Discord.MessageEmbed(jsonData)
         var plainText = ''
         if(jsonData.image) embed.setImage(jsonData.image)
-        if(jsonData.plainText) msg.channel.send(jsonData.plainText, embed)
+        if(jsonData.plainText) msg.channel.send(jsonData.plainText)
         else msg.channel.send(embed)
     }
