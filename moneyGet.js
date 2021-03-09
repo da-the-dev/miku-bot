@@ -18,6 +18,8 @@ const interval = 60000
  */
 module.exports.voiceActivity = (oldState, newState) => {
     if(newState.guild.name == "miku Bot Community") {
+        if(newState.channelID == oldState.channelID)
+            return
         // User joined a voicechannel
         if(newState.channelID) {
             console.log(newState.member.user.username, 'joined')
