@@ -27,8 +27,8 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .mute <member> <time> reason:"<reason>"
-     * @example .mute @daym bro 5h 
+     * @description Usage: .mute <member> <time> "<reason>"
+     * @example .mute @daym bro 5h "reason"
      */
     async (args, msg, client) => {
         var moderatorRole = msg.guild.roles.cache.get(roles.moder)
@@ -45,6 +45,15 @@ module.exports =
                 msg.channel.send(embeds.error(msg.member, 'Вы не указали время, на которое замутить человека!'))
                 return
             }
+
+            var reasonIndex = args.findIndex(r => r.startsWith('"'))
+            if(reasonIndex == -1) {
+                msg.channel.send(embeds.error(msg.member, 'Не указана причина мута!'))
+                return
+            }
+            var reason = args.slice(reasonIndex, args.length).join(' ')
+            args = args.slice(0, reasonIndex)
+            console.log(args)
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
                 msg.channel.send(embeds.error(msg.member, 'Неверный формат времени!'))
@@ -88,7 +97,7 @@ module.exports =
             const rClient = redis.createClient(process.env.RURL)
             if(time == -1) {
                 try {
-                    rClient.set('muted-' + mMember.user.id + '-' + msg.guild, true)
+                    rClient.set('muted-' + mMember.user.id, true)
                 } finally {
                     rClient.quit()
                 }
@@ -118,32 +127,19 @@ module.exports =
                     if(err) throw err
                     if(res) { // If user data exists already 
                         var userData = JSON.parse(res)
-                        userData.mute = msg.channel.id
+                        userData.mute = [msg.channel.id, reason]
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
-
-                        rClient.set(mMember.user.id, JSON.stringify(
-                            {
-                                [msg.guild.id]: {
-                                    'mute': msg.channel.id
-                                }
-                            }
-                        ), err => {
-                            if(err)
-                                console.error(err)
-                            rClient.quit()
-                        })
                     }
                     // If no user data
                     else {
-
+                        rClient.set(mMember.user.id, JSON.stringify({ 'mute': [msg.channel.id, reason] }), err => { if(err) throw err })
+                        rClient.quit()
                     }
                 })
 
-                msg.channel.send(embeds.mute(client, mMember, muteMsg.trim()))
-                // msg.reply(time)
+                msg.channel.send(embeds.mute(client, mMember, muteMsg.trim(), reason))
             }
-
         } else {
             msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
         }

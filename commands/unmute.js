@@ -16,52 +16,38 @@ module.exports =
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя для мута!'))
+                return
             }
 
             // Get and prematurely delete the shadow key
             const rClient = redis.createClient(process.env.RURL)
-            rClient.get('muted-' + mMember.user.id + '-' + msg.guild.id, (err, res) => {
-                if(err)
-                    console.error(err)
-
+            rClient.get('muted-' + mMember.user.id, (err, res) => {
+                if(err) throw err
                 if(res) {
                     // Delete the shadow key
-                    rClient.DEL('muted-' + mMember.user.id + '-' + msg.guild.id, err => {
+                    rClient.DEL('muted-' + mMember.user.id, err => {
                         if(err) {
                             console.error(err)
                             return
                         }
                     })
 
-                    // Shadow key means that userData might exist
+                    // Shadow key means that userData exists
                     rClient.get(mMember.user.id, (err, res) => {
                         if(err)
                             console.error(err)
 
-                        if(res) {
-                            msg.member.roles.remove(roles.muted)
-                            // Update it
-                            var userData = JSON.parse(res)
-                            var mute = userData[msg.guild.id].mute
-                            if(mute)
-                                delete userData[msg.guild.id].mute
-                            rClient.set(mMember.user.id, JSON.stringify(userData), err => {
-                                if(err)
-                                    console.error(err)
-                                mMember.roles.remove(roles.muted)
-                                msg.channel.send(embeds.unmute(client, mMember))
-                                rClient.quit()
-                            })
-                        }
-                        // If not it was a permamute
-                        else {
-                            mMember.roles.remove(roles.muted)
-                            msg.channel.send(embeds.unmute(client, mMember))
-                            rClient.quit()
-                        }
+                        mMember.roles.remove(roles.muted)
+
+                        var userData = JSON.parse(res)
+                        if(userData.mute) delete userData.mute
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.quit()
+
+                        msg.channel.send(embeds.unmute(client, mMember))
                     })
                 } else {
-                    msg.reply('not muted in the first place')
+                    msg.channel.send(embeds.error(msg.member, 'Пользователь не был замьючен в первую очередь!'))
                 }
             })
         } else {
