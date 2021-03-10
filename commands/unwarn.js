@@ -62,7 +62,7 @@ module.exports =
                                         }
                                         if(userData.warns.length == 0) {
                                             delete userData.warns
-                                            mMember.roles.remove(roles.offender)
+                                            // mMember.roles.remove(roles.offender)
                                         }
                                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                                         rClient.quit()

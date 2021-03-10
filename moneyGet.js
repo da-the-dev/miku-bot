@@ -17,32 +17,30 @@ const interval = 60000
  * @param {Discord.VoiceState} newState
  */
 module.exports.voiceActivity = (oldState, newState) => {
-    if(newState.guild.name == "miku Bot Community") {
-        if(newState.channelID == oldState.channelID)
-            return
-        // User joined a voicechannel
-        if(newState.channelID) {
-            console.log(newState.member.user.username, 'joined')
-            var inter = setInterval(() => {
-                rClient.get(newState.member.user.id, (err, res) => {
-                    if(err) throw err
-                    if(res) { // If there was user data before
-                        console.log('voice activity +2')
-                        var userData = JSON.parse(res)
-                        userData.money += 2
-                        rClient.set(newState.member.user.id, JSON.stringify(userData), err => { if(err) throw err })
-                    } else {
-                        console.log('no data voice activity +2')
-                        rClient.set(newState.member.user.id, JSON.stringify({ 'money': 2 }), err => { if(err) throw err })
-                    }
-                })
-            }, interval)
-            if(!voiceActIntervals.get(newState.member.id))
-                voiceActIntervals.set(newState.member.id, inter)
-        } else { // User left a voicechannel
-            console.log(newState.member.user.username, 'left')
-            clearInterval(voiceActIntervals.get(newState.member.id))
-        }
+    if(newState.channelID == oldState.channelID)
+        return
+    // User joined a voicechannel
+    if(newState.channelID) {
+        console.log(newState.member.user.username, 'joined')
+        var inter = setInterval(() => {
+            rClient.get(newState.member.user.id, (err, res) => {
+                if(err) throw err
+                if(res) { // If there was user data before
+                    // console.log('voice activity +2')
+                    var userData = JSON.parse(res)
+                    userData.money += 2
+                    rClient.set(newState.member.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                } else {
+                    // console.log('no data voice activity +2')
+                    rClient.set(newState.member.user.id, JSON.stringify({ 'money': 2 }), err => { if(err) throw err })
+                }
+            })
+        }, interval)
+        if(!voiceActIntervals.get(newState.member.id))
+            voiceActIntervals.set(newState.member.id, inter)
+    } else { // User left a voicechannel
+        console.log(newState.member.user.username, 'left')
+        clearInterval(voiceActIntervals.get(newState.member.id))
     }
 }
 
@@ -52,8 +50,8 @@ var chatActMessages = new Map()
  * @param {Discord.Message} msg
  */
 module.exports.chatActivity = (msg) => {
-    if(msg.guild.name == "miku Bot Community")
-        if(msg.channel.id == '814894005132328970' && !msg.author.bot) { // Register only if in general
+    if(msg.guild.name == "Hoteru")
+        if(msg.channel.id == '809147078353748039' && !msg.author.bot) { // Register only if in general
             var msgCount = chatActMessages.get(msg.author.id)
             if(msgCount) { // If user sent messages
                 if(++msgCount >= 3) {

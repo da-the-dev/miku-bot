@@ -49,14 +49,14 @@ module.exports =
                             rClient.set(mMember.user.id, JSON.stringify(receiverData), err => { if(err) throw err })
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
 
-                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:817493251321102347> пользователю <@${mMember.user.id}>`))
+                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`))
                             rClient.quit()
                         } else { // If receiver DOES NOT have user data
                             rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => { if(err) throw err })
                             rClient.set(msg.author.id, JSON.stringify({ 'money': userData.money - amount }), err => { if(err) throw err })
                             rClient.quit()
 
-                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:817493251321102347> пользователю <@${mMember.user.id}>`))
+                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`))
                         }
                     })
                 }

@@ -12,7 +12,7 @@ module.exports =
      */
     async (args, msg, client) => {
         var moderatorRole = msg.guild.roles.cache.get(roles.moder)
-        if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position && r.id != roles.star)) {
+        if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя для мута!'))

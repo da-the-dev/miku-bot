@@ -15,9 +15,14 @@ module.exports =
             if(res) {
                 var userData = JSON.parse(res)
                 console.log(userData.money)
-                msg.channel.send(embeds.success(msg.member, `У тебя на счету **${userData.money}** <:__:817493251321102347>`))
-            } else
-                msg.channel.send(embeds.success(msg.member, `У тебя на счету **0** <:__:817493251321102347>`))
-            rClient.quit()
+                if(!userData.money)
+                    msg.channel.send(embeds.success(msg.member, `У тебя на счету **0** <:__:813854413579354143>`))
+                else
+                    msg.channel.send(embeds.success(msg.member, `У тебя на счету **${userData.money}** <:__:813854413579354143>`))
+                rClient.quit()
+            } else {
+                msg.channel.send(embeds.success(msg.member, `У тебя на счету **0** <:__:813854413579354143>`))
+                rClient.quit()
+            }
         })
     }

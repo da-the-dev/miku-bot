@@ -42,14 +42,14 @@ module.exports =
 
                     rClient.set(mMember.user.id, JSON.stringify(userData), err => {
                         if(err) throw err
-                        msg.channel.send(embeds.success(msg.member, `Обновлен баланс пользователя <@${mMember.user.id}> **${userData.money}**<:__:817493251321102347>`))
+                        msg.channel.send(embeds.success(msg.member, `Обновлен баланс пользователя <@${mMember.user.id}> **${userData.money}**<:__:813854413579354143>`))
                         rClient.quit()
                     })
                 } else {
                     rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => {
                         if(err) throw err
                         //Обновлен баланс пользователя @member 42 :__~7:
-                        msg.channel.send(embeds.success(msg.member, `Обновлен баланс пользователя <@${mMember.user.id}> **${amount}**<:__:817493251321102347>`))
+                        msg.channel.send(embeds.success(msg.member, `Обновлен баланс пользователя <@${mMember.user.id}> **${amount}**<:__:813854413579354143>`))
                         rClient.quit()
                     })
                 }

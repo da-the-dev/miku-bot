@@ -6,23 +6,24 @@ const roles = require('./roles.json')
  */
 module.exports.createRoom = (client) => {
     // Create 'createRoom'
-    var guild = client.guilds.cache.find(g => g.name == 'miku Bot Community')
-    client.ownerRole = guild.roles.cache.find(r => r.name == "^")
+    var guild = client.guilds.cache.find(g => g.name == 'Hoteru')
+    console.log(guild.name)
+    client.ownerRole = guild.roles.cache.get(roles.owner)
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
-    var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "Chillzone")
+    var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       private rooms")
     /**@type {Discord.VoiceChannel} */
-    var privateCreator = privateRoomCategory.children.find(c => c.type == 'voice' && c.name == "createRoom")
+    var privateCreator = privateRoomCategory.children.find(c => c.type == 'voice' && c.name == "．create 部屋")
     if(!privateCreator)
-        privateCreator = guild.channels.create('createRoom',
+        privateCreator = guild.channels.create('．create 部屋',
             {
                 type: "voice",
                 permissionOverwrites:
                     [
-                        {
-                            id: roles.star,
-                            allow: ['VIEW_CHANNEL', 'CONNECT']
-                        },
+                        // {
+                        //     id: roles.star,
+                        //     allow: ['VIEW_CHANNEL', 'CONNECT']
+                        // },
                         {
                             id: roles.muted,
                             deny: ['VIEW_CHANNEL', "CONNECT"]
@@ -50,18 +51,18 @@ module.exports.roomDeletion = (oldState, newState, client) => {
     // Create private room
     if(newMember.voice.channel) {
         var creator = newMember.voice.channel
-        if(creator.name == 'createRoom' && creator.parent.name == 'Chillzone') {
+        if(creator.name == '．create 部屋' && creator.parent.name == '⌗                       private rooms') {
             var guild = newMember.guild
-            var category = guild.channels.cache.find(c => c.name == 'Chillzone')
+            var category = guild.channels.cache.find(c => c.name == '⌗                       private rooms')
             guild.channels.create(newMember.user.username,
                 {
                     type: 'voice',
                     permissionOverwrites:
                         [
-                            {
-                                id: roles.star,
-                                deny: ['CONNECT']
-                            },
+                            // {
+                            //     id: roles.star,
+                            //     deny: ['CONNECT']
+                            // },
                             {
                                 id: newMember.user.id,
                                 allow: ['CONNECT']
@@ -78,12 +79,12 @@ module.exports.roomDeletion = (oldState, newState, client) => {
     if(oldState.channel) {
         var channel = oldState.channel
 
-        var role = oldState.member.roles.cache.get(client.ownerRole.id)
+        var role = oldState.member.roles.cache.get(roles.owner)
         if(!role)
-            role = newState.member.roles.cache.get(client.ownerRole.id)
+            role = newState.member.roles.cache.get(roles.owner)
 
         // Delete empty room
-        if(channel.members.size <= 0 && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
+        if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       private rooms") {
             console.log('delete empty room')
             if(channel)
                 channel.delete()
@@ -92,9 +93,9 @@ module.exports.roomDeletion = (oldState, newState, client) => {
         }
 
         // Delete if owner left
-        if(role && channel.name != 'createRoom' && channel.parent.name == "Chillzone") {
+        if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       private rooms") {
             console.log('delete owner room cause dis')
-            oldState.member.roles.remove(client.ownerRole)
+            oldState.member.roles.remove(roles.owner)
             if(channel)
                 channel.delete()
                     .catch(console.log('index.voiceStateUpdate: fail to delete after owner left'))

@@ -25,9 +25,9 @@ module.exports =
                                 userData.streak = 1
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                             rClient.quit()
-                            msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **${reward}**<:__:817493251321102347> `))
+                            msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **${reward}**<:__:813854413579354143> `))
                         } else {
-                            msg.channel.send(embeds.error(msg.member, 'Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<:__:817493251321102347>'))
+                            msg.channel.send(embeds.error(msg.member, 'Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<:__:813854413579354143>'))
                             userData.money += 20
                             userData.streak = 1
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
@@ -53,12 +53,12 @@ module.exports =
                     userData.rewardTime = msg.createdTimestamp
                     if(!userData.money) userData.money = 20
                     else userData.money += 20
-                    msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **20**<:__:817493251321102347> `))
+                    msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `))
                     rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                     rClient.quit()
                 }
             } else { // If user has no user data
-                msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **20**<:__:817493251321102347> `))
+                msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `))
                 rClient.set(msg.author.id, JSON.stringify({ 'rewardTime': msg.createdTimestamp, 'money': 20, 'streak': 1 }), err => { if(err) throw err })
                 rClient.quit()
             }

@@ -1,6 +1,7 @@
 const anticrash = require('../anti-crash')
 const Discord = require('discord.js')
 const redis = require('redis')
+const roles = require('../roles.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument

@@ -36,22 +36,28 @@ module.exports =
                 if(mMember)
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.angryReactions, `разозлился(-ась) на <@${mMember.id}>`, "Злость")
-                    else
+                    else {
                         msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
                 break
             case 'hit':
                 if(mMember)
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.hitReactions, `ударил(-а) <@${mMember.id}>`, "Удар")
-                    else
+                    else {
                         msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
                 break
             case 'hug':
                 if(mMember)
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, "Объятие")
-                    else
+                    else {
                         msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
                 break
             case 'sad':
                 buildMessage(msg, reactions.sadReactions, 'грустит', "Грусть")

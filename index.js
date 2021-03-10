@@ -11,10 +11,11 @@ const pRs = require('./privateRooms')
 const moneyGet = require('./moneyGet')
 const reactionHandler = require('./reactionHandler')
 const reactions = require('./reactions')
+const verify = require('./verify')
 
 // Client
 const prefix = "."
-const client = new Discord.Client()
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 client.prefix = prefix
 // Commands
 var commandNames = fs.readdirSync(__dirname + '/commands')
@@ -46,6 +47,8 @@ client.on('guildMemberAdd', (member) => {
         }
     })
     anticrash.monitorBotInvites(member)
+    console.log('member add')
+    verify.mark(member)
 })
 
 client.on('roleUpdate', (oldRole, newRole) => {
@@ -57,6 +60,101 @@ client.on('guildBanAdd', (guild, member) => {
 client.on('guildMemberRemove', member => {
     anticrash.monitorKicks(member)
 })
+client.on('messageReactionAdd', async (reaction, user) => {
+    if(reaction.partial) {
+        // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
+        try {
+            await reaction.fetch();
+        } catch(error) {
+            console.error('Something went wrong when fetching the message: ', error);
+            // Return as `reaction.message.author` may be undefined/null
+            return;
+        }
+    }
+
+    const emojies = ['⬅️', '➡️']
+    verify.verify(reaction, user)
+    if(reaction.message.embeds[0].footer) {
+        if(reaction.message.embeds[0].footer.text.includes('стр') && user.id != client.user.id) {
+            var msg = reaction.message
+            var footerUser = msg.embeds[0].footer.text.slice(0, msg.embeds[0].footer.text.indexOf('•') - 1)
+            if(user.username != footerUser)
+                return
+            var footerURL = msg.embeds[0].footer.iconURL
+            var footerPage = msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('•'))
+            // console.log(footerUser, footerPage)
+            var index1 = footerPage.indexOf('1')
+
+            if(reaction.emoji.name == '⬅️' && index1 == -1) { // Second page, flip to first
+                var embed = new Discord.MessageEmbed()
+                    .setColor('#2F3136')
+                    .setFooter(`${footerUser} • стр 1/2`, footerURL)
+
+                const rClient = require('redis').createClient(process.env.RURL)
+                rClient.get('roles', (err, res) => {
+                    if(err) throw err
+                    if(res) {
+                        /**@type {Array<object>} */
+                        var rolesData = JSON.parse(res)
+                        rolesData.sort((a, b) => {
+                            if(a.pos > b.pos) return 1
+                            if(a.pos < b.pos) return -1
+                            return 0
+                        })
+
+                        var length = rolesData.slice(0, 9).length
+                        for(i = 0; i < length; i++)
+                            embed.addField(`⌗ ${rolesData[i].pos} — ${rolesData[i].price}<:__:813854413579354143>`, ` <@&${rolesData[i].id}>`, true)
+
+                        rClient.quit()
+                        msg.edit(embed)
+                            .then(async m => {
+                                await m.reactions.removeAll()
+                                await m.react(emojies[1])
+                            })
+                    }
+                })
+                return
+            }
+            if(reaction.emoji.name == '➡️' && index1 != -1) { // First page, flip to second
+                console.log('First page, flip to second')
+                var embed = new Discord.MessageEmbed()
+                    .setColor('#2F3136')
+                    .setFooter(`${footerUser} • стр 2/2`, footerURL)
+
+                const rClient = require('redis').createClient(process.env.RURL)
+                rClient.get('roles', (err, res) => {
+                    if(err) throw err
+                    if(res) {
+                        /**@type {Array<object>} */
+                        var rolesData = JSON.parse(res)
+                        rolesData.sort((a, b) => {
+                            if(a.pos > b.pos) return 1
+                            if(a.pos < b.pos) return -1
+                            return 0
+                        })
+
+                        var length = rolesData.slice(9, 18).length + 9
+                        for(i = 9; i < length; i++)
+                            embed.addField(`⌗ ${rolesData[i].pos} — ${rolesData[i].price}<:__:813854413579354143>`, ` <@&${rolesData[i].id}>`, true)
+
+                        rClient.quit()
+                        msg.edit(embed)
+                            .then(async m => {
+                                await m.reactions.removeAll()
+                                await m.react(emojies[0])
+                            })
+                    }
+                })
+                return
+            }
+        }
+    }
+})
+
+// client.on('messageReactionAdd', (reaction, user) => {
+//     
+// })
 
 client.once('ready', () => {
     console.log("beta online")
@@ -76,7 +174,7 @@ client.once('ready', () => {
                     /**@type {Array<string>} */
                     var data = msg.split('-')
                     data.shift()
-                    var guild = client.guilds.cache.find(c => c.name == "miku Bot Community")
+                    var guild = client.guilds.cache.find(c => c.name == "Hoteru")
                     var member = guild.members.cache.get(data[0])
                     const rClient = redis.createClient(process.env.RURL)
                     rClient.get(data[0], (err, res) => {
@@ -88,7 +186,7 @@ client.once('ready', () => {
                         rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
 
-                        channel.send(embeds.unmute(client, member))
+                        channel.send(embeds.unmute(member, client))
                     })
                     member.roles.remove(roles.muted)
                 }
@@ -115,6 +213,7 @@ client.on('message', msg => {
                 if(c.name == args[0]) {
                     c.foo(args, msg, client)
                     msg.delete()
+                        .catch(err => console.log('regular', err))
                     return
                 }
             }
@@ -123,6 +222,7 @@ client.on('message', msg => {
             if(msg.content.startsWith(`${prefix}say`)) {
                 client.commands.find(c => c.name == "say").foo(args, msg, client)
                 msg.delete()
+                    .catch(err => console.log('say exeption', err))
                 return
             }
 
@@ -133,6 +233,7 @@ client.on('message', msg => {
         if(msg.channel.id == '817329624228560937') {
             if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
                 msg.delete()
+                    .catch(err => console.log('say exeption', err))
             else
                 msg.react('👍')
         }

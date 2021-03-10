@@ -10,14 +10,14 @@ module.exports =
     */
 
     async (args, msg, client) => {
-        if(!msg.member.roles.cache.has(client.ownerRole.id)) {
+        console.log('in v')
+        if(!msg.member.roles.cache.has(roles.owner)) {
             msg.channel.send(embeds.error(msg.member, 'У Вас нет прав на эту команду!'))
             return
         }
 
         var guild = msg.guild
         /**@type {Discord.CategoryChannel} */
-        var category = guild.channels.cache.find(c => c.name == "Chillzone")
         /**@type {Discord.VoiceChannel} */
         var room = msg.member.voice.channel
 
