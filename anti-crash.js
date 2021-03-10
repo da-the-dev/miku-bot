@@ -54,7 +54,7 @@ module.exports.monitorBotInvites = member => {
  * @param {Discord.Role} newRole
  */
 module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
-    if(newRole.permissions.has('ADMINISTRATOR')) {
+    if(!oldRole.permissions.has('ADMINISTRATOR') && newRole.permissions.has('ADMINISTRATOR')) {
         var audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
         var executorID = Array.from(audit.entries.values())[0].executor.id
 
@@ -62,11 +62,12 @@ module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
             var executor = newRole.guild.members.cache.get(executorID)
             var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
 
-            takeAndNotify(executor, 'выдача роли администраторских прав')
 
-            newRole.edit({
+            await newRole.edit({
                 permissions: newRole.permissions.remove('ADMINISTRATOR'),
             }, 'В роль были добавлены администраторские права, поэтому я их убрала ;)')
+
+            takeAndNotify(executor, 'выдача роли администраторских прав')
         } else {
             console.log('mistaken for myself')
         }
