@@ -231,7 +231,7 @@ client.on('message', msg => {
                 msg.delete()
                     .catch(err => console.log('selfy exeption', err))
             else
-                msg.react('<:__:810458743934156870>')
+                msg.react('<a:__:819566414368473098>')
         }
     }
 })
