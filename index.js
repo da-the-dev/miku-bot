@@ -12,6 +12,7 @@ const moneyGet = require('./moneyGet')
 const reactionHandler = require('./reactionHandler')
 const reactions = require('./reactions')
 const verify = require('./verify')
+const channels = require('./channels.json')
 
 // Client
 const prefix = "."
