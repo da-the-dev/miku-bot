@@ -213,12 +213,8 @@ client.on('message', msg => {
                         c.foo(args, msg, client)
                         msg.delete().catch(err => console.log('regular', err))
                     }
-                    else if(msg.channel.id == channels.general && !c.allowedInGeneral)
+                    else
                         msg.delete().catch(err => console.log('regular', err))
-                    else {
-                        c.foo(args, msg, client)
-                        msg.delete().catch(err => console.log('regular', err))
-                    }
                     return
                 }
             }
