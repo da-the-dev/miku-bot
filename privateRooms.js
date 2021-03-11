@@ -7,8 +7,6 @@ const roles = require('./roles.json')
 module.exports.createRoom = (client) => {
     // Create 'createRoom'
     var guild = client.guilds.cache.find(g => g.name == 'Hoteru')
-    console.log(guild.name)
-    client.ownerRole = guild.roles.cache.get(roles.owner)
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
     var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       private rooms")
@@ -20,10 +18,6 @@ module.exports.createRoom = (client) => {
                 type: "voice",
                 permissionOverwrites:
                     [
-                        // {
-                        //     id: roles.star,
-                        //     allow: ['VIEW_CHANNEL', 'CONNECT']
-                        // },
                         {
                             id: roles.muted,
                             deny: ['VIEW_CHANNEL', "CONNECT"]
@@ -71,7 +65,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                     parent: category
                 }).then(c => {
                     newMember.voice.setChannel(c)
-                    newMember.roles.add(client.ownerRole.id)
+                    newMember.roles.add(roles.owner)
                 })
         }
     }
@@ -83,15 +77,6 @@ module.exports.roomDeletion = (oldState, newState, client) => {
         if(!role)
             role = newState.member.roles.cache.get(roles.owner)
 
-        // Delete empty room
-        if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       private rooms") {
-            console.log('delete empty room')
-            if(channel)
-                channel.delete()
-                    .catch(console.log('index.voiceStateUpdate: fail to delete after room empty'))
-            return
-        }
-
         // Delete if owner left
         if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       private rooms") {
             console.log('delete owner room cause dis')
@@ -102,5 +87,13 @@ module.exports.roomDeletion = (oldState, newState, client) => {
             return
         }
 
+        // Delete empty room
+        if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       private rooms") {
+            console.log('delete empty room')
+            if(channel)
+                channel.delete()
+                    .catch(console.log('index.voiceStateUpdate: fail to delete after room empty'))
+            return
+        }
     }
 }
