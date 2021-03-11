@@ -5,6 +5,7 @@ const redis = require('redis')
 
 const roles = require('./roles.json')
 const embeds = require('./embeds')
+const channels = require('./channels.json')
 
 const anticrash = require('./anti-crash')
 const pRs = require('./privateRooms')
@@ -200,16 +201,20 @@ client.on('message', msg => {
     // Bot commands
     if(!msg.author.bot) {
         moneyGet.chatActivity(msg)
-        if(msg.content[0] == prefix) {
+
+        if(msg.content[0] == prefix) { // If command
             var args = msg.content.slice(1).split(" ")
 
             // Regular commands
             for(i = 0; i < client.commands.length; i++) {
                 var c = client.commands[i]
                 if(c.name == args[0]) {
-                    c.foo(args, msg, client)
-                    msg.delete()
-                        .catch(err => console.log('regular', err))
+                    if(msg.channel.id == channels.general && c.allowedInGeneral) {
+                        c.foo(args, msg, client)
+                        msg.delete().catch(err => console.log('regular', err))
+                    }
+                    else
+                        msg.delete().catch(err => console.log('regular', err))
                     return
                 }
             }
