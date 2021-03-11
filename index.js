@@ -31,7 +31,7 @@ commandNames.forEach(c => {
     })
 })
 
-client.login(process.env.BOTTOKEN)
+client.login(process.env.BETABOTTOKEN)
 
 client.on('guildMemberAdd', (member) => {
     const rClient = redis.createClient(process.env.RURL)
@@ -153,7 +153,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 client.once('ready', () => {
-    console.log("miku online")
+    console.log("beta online")
 
     pRs.createRoom(client)
 
