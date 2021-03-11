@@ -92,8 +92,8 @@ module.exports =
                         console.log(oldOwner.user.username)
                         console.log(mMember.user.username)
 
-                        await oldOwner.roles.remove(client.ownerRole.id)
-                        await mMember.roles.add(client.ownerRole.id)
+                        await oldOwner.roles.remove(roles.owner)
+                        await mMember.roles.add(roles.owner)
                         msg.channel.send(embeds.vowner(msg.member, mMember))
                     } else {
                         msg.channel.send(embeds.error(msg.member, 'Пользователь не находится в Вашей комнате!'))
