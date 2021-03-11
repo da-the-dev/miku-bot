@@ -31,7 +31,7 @@ commandNames.forEach(c => {
     })
 })
 
-client.login(process.env.BOTTOKEN)
+client.login(process.env.BETABOTTOKEN)
 
 client.on('guildMemberAdd', (member) => {
     const rClient = redis.createClient(process.env.RURL)
