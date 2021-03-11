@@ -207,9 +207,16 @@ client.on('message', msg => {
             for(i = 0; i < client.commands.length; i++) {
                 var c = client.commands[i]
                 if(c.name == args[0]) {
-                    c.foo(args, msg, client)
-                    msg.delete()
-                        .catch(err => console.log('regular', err))
+                    if(msg.channel.id == channels.general && c.allowedInGeneral) {
+                        c.foo(args, msg, client)
+                        msg.delete().catch(err => console.log('regular', err))
+                    }
+                    else if(msg.channel.id == channels.general && !c.allowedInGeneral)
+                        msg.delete().catch(err => console.log('regular', err))
+                    else {
+                        c.foo(args, msg, client)
+                        msg.delete().catch(err => console.log('regular', err))
+                    }
                     return
                 }
             }
