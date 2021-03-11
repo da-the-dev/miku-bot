@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 var voiceActIntervals = new Map()
 const redis = require('redis')
+
 /*
  * Here is the fuctionality that handles people getting money for being active on a server
  */
@@ -23,7 +24,7 @@ var voiceAct = (newState) => {
 const rClient = redis.createClient(process.env.RURL)
 const interval = 60000
 /**
- * @desctiption Give user 2 points every 1 minute in voicechat
+ * @desctiption Give user 2 points every active minute in voicechat
  * @param {Discord.VoiceState} oldState
  * @param {Discord.VoiceState} newState
  */
@@ -32,27 +33,30 @@ module.exports.voiceActivity = (oldState, newState) => {
         return
     // User joined a voicechannel
     if(newState.channelID) {
-        if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-            console.log(newState.channel.members.size)
-            console.log(newState.member.user.username, 'joined')
+        var channel = newState.channel
+
+        // If there's more than member in a voice channel, give act money
+        if(newState.channel.members.size > 1) {
             var inter = setInterval(voiceAct, interval, newState)
             if(!voiceActIntervals.get(newState.member.id))
                 voiceActIntervals.set(newState.member.id, inter)
         }
-        if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
+
+        // If there's 2 members in a voice channel, give the old member act money as well
+        if(newState.channel.members.size == 2) {
             var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
             console.log('given act money', oldMember.user.username)
             var inter = setInterval(voiceAct, interval, newState)
             if(!voiceActIntervals.get(oldMember.user.id))
                 voiceActIntervals.set(oldMember.user.id, inter)
         }
-    } else { // User left a voicechannel
-        console.log(newState.member.user.username, 'left')
-        clearInterval(voiceActIntervals.get(newState.member.id))
-        if(oldState.channel.members.size == 1) {
-            clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
-        }
     }
+    // } else { // User left a voicechannel
+    //     console.log(newState.member.user.username, 'left')
+    //     clearInterval(voiceActIntervals.get(newState.member.id))
+    //     if(oldState.channel.members.size == 1) {
+    //         clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
+    //     }
 }
 
 var chatActMessages = new Map()

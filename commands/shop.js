@@ -10,6 +10,7 @@ module.exports =
     * @description Usage: .shop
     */
     async (args, msg, client) => {
+        console.log('shopin\'')
         var embed = new Discord.MessageEmbed()
             .setColor('#2F3136')
             .setFooter(`${msg.author.username} • стр 1/2`, msg.author.avatarURL())
