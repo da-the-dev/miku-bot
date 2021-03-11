@@ -152,10 +152,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
     }
 })
 
-// client.on('messageReactionAdd', (reaction, user) => {
-//     
-// })
-
 client.once('ready', () => {
     console.log("beta online")
 
@@ -230,12 +226,12 @@ client.on('message', msg => {
             reactionHandler(args, msg, client)
         }
         // Selfy moderation
-        if(msg.channel.id == '817329624228560937') {
+        if(msg.channel.id == '810876164960813086') {
             if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
                 msg.delete()
-                    .catch(err => console.log('say exeption', err))
+                    .catch(err => console.log('selfy exeption', err))
             else
-                msg.react('👍')
+                msg.react('<:__:810458743934156870>')
         }
     }
 })
