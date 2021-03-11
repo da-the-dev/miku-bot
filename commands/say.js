@@ -31,4 +31,3 @@ module.exports =
         if(jsonData.plainText) msg.channel.send(jsonData.plainText)
         else msg.channel.send(embed)
     }
-module.exports.allowedInGeneral = true

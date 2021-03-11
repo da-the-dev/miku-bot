@@ -54,4 +54,3 @@ module.exports =
             msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
         }
     }
-module.exports.allowedInGeneral = true

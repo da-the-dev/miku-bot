@@ -44,4 +44,3 @@ module.exports =
         if(jsonData.plainText) editMsg.edit(jsonData.plainText, embed)
         else editMsg.edit(embed)
     }
-module.exports.allowedInGeneral = true

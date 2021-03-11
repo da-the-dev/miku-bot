@@ -65,4 +65,3 @@ module.exports =
                     })
             })
     }
-module.exports.allowedInGeneral = true
