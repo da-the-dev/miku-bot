@@ -1,6 +1,6 @@
 const redis = require('redis')
 const constants = require('../constants.json')
-module.exports.reapplyRoles = () => {
+module.exports.reapplyRoles = (member) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(member.id, (err, res) => {
         if(err) throw err
