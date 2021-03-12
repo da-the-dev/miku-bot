@@ -1,23 +1,21 @@
+// Libraries
 const Discord = require('discord.js')
 const fs = require('fs')
 const dotenv = require('dotenv').config()
 const redis = require('redis')
 
-const roles = require('./roles.json')
-const embeds = require('./embeds')
+// Constants
+const constants = require('./constants.json')
 
-const anticrash = require('./anti-crash')
-const pRs = require('./privateRooms')
-const moneyGet = require('./moneyGet')
-const reactionHandler = require('./reactionHandler')
-const reactions = require('./reactions')
-const verify = require('./verify')
-const channels = require('./channels.json')
+// Utilities
+const embeds = require('./embeds')
+const utl = require('./utility')
 
 // Client
 const prefix = "."
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 client.prefix = prefix
+
 // Commands
 var commandNames = fs.readdirSync(__dirname + '/commands')
 client.commands = new Array()
@@ -42,24 +40,23 @@ client.on('guildMemberAdd', (member) => {
             var userData = JSON.parse(res)
 
             if(userData.mute) // Mute if was muted prior to joining
-                member.roles.add(roles.muted)
+                member.roles.add(constants.roles.muted)
             if(userData.warns) // Add offeder role if was marked prior to joining
-                member.roles.add(roles.offender)
+                member.roles.add(constants.roles.offender)
         }
     })
-    anticrash.monitorBotInvites(member)
-    console.log('member add')
-    verify.mark(member)
+    utl.anticrash.monitorBotInvites(member)
+    utl.verify.mark(member)
 })
 
 client.on('roleUpdate', (oldRole, newRole) => {
-    anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)
+    utl.anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)
 })
 client.on('guildBanAdd', (guild, member) => {
-    anticrash.monitorBans(guild, member)
+    utl.anticrash.monitorBans(guild, member)
 })
 client.on('guildMemberRemove', member => {
-    anticrash.monitorKicks(member)
+    utl.anticrash.monitorKicks(member)
 })
 client.on('messageReactionAdd', async (reaction, user) => {
     if(reaction.partial) {
@@ -74,7 +71,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
     }
 
     const emojies = ['⬅️', '➡️']
-    verify.verify(reaction, user)
+    utl.verify.verify(reaction, user)
     if(reaction.message.embeds[0].footer) {
         if(reaction.message.embeds[0].footer.text.includes('стр') && user.id != client.user.id) {
             var msg = reaction.message
@@ -156,7 +153,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 client.once('ready', () => {
     console.log("BETA online")
 
-    pRs.createRoom(client)
+    utl.privateRooms.createRoom(client)
 
     // Unmute muted
     const pub = redis.createClient(process.env.RURL)
@@ -185,7 +182,7 @@ client.once('ready', () => {
 
                         channel.send(embeds.unmute(member, client))
                     })
-                    member.roles.remove(roles.muted)
+                    member.roles.remove(constants.roles.muted)
                 }
             })
         })
@@ -193,14 +190,14 @@ client.once('ready', () => {
 })
 
 client.on('voiceStateUpdate', (oldState, newState) => {
-    pRs.roomDeletion(oldState, newState, client)
-    moneyGet.voiceActivity(oldState, newState)
+    utl.privateRooms.roomDeletion(oldState, newState, client)
+    utl.moneyGet.voiceActivity(oldState, newState)
 })
 
 client.on('message', msg => {
     // Bot commands
     if(!msg.author.bot) {
-        moneyGet.chatActivity(msg)
+        utl.moneyGet.chatActivity(msg)
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
 
@@ -208,11 +205,11 @@ client.on('message', msg => {
             for(i = 0; i < client.commands.length; i++) {
                 var c = client.commands[i]
                 if(c.name == args[0]) {
-                    if(msg.channel.id == channels.general && c.allowedInGeneral) {
+                    if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
                         c.foo(args, msg, client)
                         msg.delete().catch(err => console.log('regular', err))
                     }
-                    else if(msg.channel.id == channels.general && !c.allowedInGeneral)
+                    else if(msg.channel.id == constants.channels.general && !c.allowedInGeneral)
                         msg.delete().catch(err => console.log('regular', err))
                     else {
                         c.foo(args, msg, client)
@@ -231,7 +228,7 @@ client.on('message', msg => {
             }
 
             // Reactions
-            reactionHandler(args, msg, client)
+            utl.reactionHandler(args, msg, client)
         }
         // Selfy moderation
         if(msg.channel.id == '810876164960813086') {

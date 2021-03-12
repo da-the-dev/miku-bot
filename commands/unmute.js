@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
-const roles = require('../roles.json')
 const embeds = require('../embeds')
 const redis = require('redis')
+const constants = require('../constants.json')
 
 module.exports =
     /**
@@ -11,7 +11,7 @@ module.exports =
      * @description Usage: .unmute <member>
      */
     async (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(roles.moder)
+        var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
@@ -37,7 +37,7 @@ module.exports =
                         if(err)
                             console.error(err)
 
-                        mMember.roles.remove(roles.muted)
+                        mMember.roles.remove(constants.roles.muted)
 
                         var userData = JSON.parse(res)
                         if(userData.mute) delete userData.mute

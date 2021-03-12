@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
-const roles = require('./roles.json')
+const constants = require('../constants.json')
+
 /**
  * 
  * @param {Discord.MessageReaction} reaction 
@@ -8,7 +9,7 @@ const roles = require('./roles.json')
 module.exports.verify = (reaction, user) => {
     if(reaction.message.id == 819295686415482921) {
         console.log('verified user', user.tag)
-        reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(roles.verify))
+        reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
     }
     return
 }
@@ -18,5 +19,5 @@ module.exports.verify = (reaction, user) => {
  */
 module.exports.mark = (member) => {
     console.log('dever')
-    member.roles.add(member.guild.roles.cache.get(roles.verify))
+    member.roles.add(member.guild.roles.cache.get(constants.roles.verify))
 }

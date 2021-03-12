@@ -1,4 +1,3 @@
-const anticrash = require('../anti-crash')
 const Discord = require('discord.js')
 const redis = require('redis')
 module.exports =

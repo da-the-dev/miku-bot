@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
-const roles = require('../roles.json')
+const constants = require('../constants.json')
 const embeds = require('../embeds.js')
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -11,7 +12,7 @@ module.exports =
 
     async (args, msg, client) => {
         console.log('in v')
-        if(!msg.member.roles.cache.has(roles.owner)) {
+        if(!msg.member.roles.cache.has(constants.roles.owner)) {
             msg.channel.send(embeds.error(msg.member, 'У Вас нет прав на эту команду!'))
             return
         }
@@ -92,8 +93,8 @@ module.exports =
                         console.log(oldOwner.user.username)
                         console.log(mMember.user.username)
 
-                        await oldOwner.roles.remove(roles.owner)
-                        await mMember.roles.add(roles.owner)
+                        await oldOwner.roles.remove(constants.roles.owner)
+                        await mMember.roles.add(constants.roles.owner)
                         msg.channel.send(embeds.vowner(msg.member, mMember))
                     } else {
                         msg.channel.send(embeds.error(msg.member, 'Пользователь не находится в Вашей комнате!'))

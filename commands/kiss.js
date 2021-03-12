@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const Reactions = require('../reactions')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -53,7 +53,7 @@ module.exports =
                             m.edit(new Discord.MessageEmbed()
                                 .setAuthor(`Реакция: Поцелуй`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
                                 .setDescription(`<@${msg.member.id}> поцеловал(-а) <@${mMember.id}>`)
-                                .setImage(Reactions.kissReactions[Math.floor(Math.random() * 7)])
+                                .setImage(utl.reactions.kissReactions[Math.floor(Math.random() * 7)])
                                 .setColor('#2F3136')
                                 .setFooter(`Cегодня, в ${m.createdAt.getHours()}:${m.createdAt.getMinutes()}`)
                             )

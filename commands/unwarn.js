@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const roles = require('../roles.json')
 const embeds = require('../embeds.js')
 const emojies = ['1️⃣', '2️⃣', '3️⃣']
 module.exports =

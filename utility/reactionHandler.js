@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
-const embeds = require('./embeds')
+const embeds = require('../embeds')
 const reactions = require('./reactions')
-
 
 /**
  * @description Constructs an embed to send

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('./embeds')
+const embeds = require('../embeds')
 /**
  * @description Takes away all admin roles from member and notifies in dms
  * @param {Discord.GuildMember} member 

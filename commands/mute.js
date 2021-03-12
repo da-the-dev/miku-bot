@@ -1,8 +1,7 @@
 const Discord = require('discord.js')
-const roles = require('../roles.json')
 const embeds = require('../embeds')
 const redis = require('redis')
-const moment = require('moment')
+const constants = require('../constants.json')
 
 /**
  * @description Check if there's only one 's', 'm', 'h' is 'life'
@@ -94,7 +93,7 @@ module.exports =
                 return
             }
 
-            mMember.roles.add(roles.muted)
+            mMember.roles.add(constants.roles.muted)
             const rClient = redis.createClient(process.env.RURL)
             if(time == -1) {
                 try {

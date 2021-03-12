@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const roles = require('../roles.json')
 const embeds = require('../embeds.js')
 module.exports =
     /**

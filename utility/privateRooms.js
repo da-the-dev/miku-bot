@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
-const roles = require('./roles.json')
+const constants = require('../constants.json')
+
 /**
  * @description Handles the room creation
  * @param {Discord.Client} client
@@ -19,7 +20,7 @@ module.exports.createRoom = (client) => {
                 permissionOverwrites:
                     [
                         {
-                            id: roles.muted,
+                            id: constants.roles.muted,
                             deny: ['VIEW_CHANNEL', "CONNECT"]
                         }
                     ],
@@ -65,7 +66,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                     parent: category
                 }).then(c => {
                     newMember.voice.setChannel(c)
-                    newMember.roles.add(roles.owner)
+                    newMember.roles.add(constants.roles.owner)
                 })
         }
     }
@@ -73,14 +74,14 @@ module.exports.roomDeletion = (oldState, newState, client) => {
     if(oldState.channel) {
         var channel = oldState.channel
 
-        var role = oldState.member.roles.cache.get(roles.owner)
+        var role = oldState.member.roles.cache.get(constants.roles.owner)
         if(!role)
-            role = newState.member.roles.cache.get(roles.owner)
+            role = newState.member.roles.cache.get(constants.roles.owner)
 
         // Delete if owner left
         if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       private rooms") {
             console.log('delete owner room cause dis')
-            oldState.member.roles.remove(roles.owner)
+            oldState.member.roles.remove(constants.roles.owner)
             if(channel)
                 channel.delete()
                     .catch(console.log('index.voiceStateUpdate: fail to delete after owner left'))

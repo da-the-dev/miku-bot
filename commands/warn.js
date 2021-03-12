@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const roles = require('../roles.json')
 const embeds = require('../embeds.js')
+const constants = require('../constants.json')
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -11,7 +12,7 @@ module.exports =
     */
 
     async (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(roles.moder)
+        var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
