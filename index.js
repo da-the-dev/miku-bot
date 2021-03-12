@@ -80,7 +80,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 client.on('message', msg => {
     // Bot commands
     if(!msg.author.bot) {
-        console.log(msg.createdAt.getTimezoneOffset())
         utl.moneyGet.chatActivity(msg)
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
