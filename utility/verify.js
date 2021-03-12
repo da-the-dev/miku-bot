@@ -7,11 +7,9 @@ const constants = require('../constants.json')
  * @param {Discord.User} user 
  */
 module.exports.verify = (reaction, user) => {
-    if(reaction.message.id == 819295686415482921) {
+    if(reaction.message.id == 819295686415482921)
         console.log('verified user', user.tag)
-        reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
-    }
-    return
+    reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
 }
 
 /**

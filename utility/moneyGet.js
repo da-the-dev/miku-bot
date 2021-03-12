@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 var voiceActIntervals = new Map()
 const redis = require('redis')
+const constants = require('../constants.json')
 /*
  * Here is the fuctionality that handles people getting money for being active on a server
  */
@@ -61,27 +62,26 @@ var chatActMessages = new Map()
  * @param {Discord.Message} msg
  */
 module.exports.chatActivity = (msg) => {
-    if(msg.guild.name == "Hoteru")
-        if(msg.channel.id == '809147078353748039' && !msg.author.bot) { // Register only if in general
-            var msgCount = chatActMessages.get(msg.author.id)
-            if(msgCount) { // If user sent messages
-                if(++msgCount >= 3) {
-                    chatActMessages.delete(msg.author.id)
-                    rClient.get(msg.author.id, (err, res) => {
-                        if(err) throw err
-                        if(res) { // If there was user data
-                            var userData = JSON.parse(res)
-                            userData.money += 1
-                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
-                        } else {
-                            rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) throw err })
-                        }
-                    })
-                    chatActMessages.delete(msg.author.id)
-                    return
-                }
-                chatActMessages.set(msg.author.id, msgCount)
-            } else  // If user didn't send messages
-                chatActMessages.set(msg.author.id, 1)
-        }
+    if(msg.channel.id == constants.channels.general && !msg.author.bot) { // Register only if in general
+        var msgCount = chatActMessages.get(msg.author.id)
+        if(msgCount) { // If user sent messages
+            if(++msgCount >= 3) {
+                chatActMessages.delete(msg.author.id)
+                rClient.get(msg.author.id, (err, res) => {
+                    if(err) throw err
+                    if(res) { // If there was user data
+                        var userData = JSON.parse(res)
+                        userData.money += 1
+                        rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                    } else {
+                        rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) throw err })
+                    }
+                })
+                chatActMessages.delete(msg.author.id)
+                return
+            }
+            chatActMessages.set(msg.author.id, msgCount)
+        } else  // If user didn't send messages
+            chatActMessages.set(msg.author.id, 1)
+    }
 }
