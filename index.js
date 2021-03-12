@@ -71,6 +71,15 @@ client.on('message', msg => {
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
 
+            // Say command
+            if(args[0].includes('\n'))
+                if(args[0].slice(0, args[0].indexOf('\n')) == "say") {
+                    client.commands.find(c => c.name == "say").foo(args, msg, client)
+                    msg.delete()
+                        .catch(err => console.log('say exeption', err))
+                    return
+                }
+
             // Regular commands
             for(i = 0; i < client.commands.length; i++) {
                 var c = client.commands[i]
@@ -87,14 +96,6 @@ client.on('message', msg => {
                     }
                     return
                 }
-            }
-
-            // say exeption
-            if(msg.content.startsWith(`${prefix}say`)) {
-                client.commands.find(c => c.name == "say").foo(args, msg, client)
-                msg.delete()
-                    .catch(err => console.log('say exeption', err))
-                return
             }
 
             // Reactions
