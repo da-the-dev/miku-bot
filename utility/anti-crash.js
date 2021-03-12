@@ -83,6 +83,11 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
     })
 }
 
+/**
+ * 
+ */
+module.exports.monitorUpdateRole
+
 const banPool = 10 - 1
 /**
  * @description Prevents admins from baning too many people in a short period of time
@@ -118,12 +123,12 @@ module.exports.monitorBans = (guild, member) => {
     })
 }
 
-const kickPool = 10 - 1
 /**
  * @description Prevents admins from kicking too many people in a short period of time
  * @param {Discord.GuildMember} member
  */
 module.exports.monitorKicks = (member) => {
+    const kickPool = 10 - 1
     getDef(() => {
         var guild = member.guild
         guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
@@ -149,6 +154,44 @@ module.exports.monitorKicks = (member) => {
 
                 if(eKENew.createdTimestamp - eKEOld.createdTimestamp < 120000)
                     takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные кики за короткий промежуток времени')
+            })
+    })
+}
+
+/**
+ * Prevents from users deleting roles
+ * @param {Discord.Role} role 
+ */
+module.exports.monitorRoleDelete = role => {
+    const kickPool = 2
+    getDef(() => {
+        var guild = role.guild
+        guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
+            .then(audit => {
+                var executor = audit.entries.first().executor
+                console.log(executor.tag)
+
+                // Executor Role Delete Entries
+                var eRDE = audit.entries.filter(e => e.executor.id == executor.id)
+                eRDE = eRDE.sort((a, b) => { // Sort from OLD to NEW
+                    if(a.createdTimestamp > b.createdTimestamp) return -1
+                    if(a.createdTimestamp < b.createdTimestamp) return 1
+                    return 0
+                })
+
+                // Save only 'kickPool' of entries
+                /**@type {Array<Discord.GuildAuditLogsEntry>} */
+                var lastERDEs = Array.from(eRDE.values()).slice(0, kickPool + 1)
+
+                var eRDEOld = lastERDEs[kickPool]
+                var eRDENew = lastERDEs[0]
+
+                console.log((eRDENew.createdTimestamp - eRDEOld.createdTimestamp) / 1000)
+
+                if(eRDENew.createdTimestamp - eRDEOld.createdTimestamp < 120000) {
+                    guild.roles.create(role, 'Восстановлена удаленная роль')
+                    takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления ролей за короткий промежуток времени')
+                }
             })
     })
 }
