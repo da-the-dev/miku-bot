@@ -59,6 +59,12 @@ client.on('guildMemberRemove', member => {
     utl.anticrash.monitorKicks(member)
 })
 
+// Channel events
+client.on('channelDelete', channel => {
+    console.log('channel gone')
+    utl.anticrash.monitorChannelDelete(channel)
+})
+
 // Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)

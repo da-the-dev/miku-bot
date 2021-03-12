@@ -10,8 +10,10 @@ const getDef = (func) => {
     rClient.get('defenses', (err, res) => {
         if(err) throw err
         if(res)
-            if(res == 'true')
+            if(res == 'true') {
                 func()
+                rClient.quit()
+            }
     })
 }
 
@@ -159,7 +161,7 @@ module.exports.monitorKicks = (member) => {
 }
 
 /**
- * Prevents from users deleting roles
+ * Prevents admins from deleting too many roles
  * @param {Discord.Role} role 
  */
 module.exports.monitorRoleDelete = role => {
@@ -169,7 +171,6 @@ module.exports.monitorRoleDelete = role => {
         guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
             .then(audit => {
                 var executor = audit.entries.first().executor
-                console.log(executor.tag)
 
                 // Executor Role Delete Entries
                 var eRDE = audit.entries.filter(e => e.executor.id == executor.id)
@@ -181,12 +182,12 @@ module.exports.monitorRoleDelete = role => {
 
                 // Save only 'kickPool' of entries
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                var lastERDEs = Array.from(eRDE.values()).slice(0, kickPool + 1)
+                var lastERDEs = Array.from(eRDE.values()).slice(0, kickPool)
 
                 var eRDEOld = lastERDEs[kickPool]
                 var eRDENew = lastERDEs[0]
 
-                console.log((eRDENew.createdTimestamp - eRDEOld.createdTimestamp) / 1000)
+                // console.log((eRDENew.createdTimestamp - eRDEOld.createdTimestamp) / 1000)
 
                 if(eRDENew.createdTimestamp - eRDEOld.createdTimestamp < 120000) {
                     guild.roles.create(role, 'Восстановлена удаленная роль')
@@ -194,4 +195,42 @@ module.exports.monitorRoleDelete = role => {
                 }
             })
     })
+}
+
+/**
+ * Prevents admins from deleting too many channels
+ * @param {Discord.GuildChannel} channel 
+ */
+module.exports.monitorChannelDelete = channel => {
+    const kickPool = 2
+    console.log(channel.parent.name, channel.parent.name != '⌗                       private rooms')
+    if(channel.parent.name != '⌗                       private rooms')
+        getDef(() => {
+            var guild = channel.guild
+            guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
+                .then(audit => {
+                    var executor = audit.entries.first().executor
+                    console.log(executor.tag)
+
+                    // Executor Role Delete Entries
+                    var eCDE = audit.entries.filter(e => e.executor.id == executor.id)
+                    eCDE = eCDE.sort((a, b) => { // Sort from OLD to NEW
+                        if(a.createdTimestamp > b.createdTimestamp) return -1
+                        if(a.createdTimestamp < b.createdTimestamp) return 1
+                        return 0
+                    })
+
+                    // Save only 'kickPool' of entries
+                    /**@type {Array<Discord.GuildAuditLogsEntry>} */
+                    var lastECDEs = Array.from(eCDE.values()).slice(0, kickPool)
+
+                    var eCDEOld = lastECDEs[kickPool]
+                    var eCDENew = lastECDEs[0]
+
+                    console.log((eCDENew.createdTimestamp - eCDEOld.createdTimestamp) / 1000)
+
+                    if(eCDENew.createdTimestamp - eCDEOld.createdTimestamp < 120000)
+                        takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления каналов за короткий промежуток времени')
+                })
+        })
 }
