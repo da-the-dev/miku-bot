@@ -60,8 +60,8 @@ module.exports.monitorBotInvites = member => {
  * @param {Discord.Role} oldRole
  * @param {Discord.Role} newRole
  */
-module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
-    getDef(() => {
+module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
+    getDef(async () => {
         if(!oldRole.permissions.has('ADMINISTRATOR') && newRole.permissions.has('ADMINISTRATOR')) {
             var audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
             var executorID = Array.from(audit.entries.values())[0].executor.id
