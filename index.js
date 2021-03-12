@@ -30,16 +30,27 @@ commandNames.forEach(c => {
     })
 })
 
+// General events
 client.login(process.env.BOTTOKEN)
+client.once('ready', () => {
+    console.log("BOT is online")
+    utl.privateRooms.createRoom(client)
+    utl.redisUnmute()
+})
 
+// Role events
+client.on('roleUpdate', (oldRole, newRole) => {
+    utl.anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)
+})
+client.on('roleDelete', role => {
+    utl.anticrash.monitorRoleDelete(role)
+})
+
+// Member events
 client.on('guildMemberAdd', (member) => {
     utl.anticrash.monitorBotInvites(member)
     utl.verify.mark(member)
-    utl.roles.reapplyRoles()
-})
-
-client.on('roleUpdate', (oldRole, newRole) => {
-    utl.anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)
+    utl.roles.reapplyRoles(member)
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
@@ -47,23 +58,19 @@ client.on('guildBanAdd', (guild, member) => {
 client.on('guildMemberRemove', member => {
     utl.anticrash.monitorKicks(member)
 })
-client.on('messageReactionAdd', async (reaction, user) => {
-    utl.fetch.fetchReactions(reaction)
-    utl.verify.verify(reaction, user)
-    utl.shop(reaction, user, client)
-})
 
-client.once('ready', () => {
-    console.log("BETA online")
-    utl.privateRooms.createRoom(client)
-    utl.redisUnmute()
-})
-
+// Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)
     utl.moneyGet.voiceActivity(oldState, newState)
 })
 
+// Message events
+client.on('messageReactionAdd', async (reaction, user) => {
+    utl.fetch.fetchReactions(reaction)
+    utl.verify.verify(reaction, user)
+    utl.shop(reaction, user, client)
+})
 client.on('message', msg => {
     // Bot commands
     if(!msg.author.bot) {
