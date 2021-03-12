@@ -7,7 +7,7 @@ const constants = require('../constants.json')
  */
 module.exports.createRoom = (client) => {
     // Create 'createRoom'
-    var guild = client.guilds.cache.find(g => g.name == 'miku Bot Community')
+    var guild = client.guilds.cache.find(g => g.name == 'Hoteru')
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
     var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       private rooms")

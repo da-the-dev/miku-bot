@@ -61,7 +61,7 @@ var chatActMessages = new Map()
  * @param {Discord.Message} msg
  */
 module.exports.chatActivity = (msg) => {
-    if(msg.guild.name == "miku Bot Community")
+    if(msg.guild.name == "Hoteru")
         if(msg.channel.id == '809147078353748039' && !msg.author.bot) { // Register only if in general
             var msgCount = chatActMessages.get(msg.author.id)
             if(msgCount) { // If user sent messages

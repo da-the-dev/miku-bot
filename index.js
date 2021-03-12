@@ -30,7 +30,7 @@ commandNames.forEach(c => {
     })
 })
 
-client.login(process.env.BETABOTTOKEN)
+client.login(process.env.BOTTOKEN)
 
 client.on('guildMemberAdd', (member) => {
     const rClient = redis.createClient(process.env.RURL)
@@ -151,7 +151,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 client.once('ready', () => {
-    console.log("BETA online")
+    console.log("miku online")
 
     utl.privateRooms.createRoom(client)
 
@@ -168,7 +168,7 @@ client.once('ready', () => {
                     /**@type {Array<string>} */
                     var data = msg.split('-')
                     data.shift()
-                    var guild = client.guilds.cache.find(c => c.name == "miku Bot Community")
+                    var guild = client.guilds.cache.find(c => c.name == "Hoteru")
                     var member = guild.members.cache.get(data[0])
                     const rClient = redis.createClient(process.env.RURL)
                     rClient.get(data[0], (err, res) => {
