@@ -6,27 +6,25 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .bak
+    * @description Usage: .def
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID || msg.author.id == process.env.SERID) {
             const rClient = redis.createClient(process.env.RURL)
-            rClient.get('botautokick', (err, res) => {
+            rClient.get('defenses', (err, res) => {
                 if(err) throw err
 
                 if(res) {
                     var set = (res == 'true')
-                    console.log('set', !set)
-                    rClient.set('botautokick', String(!set), (err, res) => {
+                    rClient.set('defenses', String(!set), (err, res) => {
                         if(err) throw err
-                        msg.channel.send(embeds.botautokick(msg.member, !set))
+                        msg.channel.send(embeds.defenses(msg.member, !set))
                         rClient.quit()
                     })
                 } else {
-                    console.log('first set')
-                    rClient.set('botautokick', true, (err, res) => {
+                    rClient.set('defenses', true, (err, res) => {
                         if(err) throw err
-                        msg.channel.send(embeds.botautokick(msg.member, true))
+                        msg.channel.send(embeds.defenses(msg.member, true))
                         rClient.quit()
                     })
                 }

@@ -76,14 +76,14 @@ module.exports = {
             .setColor('#2F3136')
             .setFooter(`Выполнил(-а) ${member2.user.tag}`, member2.user.avatarURL())
     },
-    'botautokick': (member1, value) => {
+    'defenses': (member1, value) => {
         var message = new Discord.MessageEmbed()
             .setColor('#FF0000')
             .setFooter(`Выполнил(-а) ${member1.user.tag}`, member1.user.avatarURL())
         if(value)
-            message.setDescription(`Автокик ботов был включен!`)
+            message.setDescription(`Антикраш защита **включена**!`)
         else
-            message.setDescription(`Автокик ботов был выключен!`)
+            message.setDescription(`Антикраш защита **выключена**!`)
 
         return message
     },
