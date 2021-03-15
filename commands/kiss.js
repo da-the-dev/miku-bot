@@ -67,7 +67,6 @@ module.exports =
                             m.reactions.removeAll()
                             return
                         }
-
                         m.reactions.removeAll()
                     })
             })
