@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -25,9 +25,9 @@ module.exports =
                                 userData.streak = 1
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                             rClient.quit()
-                            msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **${reward}**<:__:813854413579354143> `))
+                            utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<:__:813854413579354143> `)
                         } else {
-                            msg.channel.send(embeds.error(msg.member, 'Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<:__:813854413579354143>'))
+                            utl.embed(msg, 'Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<:__:813854413579354143>')
                             userData.money += 20
                             userData.streak = 1
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
@@ -46,19 +46,19 @@ module.exports =
                         if(mmM) muteMsg += `**${mmM.toString()}**мин `
                         if(mmS) muteMsg += `**${mmS.toString()}**сек `
 
-                        msg.channel.send(embeds.error(msg.member, `Вы пришли слишком рано! Приходите через ${muteMsg}`))
+                        utl.embed(msg, `Вы пришли слишком рано! Приходите через ${muteMsg}`)
                         rClient.quit()
                     }
                 } else { // If user never used .timely, but has some data
                     userData.rewardTime = msg.createdTimestamp
                     if(!userData.money) userData.money = 20
                     else userData.money += 20
-                    msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `))
+                    utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
                     rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                     rClient.quit()
                 }
             } else { // If user has no user data
-                msg.channel.send(embeds.success(msg.member, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `))
+                utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
                 rClient.set(msg.author.id, JSON.stringify({ 'rewardTime': msg.createdTimestamp, 'money': 20, 'streak': 1 }), err => { if(err) throw err })
                 rClient.quit()
             }

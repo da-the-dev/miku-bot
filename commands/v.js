@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const embeds = require('../embeds.js')
+const utl = require('../utility')
 
 module.exports =
     /**
@@ -11,19 +11,16 @@ module.exports =
     */
 
     async (args, msg, client) => {
-        console.log('in v')
         if(!msg.member.roles.cache.has(constants.roles.owner)) {
-            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав на эту команду!'))
+            utl.embed(msg, 'У Вас нет прав на эту команду!')
             return
         }
 
-        var guild = msg.guild
-        /**@type {Discord.CategoryChannel} */
         /**@type {Discord.VoiceChannel} */
         var room = msg.member.voice.channel
 
         if(!room) {
-            msg.channel.send(embeds.error(msg.member, 'У Вас нет приватной комнаты!'))
+            utl.embed(msg, 'У Вас нет приватной комнаты!')
             return
         }
 
@@ -39,10 +36,9 @@ module.exports =
                         if(m.id == mMember.id)
                             m.voice.setChannel(null)
                     })
-                    msg.channel.send(embeds.vlock(msg.member, mMember))
-                } else {
-                    msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя!'))
-                }
+                    utl.embed(msg, `Вы **закрыли доступ** в свою комнату для <@${mMember.user.id}>`)
+                } else
+                    utl.embed(msg, 'Вы не указали пользователя!')
                 break
 
             case 'unban':
@@ -52,33 +48,32 @@ module.exports =
                     room.createOverwrite(mMember.id, {
                         'CONNECT': true
                     })
-                    msg.channel.send(embeds.vunlock(msg.member, mMember))
-                } else {
-                    msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя!'))
-                }
+                    utl.embed(msg, `Вы **открыли доступ** в свою комнату для <@${mMember.user.id}>`)
+                } else
+                    utl.embed(msg, 'Вы не указали пользователя!')
                 break
 
             case 'limit':
                 var limit = Number(args[2])
                 if(limit == null) {
-                    msg.channel.send(embeds.error(msg.member, 'Вы не указали лимит!'))
+                    utl.embed(msg, 'Вы не указали лимит!')
                     break
                 }
 
                 if(limit > 0 && limit < 100 && Number.isInteger(limit)) {
                     room.setUserLimit(limit)
-                    msg.channel.send(embeds.vlimit(msg.member, limit))
+                    utl.embed(msg, `Вы успешно **поставили лимит** пользователей в своей комнате на \`${limit}\``)
                     break
                 } else if(limit == 0) {
                     room.setUserLimit(null)
-                    msg.channel.send(embeds.vlimitzero(msg.member))
+                    utl.embed(msg, `Вы успешно **убрали лимит** пользователей в своей комнате`)
                     break
                 } else if(limit >= 100) {
-                    msg.channel.send(embeds.error(msg.member, 'Вы указали слишком большой лимит!'))
+                    utl.embed(msg, 'Вы указали слишком большой лимит!')
                     break
                 }
                 else {
-                    msg.channel.send(embeds.error(msg.member, 'Вы указали неверное число!'))
+                    utl.embed(msg, 'Вы указали неверное число!')
                     break
                 }
 
@@ -90,18 +85,15 @@ module.exports =
                         var oldOwner = msg.member
                         var mMember = msg.mentions.members.first()
 
-                        console.log(oldOwner.user.username)
-                        console.log(mMember.user.username)
-
                         await oldOwner.roles.remove(constants.roles.owner)
                         await mMember.roles.add(constants.roles.owner)
-                        msg.channel.send(embeds.vowner(msg.member, mMember))
+                        utl.embed(msg.member, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
                     } else {
-                        msg.channel.send(embeds.error(msg.member, 'Пользователь не находится в Вашей комнате!'))
+                        utl.embed(msg, 'Пользователь не находится в Вашей комнате!')
                         break
                     }
                 } else {
-                    msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя!'))
+                    utl.embed(msg, 'Вы не указали пользователя!')
                     break
                 }
                 break
@@ -113,12 +105,12 @@ module.exports =
 
                 if(newName && newName.length <= 31) {
                     room.setName(newName)
-                    msg.channel.send(embeds.vname(msg.member, newName))
+                    utl.embed(msg, `Вы успешно **изменили название** своей комнаты на \`${newName}\``)
                 } else if(newName && newName.length > 31) {
-                    msg.channel.send(embeds.error(msg.member, 'Вы указали слишком длинное имя комнаты!'))
+                    utl.embed(msg, 'Вы указали слишком длинное имя комнаты!')
                     break
                 } else {
-                    msg.channel.send(embeds.error(msg.member, 'Вы не указали имя комнаты!'))
+                    utl.embed(msg, 'Вы не указали имя комнаты!')
                     break
                 }
         }

@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const embeds = require('../embeds')
+const utl = require('../utility')
 const reactions = require('./reactions')
 
 /**
@@ -17,7 +17,7 @@ const buildMessage = async (msg, reactions, desc, name) => {
         .setDescription(`<@${msg.member.id}> ${desc}`)
         .setImage(reactions[rand])
         .setColor('#2F3136')
-        .setFooter(`Cегодня, в ${msg.createdAt.getHours()}:${msg.createdAt.getMinutes()}`)
+        .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
     ))
 }
 

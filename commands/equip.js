@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -11,7 +11,7 @@ module.exports =
     async (args, msg, client) => {
         var pos = args[1]
         if(!pos) {
-            msg.channel.send(embeds.error(msg.member, 'Не указан индекс роли для одевания!'))
+            utl.embed(msg, 'Не указан индекс роли для одевания!')
             return
         }
         const rClient = redis.createClient(process.env.RURL)
@@ -24,24 +24,24 @@ module.exports =
                         /**@type {Array} */
                         var rolesData = JSON.parse(rres)
                         if(!rolesData.find(r => r.pos == pos)) {
-                            msg.channel.send(embeds.error(msg.member, 'Этой роли не существует!'))
+                            utl.embed(msg, 'Этой роли не существует!')
                             rClient.quit()
                             return
                         }
                         var userData = JSON.parse(res)
                         if(!userData.inv.find(r => r.pos == pos)) {
-                            msg.channel.send(embeds.error(msg.member, 'Эта роль у Вас не куплена!'))
+                            utl.embed(msg, 'Эта роль у Вас не куплена!')
                             rClient.quit()
                             return
                         }
                         var role = rolesData.find(r => r.pos == pos)
                         msg.member.roles.add(role.id)
-                        msg.channel.send(embeds.success(msg.member, `Роль <@&${role.id}> одета`))
+                        utl.embed(msg, `Роль <@&${role.id}> одета`)
                         rClient.quit()
                     }
                 })
             } else {
-                msg.channel.send(embeds.error(msg.member, 'У Вас нет ролей для одевания!'))
+                utl.embed(msg, 'У Вас нет ролей для одевания!')
                 rClient.quit()
             }
         })

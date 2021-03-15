@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -11,22 +11,21 @@ module.exports =
     async (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember) {
-            msg.channel.send(embeds.error(msg.member, 'Не указан участник!'))
+            utl.embed(msg, 'Не указан участник!')
             return
         }
-        console.log(args[2])
         if(!args[2]) {
-            msg.channel.send(embeds.error(msg.member, 'Не указана сумма!'))
+            utl.embed(msg, 'Не указана сумма!')
             return
         }
         var amount = Number(args[2])
         if(!amount || !Number.isInteger(amount)) {
-            msg.channel.send(embeds.error(msg.member, 'Указана неверная сумма!'))
+            utl.embed(msg, 'Указана неверная сумма!')
             return
         }
 
         if(msg.author.id == mMember.user.id) {
-            msg.channel.send(embeds.error(msg.member, 'Нельзя переводить деньги самому себе!'))
+            utl.embed(msg, 'Нельзя переводить деньги самому себе!')
             return
         }
 
@@ -35,9 +34,8 @@ module.exports =
             if(err) throw err
             if(res) {
                 var userData = JSON.parse(res)
-                console.log(userData)
                 if(amount > userData.money)  // If too much money is requested 
-                    msg.channel.send(embeds.error(msg.member, 'У тебя недостаточно средств для перевода!'))
+                    utl.embed(msg, 'У тебя недостаточно средств для перевода!')
                 else {
                     rClient.get(mMember.user.id, (err, rres) => {
                         if(err) throw err
@@ -48,15 +46,15 @@ module.exports =
 
                             rClient.set(mMember.user.id, JSON.stringify(receiverData), err => { if(err) throw err })
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
-
-                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`))
                             rClient.quit()
+
+                            utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
                         } else { // If receiver DOES NOT have user data
                             rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => { if(err) throw err })
                             rClient.set(msg.author.id, JSON.stringify({ 'money': userData.money - amount }), err => { if(err) throw err })
                             rClient.quit()
 
-                            msg.channel.send(embeds.success(msg.member, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`))
+                            utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
                         }
                     })
                 }

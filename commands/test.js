@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const redis = require('redis')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -9,5 +9,6 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
+            embeds.member(msg, `<@${msg.mentions.members.first().id}>`)
         }
     }

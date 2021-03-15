@@ -55,8 +55,7 @@ module.exports =
                                 .setDescription(`<@${msg.member.id}> поцеловал(-а) <@${mMember.id}>`)
                                 .setImage(utl.reactions.kissReactions[Math.floor(Math.random() * 7)])
                                 .setColor('#2F3136')
-                                .setFooter(`Cегодня, в ${m.createdAt.getHours()}:${m.createdAt.getMinutes()}`)
-                            )
+                                .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL()))
                             m.reactions.removeAll()
                             return
                         }

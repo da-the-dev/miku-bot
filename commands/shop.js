@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
-const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 const emojies = ['⬅️', '➡️']
 module.exports =
     /**

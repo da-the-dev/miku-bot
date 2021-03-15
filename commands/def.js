@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -18,13 +18,13 @@ module.exports =
                     var set = (res == 'true')
                     rClient.set('defenses', String(!set), (err, res) => {
                         if(err) throw err
-                        msg.channel.send(embeds.defenses(msg.member, !set))
+                        utl.embed.def(msg.member, !set)
                         rClient.quit()
                     })
                 } else {
                     rClient.set('defenses', true, (err, res) => {
                         if(err) throw err
-                        msg.channel.send(embeds.defenses(msg.member, true))
+                        utl.embed.def(msg.member, true)
                         rClient.quit()
                     })
                 }

@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -14,7 +14,7 @@ module.exports =
         var messageID = args[0]
         args.shift()
         if(!messageID) {
-            msg.channel.send(embeds.error(msg.member, 'Не указан ID эмбеда!'))
+            utl.embed(msg, 'Не указан ID эмбеда!')
             return
         }
 
@@ -22,20 +22,20 @@ module.exports =
         console.log(stringData)
         var jsonData = {}
         if(!stringData) {
-            msg.channel.send(embeds.error(msg.member, 'Вы не указали данные для эмбеда!'))
+            utl.embed(msg, 'Вы не указали данные для эмбеда!')
             return
         }
 
         try {
             jsonData = JSON.parse(stringData)
         } catch(err) {
-            msg.channel.send(embeds.error(msg.member, 'Некорректные данные для эмбеда!'))
+            utl.embed(msg, 'Некорректные данные для эмбеда!')
             return
         }
 
         var editMsg = msg.channel.messages.cache.find(m => m.id == messageID)
         if(!editMsg) {
-            msg.channel.send(embeds.error(msg.member, 'Не найдено сообщение! Проверьте ID!'))
+            utl.embed(msg, 'Не найдено сообщение! Проверьте ID!')
             return
         }
 

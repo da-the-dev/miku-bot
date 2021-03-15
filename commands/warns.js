@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds.js')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -15,12 +15,10 @@ module.exports =
             if(err) throw err
             if(res) {
                 var userData = JSON.parse(res)
-                var embed = new Discord.MessageEmbed()
-                    .setDescription(`Предупреждения <@${msg.author.id}>`)
-                    .setColor('#2F3136')
+                var embed = utl.embed.build(msg, `Предупреждения <@${msg.author.id}>`)
 
                 if(!userData.warns) {
-                    msg.channel.send(embeds.error(msg.member, 'У Вас нет предупреждений'))
+                    utl.embed(msg, 'У Вас нет предупреждений')
                     return
                 }
 
@@ -35,7 +33,7 @@ module.exports =
                 msg.channel.send(embed)
                 rClient.quit()
             } else {
-                msg.channel.send(embeds.error(msg.member, 'У Вас нет предупреждений'))
+                utl.embed(msg, 'У Вас нет предупреждений')
                 rClient.quit()
             }
         })

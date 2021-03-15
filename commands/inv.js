@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -15,7 +15,7 @@ module.exports =
             if(res) {
                 var userData = JSON.parse(res)
                 if(!userData.inv) {
-                    msg.channel.send(embeds.error(msg.member, 'К сожалению, Ваш инвентарь пуст'))
+                    utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
                     rClient.quit()
                     return
                 }
@@ -37,11 +37,11 @@ module.exports =
                     else
                         roles += `\`⌗\` **${userRoles[i].pos}**︰<@&${userRoles[i].id}> — Не надета\n`
 
-                embed.setDescription(roles)
-                msg.channel.send(embed)
+
+                utl.embed(msg, roles)
                 rClient.quit()
             } else {
-                msg.channel.send(embeds.error(msg.member, 'К сожалению, Ваш инвентарь пуст'))
+                utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
                 rClient.quit()
             }
         })

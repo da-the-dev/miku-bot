@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 const emojies = ['⬅️', '➡️']
 module.exports =
     /**
@@ -11,7 +11,7 @@ module.exports =
     */
     async (args, msg, client) => {
         if(!args[1]) {
-            msg.channel.send(embeds.error(msg.member, 'Не указан номер роли для покупки!'))
+            utl.embed(msg, 'Не указан номер роли для покупки!')
             return
         }
 
@@ -21,23 +21,21 @@ module.exports =
             if(res) {
                 var rolesData = JSON.parse(res)
                 var selectedRole = rolesData.find(r => r.pos == args[1])
-                console.log(selectedRole)
                 rClient.get(msg.author.id, (eerr, rres) => {
-                    console.log(rres)
                     if(eerr) throw eerr
                     if(rres) {
                         var userData = JSON.parse(rres)
                         if(!userData.money) {
-                            msg.channel.send(embeds.error(msg.member, 'Не достаточно средств для покупки роли!'))
+                            utl.embed(msg, 'Не достаточно средств для покупки роли!')
                             rClient.quit()
                             return
                         }
                         if(userData.money < selectedRole.price) {
-                            msg.channel.send(embeds.error(msg.member, 'Не достаточно средств для покупки роли!'))
+                            utl.embed(msg, 'Не достаточно средств для покупки роли!')
                             rClient.quit()
                             return
                         }
-                        msg.channel.send(embeds.error(msg.member, `Вы уверены, что хотите купить роль <@&${selectedRole.id}>?`))
+                        msg.channel.send(utl.embed.build(msg.member, `Вы уверены, что хотите купить роль <@&${selectedRole.id}>?`))
                             .then(async m => {
                                 await m.react('✅')
                                 await m.react('❌')
@@ -70,26 +68,21 @@ module.exports =
                                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                                             rClient.quit()
 
-                                            m.edit(new Discord.MessageEmbed()
-                                                .setDescription(`Куплена роль <@&${selectedRole.id}>. <@${msg.author.id}>, поздравляю!`)
-                                                .setColor('#2F3136')
-                                                .setFooter(`${msg.author.username} • Cегодня, в ${m.createdAt.getHours()}:${m.createdAt.getMinutes()}`, msg.author.avatarURL())
-                                            )
+                                            m.edit(utl.embed.build(msg, `Куплена роль <@&${selectedRole.id}>. <@${msg.author.id}>, поздравляю!`))
                                             m.reactions.removeAll()
                                             return
                                         }
-
                                         m.reactions.removeAll()
                                     })
                             })
                     } else {
-                        msg.channel.send(embeds.error(msg.member, 'Не достаточно средств для покупки роли!'))
+                        utl.embed(msg, 'Не достаточно средств для покупки роли!')
                         rClient.quit()
                         return
                     }
                 })
             } else {
-                msg.channel.send(embeds.error(msg.member, 'Не достаточно средств для покупки роли!'))
+                utl.embed(msg, 'Не достаточно средств для покупки роли!')
                 rClient.quit()
             }
         })

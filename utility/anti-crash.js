@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 
 /**
  * Checks is "defenses" key value is "true" and then runs "func"
@@ -33,7 +33,7 @@ const takeAndNotify = (member, reason) => {
 
     member.user.createDM()
         .then(c => {
-            c.send(embeds.sus(member.client, reason))
+            c.send(utl.embed.sus(member.client, reason))
         })
 }
 
@@ -70,8 +70,6 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
 
             if(executorID != newRole.client.id) {
                 var executor = newRole.guild.members.cache.get(executorID)
-                var rolesToTake = executor.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
-
 
                 await newRole.edit({
                     permissions: newRole.permissions.remove('ADMINISTRATOR'),
@@ -84,11 +82,6 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
         }
     })
 }
-
-/**
- * 
- */
-module.exports.monitorUpdateRole
 
 const banPool = 10 - 1
 /**
@@ -203,7 +196,6 @@ module.exports.monitorRoleDelete = role => {
  */
 module.exports.monitorChannelDelete = channel => {
     const kickPool = 2
-    console.log(channel.parent.name, channel.parent.name != '⌗                       private rooms')
     if(channel.parent.name != '⌗                       private rooms')
         getDef(() => {
             var guild = channel.guild

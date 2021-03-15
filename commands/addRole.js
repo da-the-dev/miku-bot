@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds')
+const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -12,17 +12,17 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mRole = msg.mentions.roles.first()
             if(!mRole) {
-                msg.channel.send(embeds.error(msg.member, 'Не указана роль!'))
+                utl.embed(msg, 'Не указана роль!')
                 return
             }
             var pos = Number(args[2])
             if(!pos || !Number.isInteger(pos)) {
-                msg.channel.send(embeds.error(msg.member, 'Не указана позиция роли!'))
+                utl.embed(msg, 'Не указана позиция роли!')
                 return
             }
             var price = Number(args[3])
             if(!price || !Number.isInteger(price)) {
-                msg.channel.send(embeds.error(msg.member, 'Не указана цена роли!'))
+                utl.embed(msg, 'Не указана цена роли!')
                 return
             }
 

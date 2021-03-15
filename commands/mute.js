@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const embeds = require('../embeds')
+const utl = require('../utility')
 const redis = require('redis')
 const constants = require('../constants.json')
 
@@ -34,20 +34,21 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя для мута!'))
+                utl.embed(msg, 'Вы не указали пользователя для мута!')
+                return
             }
 
             args.shift()
             args.shift()
 
             if(args.length == 0) { // If no settings were provided
-                msg.channel.send(embeds.error(msg.member, 'Вы не указали время, на которое замутить человека!'))
+                utl.embed(msg, 'Вы не указали время, на которое замутить человека!')
                 return
             }
 
             var reasonIndex = args.findIndex(r => r.startsWith('-'))
             if(reasonIndex == -1) {
-                msg.channel.send(embeds.error(msg.member, 'Не указана причина мута!'))
+                utl.embed(msg.member, 'Не указана причина мута!')
                 return
             }
             var reason = args.slice(reasonIndex, args.length).join(' ')
@@ -56,7 +57,7 @@ module.exports =
             console.log(args)
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
-                msg.channel.send(embeds.error(msg.member, 'Неверный формат времени!'))
+                utl.embed(msg.member, 'Неверный формат времени!')
                 return
             }
 
@@ -89,7 +90,7 @@ module.exports =
                 time = -1
 
             if(time == 0) {
-                msg.channel.send(embeds.error(msg.member, 'Неверный формат времени!'))
+                utl.embed(msg, 'Неверный формат времени!')
                 return
             }
 
@@ -101,10 +102,8 @@ module.exports =
                 } finally {
                     rClient.quit()
                 }
-                msg.channel.send(embeds.permamute(mMember, msg.member, reason))
-                // msg.reply(time)
+                utl.embed(msg.member, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             } else {
-
                 var mmD = Math.floor(time / 60 / 60 / 24)
                 var mmH = Math.floor(time / 60 / 60) - (mmD * 24)
                 var mmM = Math.floor(time / 60) - (mmD * 60 * 24 + mmH * 60)
@@ -137,11 +136,9 @@ module.exports =
                         rClient.quit()
                     }
                 })
-
-                msg.channel.send(embeds.mute(mMember, msg.member, muteMsg.trim(), reason))
+                utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут** на ${time} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }
-        } else {
-            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
-        }
+        } else
+            utl.embed(msg, 'У Вас нет прав для этой команды!')
     }
 module.exports.allowedInGeneral = true

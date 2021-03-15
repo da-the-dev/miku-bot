@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const embeds = require('../embeds')
+const utl = require('../utility')
 const redis = require('redis')
 const constants = require('../constants.json')
 
@@ -15,7 +15,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя для мута!'))
+                utl.embed(msg, 'Вы не указали пользователя для мута!')
                 return
             }
 
@@ -44,14 +44,14 @@ module.exports =
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
 
-                        msg.channel.send(embeds.unmute(mMember, msg.member))
+                        utl.embed(msg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
                     })
                 } else {
-                    msg.channel.send(embeds.error(msg.member, 'Пользователь не был замьючен в первую очередь!'))
+                    utl.embed(msg, 'Пользователь не был замьючен в первую очередь!')
                 }
             })
         } else {
-            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
+            utl.embed(msg, 'У Вас нет прав для этой команды!')
         }
     }
 module.exports.allowedInGeneral = true

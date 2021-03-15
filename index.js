@@ -8,7 +8,6 @@ const redis = require('redis')
 const constants = require('./constants.json')
 
 // Utilities
-const embeds = require('./embeds')
 const utl = require('./utility')
 
 // Client

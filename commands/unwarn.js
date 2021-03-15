@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds.js')
+const utl = require('../utility')
 const emojies = ['1️⃣', '2️⃣', '3️⃣']
 module.exports =
     /**
@@ -14,7 +14,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                msg.channel.send(embeds.error(msg.member, 'Не указан пользователь!'))
+                utl.embed(msg, 'Не указан пользователь!')
                 return
             }
 
@@ -24,13 +24,10 @@ module.exports =
                 if(res) {
                     var userData = JSON.parse(res)
                     if(!userData.warns) {
-                        msg.channel.send(embeds.error(msg.member, `У пользователя <@${mMember.user.id}> нет предупреждений`))
+                        utl.embed(msg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
                         return
                     }
-                    var embed = new Discord.MessageEmbed()
-                        .setColor('#2F3136')
-                        .setDescription(`Предупреждения <@${mMember.user.id}>`)
-                        .setFooter(`Запросил(-а) ${msg.author.tag}`, msg.author.avatarURL())
+                    var embed = utl.embed.build(msg, `Предупреждения <@${mMember.user.id}>`)
 
                     for(i = 0; i < userData.warns.length; i++) {
                         var w = userData.warns[i]
@@ -59,24 +56,23 @@ module.exports =
                                                 userData.warns.pop()
                                                 break
                                         }
-                                        if(userData.warns.length == 0) {
+                                        if(userData.warns.length == 0)
                                             delete userData.warns
-                                            // mMember.roles.remove(roles.offender)
-                                        }
+
                                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                                         rClient.quit()
-                                        m.edit(embeds.success(msg.member, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
+                                        m.edit(utl.embed.build(msg, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
                                         m.reactions.removeAll()
                                     }
                                 })
                         })
                 } else {
-                    msg.channel.send(embeds.error(msg.member, `У пользователя <@${mMember.user.id}> нет предупреждений`))
+                    utl.embed(msg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
                     return
                 }
             })
         } else {
-            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
+            utl.embed(msg, 'У Вас нет прав для этой команды!')
         }
     }
 module.exports.allowedInGeneral = true

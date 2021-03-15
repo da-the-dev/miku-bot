@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const embeds = require('../embeds.js')
+const utl = require('../utility')
 const constants = require('../constants.json')
 
 module.exports =
@@ -16,7 +16,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                msg.channel.send(embeds.error(msg.member, 'Вы не указали пользователя для варна!'))
+                utl.embed(msg, 'Вы не указали пользователя для варна!')
                 return
             }
 
@@ -25,7 +25,7 @@ module.exports =
 
             var reason = args.join(" ").trim()
             if(!reason) {
-                msg.channel.send(embeds.error(msg.member, 'Вы не указали причину варна!'))
+                utl.embed(msg, 'Вы не указали причину варна!')
                 return
             }
 
@@ -36,14 +36,13 @@ module.exports =
                 if(res == null) {
                     rClient.set(mMember.user.id, JSON.stringify({ 'warns': [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] }), err => { if(err) throw err })
                     // mMember.roles.add(roles.offender)
-                    msg.channel.send(embeds.warn(mMember, msg.member, 1, reason))
+                    utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#1** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
                     rClient.quit()
                 } else {
                     console.log(res)
                     var userData = JSON.parse(res)
                     if(!userData.warns) { // Never have been warned before
                         userData.warns = []
-                        // mMember.roles.add(roles.offender)
                         console.log('never has been warned')
                     }
 
@@ -53,14 +52,14 @@ module.exports =
                         userData.warns = []
                         userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
                     }
-                    // msg.channel.send(embeds.success(msg.member, 'У обвиняемого теперь есть 3 варна'))
 
                     rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                     rClient.quit()
-                    msg.channel.send(embeds.warn(mMember, msg.member, userData.warns.length, reason))
+
+                    utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#${userData.warns.length}** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
                 }
             })
         } else {
-            msg.channel.send(embeds.error(msg.member, 'У Вас нет прав для этой команды!'))
+            utl.embed(msg, 'У Вас нет прав для этой команды!')
         }
     }

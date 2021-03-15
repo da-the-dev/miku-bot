@@ -10,12 +10,10 @@ var voiceAct = (newState) => {
     rClient.get(newState.member.user.id, (err, res) => {
         if(err) throw err
         if(res) { // If there was user data before
-            console.log('voice activity +2')
             var userData = JSON.parse(res)
             userData.money += 2
             rClient.set(newState.member.user.id, JSON.stringify(userData), err => { if(err) throw err })
         } else {
-            console.log('no data voice activity +2')
             rClient.set(newState.member.user.id, JSON.stringify({ 'money': 2 }), err => { if(err) throw err })
         }
     })
@@ -34,7 +32,6 @@ module.exports.voiceActivity = (oldState, newState) => {
     // User joined a voicechannel
     if(newState.channelID) {
         if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-            console.log(newState.channel.members.size)
             console.log(newState.member.user.username, 'joined')
             var inter = setInterval(voiceAct, interval, newState)
             if(!voiceActIntervals.get(newState.member.id))
@@ -42,7 +39,6 @@ module.exports.voiceActivity = (oldState, newState) => {
         }
         if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
             var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
-            console.log('given act money', oldMember.user.username)
             var inter = setInterval(voiceAct, interval, newState)
             if(!voiceActIntervals.get(oldMember.user.id))
                 voiceActIntervals.set(oldMember.user.id, inter)

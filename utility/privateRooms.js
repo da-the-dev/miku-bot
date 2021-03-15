@@ -55,10 +55,10 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                     type: 'voice',
                     permissionOverwrites:
                         [
-                            // {
-                            //     id: roles.star,
-                            //     deny: ['CONNECT']
-                            // },
+                            {
+                                id: constants.roles.muted,
+                                deny: ['CONNECT']
+                            },
                             {
                                 id: newMember.user.id,
                                 allow: ['CONNECT']
