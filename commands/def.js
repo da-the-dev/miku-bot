@@ -18,13 +18,13 @@ module.exports =
                     var set = (res == 'true')
                     rClient.set('defenses', String(!set), (err, res) => {
                         if(err) throw err
-                        utl.embed.def(msg.member, !set)
+                        msg.channel.send(utl.embed.def(msg, !set))
                         rClient.quit()
                     })
                 } else {
                     rClient.set('defenses', true, (err, res) => {
                         if(err) throw err
-                        utl.embed.def(msg.member, true)
+                        msg.channel.send(utl.embed.def(msg, true))
                         rClient.quit()
                     })
                 }

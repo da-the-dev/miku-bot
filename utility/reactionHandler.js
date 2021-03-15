@@ -2,6 +2,15 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const reactions = require('./reactions')
 
+const calculateTime = (msg) => {
+    var time = 'Сегодня, в '
+    var offset = msg.createdAt.getTimezoneOffset() + 180
+    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
+    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
+    time += `${hours}:${minutes}`
+    return time
+}
+
 /**
  * @description Constructs an embed to send
  * @param {Discord.Message} msg
@@ -17,7 +26,7 @@ const buildMessage = async (msg, reactions, desc, name) => {
         .setDescription(`<@${msg.member.id}> ${desc}`)
         .setImage(reactions[rand])
         .setColor('#2F3136')
-        .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+        .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
     ))
 }
 
