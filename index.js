@@ -50,6 +50,7 @@ client.on('guildMemberAdd', (member) => {
     utl.anticrash.monitorBotInvites(member)
     utl.verify.mark(member)
     utl.roles.reapplyRoles(member)
+    utl.antiraid(member)
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
@@ -60,7 +61,6 @@ client.on('guildMemberRemove', member => {
 
 // Channel events
 client.on('channelDelete', channel => {
-    console.log('channel gone')
     utl.anticrash.monitorChannelDelete(channel)
 })
 

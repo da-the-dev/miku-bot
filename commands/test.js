@@ -9,6 +9,9 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
-            embeds.member(msg, `<@${msg.mentions.members.first().id}>`)
+            console.log(new Date(Date.now()).toLocaleString())
+            console.log(msg.author.createdAt.toLocaleString())
+            console.log(Date.now() - msg.author.createdTimestamp)
+            console.log(Date.now() - msg.author.createdTimestamp < 259200000)
         }
     }
