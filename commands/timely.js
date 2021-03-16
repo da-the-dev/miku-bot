@@ -23,6 +23,7 @@ module.exports =
                             userData.streak += 1
                             if(userData.streak = 14)
                                 userData.streak = 1
+                            userData.rewardTime = msg.createdTimestamp
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                             rClient.quit()
                             utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<:__:813854413579354143> `)
@@ -30,6 +31,7 @@ module.exports =
                             utl.embed(msg, 'Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<:__:813854413579354143>')
                             userData.money += 20
                             userData.streak = 1
+                            userData.rewardTime = msg.createdTimestamp
                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                             rClient.quit()
                         }

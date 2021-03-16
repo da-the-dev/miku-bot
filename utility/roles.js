@@ -7,10 +7,13 @@ module.exports.reapplyRoles = (member) => {
         if(res) {
             var userData = JSON.parse(res)
 
-            if(userData.mute) // Mute if was muted prior to joining
+            // Reapply roles
+            if(userData.mute)
                 member.roles.add(constants.roles.muted)
-            // if(userData.warns) // Add offeder role if was marked prior to joining
-            //     member.roles.add(constants.roles.offender)
+            if(userData.toxic)
+                member.roles.add(constants.roles.toxic)
+            if(userData.ban)
+                member.roles.add(constants.roles.localban)
         }
     })
 }
