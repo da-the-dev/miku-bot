@@ -7,7 +7,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .buyRole <pos>
+    * @description Usage: .buy <pos>
     */
     async (args, msg, client) => {
         if(!args[1]) {
@@ -45,7 +45,7 @@ module.exports =
                                     .then(reactions => {
                                         if(reactions.array().length == 0) {
                                             m.edit(new Discord.MessageEmbed()
-                                                .setDescription(`Покупка отменена про причине ингора`)
+                                                .setDescription(`Покупка отменена про причине истечения времени`)
                                                 .setColor('#2F3136')
                                             )
                                             m.reactions.removeAll()
@@ -68,7 +68,7 @@ module.exports =
                                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                                             rClient.quit()
 
-                                            m.edit(utl.embed.build(msg, `Куплена роль <@&${selectedRole.id}>. <@${msg.author.id}>, поздравляю!`))
+                                            m.edit(utl.embed.build(msg, `Вы успешно приобрели роль <@&${selectedRole.id}>. Зайдите в инвентарь командой \`${client.prefix}inv\`, чтобы посмотреть Ваши роли`))
                                             m.reactions.removeAll()
                                             return
                                         }
