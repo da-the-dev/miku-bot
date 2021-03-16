@@ -21,11 +21,13 @@ client.commands = new Array()
 commandNames.forEach(c => {
     client.commands.push({
         'name': c.slice(0, c.length - 3),
-        'foo': require(__dirname + '/commands/' + c)
+        'foo': require(__dirname + '/commands/' + c),
+        'allowedInGeneral': require(__dirname + '/commands/' + c).allowedInGeneral
     })
     console.log({
         'name': c.slice(0, c.length - 3),
-        'foo': require(__dirname + '/commands/' + c)
+        'foo': require(__dirname + '/commands/' + c),
+        'allowedInGeneral': require(__dirname + '/commands/' + c).allowedInGeneral
     })
 })
 
