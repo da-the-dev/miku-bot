@@ -28,13 +28,14 @@ module.exports =
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.remove(constants.roles.localban)
                         utl.embed(msg, `<@${mMember.user.id}> был локально разбанен`)
+                        rClient.quit()
                     } else {
                         userData.ban = true
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.add(constants.roles.localban)
                         utl.embed(msg, `<@${mMember.user.id}> был локально забанен`)
+                        rClient.quit()
                     }
-                    rClient.quit()
                 } else {
                     rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) throw err })
                     mMember.roles.add(constants.roles.localban)
