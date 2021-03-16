@@ -1,5 +1,13 @@
 const Discord = require('discord.js')
 const emojies = ['➡️', '⬅️']
+const calculateTime = (msg) => {
+    var time = 'Сегодня, в '
+    var offset = msg.createdAt.getTimezoneOffset() + 180
+    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
+    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
+    time += `${hours}:${minutes}`
+    return time
+}
 
 /** 
  * Build and edit shop message
@@ -11,7 +19,7 @@ const emojies = ['➡️', '⬅️']
 const buildPage = (page, footerUser, footerURL, msg) => {
     var embed = new Discord.MessageEmbed()
         .setColor('#2F3136')
-        .setFooter(`${footerUser} • стр ${page}/2`, footerURL)
+        .setFooter(`${footerUser} • ${calculateTime(msg)} • стр ${page}/2`, footerURL)
 
     const rClient = require('redis').createClient(process.env.RURL)
     rClient.get('roles', (err, res) => {
