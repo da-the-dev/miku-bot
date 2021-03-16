@@ -23,6 +23,18 @@ module.exports.createRoom = (client) => {
                         {
                             id: constants.roles.muted,
                             deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: constants.roles.toxic,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: constants.roles.localban,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: guild.id,
+                            allow: ['VIEW_CHANNEL', "CONNECT"]
                         }
                     ],
                 parent: privateRoomCategory
@@ -57,11 +69,19 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                         [
                             {
                                 id: constants.roles.muted,
-                                deny: ['CONNECT']
+                                deny: ['VIEW_CHANNEL', "CONNECT"]
+                            },
+                            {
+                                id: constants.roles.toxic,
+                                deny: ['VIEW_CHANNEL', "CONNECT"]
+                            },
+                            {
+                                id: constants.roles.localban,
+                                deny: ['VIEW_CHANNEL', "CONNECT"]
                             },
                             {
                                 id: newMember.user.id,
-                                allow: ['CONNECT']
+                                allow: ['VIEW_CHANNEL', 'CONNECT']
                             }
                         ],
                     parent: category
