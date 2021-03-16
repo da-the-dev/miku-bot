@@ -27,19 +27,19 @@ module.exports =
                         delete userData.ban
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.remove(constants.roles.localban)
-                        utl.embed(msg, `<@${mMember.user.id}> был локально разбанен`)
+                        utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     } else {
                         userData.ban = true
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.add(constants.roles.localban)
-                        utl.embed(msg, `<@${mMember.user.id}> был локально забанен`)
+                        utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     }
                 } else {
                     rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) throw err })
                     mMember.roles.add(constants.roles.localban)
-                    utl.embed(msg, `<@${mMember.user.id}> был локально забанен`)
+                    utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                     rClient.quit()
                 }
             })
