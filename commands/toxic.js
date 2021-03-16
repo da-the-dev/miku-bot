@@ -28,13 +28,14 @@ module.exports =
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.remove(constants.roles.toxic)
                         utl.embed(msg, `Роль токсика убрана у пользователя <@${mMember.user.id}>`)
+                        rClient.quit()
                     } else {
                         userData.toxic = true
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.add(constants.roles.toxic)
                         utl.embed(msg, `Роль токсика добавлена пользователю <@${mMember.user.id}>`)
+                        rClient.quit()
                     }
-                    rClient.quit()
                 } else {
                     rClient.set(mMember.user.id, JSON.stringify({ "toxic": true }), err => { if(err) throw err })
                     mMember.roles.add(constants.roles.toxic)
