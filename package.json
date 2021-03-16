@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/da-the-dev/miku-bot#readme",
   "dependencies": {
+    "discord-fetch-all": "^3.0.2",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "moment": "^2.29.1",
