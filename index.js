@@ -60,6 +60,9 @@ client.on('guildBanAdd', (guild, member) => {
 client.on('guildMemberRemove', member => {
     utl.anticrash.monitorKicks(member)
 })
+client.on('presenceUpdate', (oldPresence, newPresence) => {
+    utl.gameRoles(oldPresence, newPresence)
+})
 
 // Channel events
 client.on('channelDelete', channel => {
