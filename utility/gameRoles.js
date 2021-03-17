@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const gameNames = ["Dota 2", "CS:GO", "PUBG", "Osu!", "League of Legends", "Valorant", "Among Us", "Minecraft", "Brawlhalla", "Apex", "Rainbow Six Siege", "Genshin Impact", "Code"]
+const gameNames = ["Dota 2", "Counter-Strike: Global Offensive", "PUBG", "Osu!", "League of Legends", "Valorant", "Among Us", "Minecraft", "Brawlhalla", "Apex", "Rainbow Six Siege", "Genshin Impact", "Code"]
 const constants = require('../constants.json')
 /**
  * Assing an activity role to member
