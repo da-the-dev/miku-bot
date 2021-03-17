@@ -11,10 +11,6 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
-            var act = msg.author.presence.activities.find(a => gameNames.includes(a.name))
-            if(act)
-                msg.member.roles.add(constants.gameRoles[act.name])
-            else
-                msg.member.roles.remove(constants.gameRolesArray)
+            console.log(new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" })).getHours())
         }
     }
