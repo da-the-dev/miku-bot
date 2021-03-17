@@ -36,7 +36,7 @@ client.login(process.env.BOTTOKEN)
 client.once('ready', () => {
     console.log("BOT is online")
     utl.privateRooms.createRoom(client)
-    utl.redisUnmute()
+    utl.redisUnmute(client)
 })
 
 // Role events
@@ -82,6 +82,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
     utl.shop(reaction, user, client)
 })
 client.on('message', msg => {
+    // utl.roles.daylyTextActivity(msg)
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)
