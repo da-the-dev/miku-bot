@@ -82,7 +82,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
     utl.shop(reaction, user, client)
 })
 client.on('message', msg => {
+    // Activity
     utl.roles.daylyTextActivity(msg)
+    utl.roles.nightTextActivity(msg)
+
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)
