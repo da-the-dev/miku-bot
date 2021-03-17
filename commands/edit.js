@@ -33,15 +33,16 @@ module.exports =
             return
         }
 
-        var editMsg = msg.channel.messages.cache.find(m => m.id == messageID)
-        if(!editMsg) {
-            utl.embed(msg, 'Не найдено сообщение! Проверьте ID!')
-            return
-        }
-
-        var embed = new Discord.MessageEmbed(jsonData)
-        if(jsonData.image) embed.setImage(jsonData.image)
-        if(jsonData.plainText) editMsg.edit(jsonData.plainText, embed)
-        else editMsg.edit(embed)
+        msg.channel.messages.fetch(messageID)
+            .then(c => {
+                if(c) {
+                    var embed = new Discord.MessageEmbed(jsonData)
+                    if(jsonData.image) embed.setImage(jsonData.image)
+                    if(jsonData.plainText) c.edit(jsonData.plainText, embed)
+                    else c.edit(embed)
+                } else {
+                    utl.embed(msg, 'Не найдено сообщение! Проверьте ID!')
+                }
+            })
     }
 module.exports.allowedInGeneral = true

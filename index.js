@@ -36,7 +36,7 @@ client.login(process.env.BOTTOKEN)
 client.once('ready', () => {
     console.log("BOT is online")
     utl.privateRooms.createRoom(client)
-    utl.redisUnmute()
+    utl.redisUnmute(client)
 })
 
 // Role events
@@ -60,6 +60,9 @@ client.on('guildBanAdd', (guild, member) => {
 client.on('guildMemberRemove', member => {
     utl.anticrash.monitorKicks(member)
 })
+client.on('presenceUpdate', (oldPresence, newPresence) => {
+    utl.gameRoles(oldPresence, newPresence)
+})
 
 // Channel events
 client.on('channelDelete', channel => {
@@ -79,6 +82,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
     utl.shop(reaction, user, client)
 })
 client.on('message', msg => {
+    // Activity
+    utl.roles.daylyTextActivity(msg)
+    utl.roles.nightTextActivity(msg)
+
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)

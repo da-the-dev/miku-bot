@@ -1,5 +1,7 @@
 const Discord = require('discord.js')
-const time = require('../utility/timeActivity')
+const utl = require('../utility')
+const gameNames = ["Dota 2", "CS:GO", "PUBG", "Osu!", "League of Legends", "Valorant", "Among Us", "Minecraft", "Brawlhalla", "Apex", "Rainbow Six Siege", "Genshin Impact"]
+const constants = require('../constants.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -9,6 +11,6 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
-            time.daytimeTextActivity(msg)
+            console.log(new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" })).getHours())
         }
     }
