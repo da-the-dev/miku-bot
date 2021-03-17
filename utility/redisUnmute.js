@@ -1,9 +1,12 @@
+const Discord = require('discord.js')
 const redis = require('redis')
-
+const constants = require('../constants.json')
+const utl = require('../utility')
 /**
  * Listens to expired "mute" keys in database and unmutes members accordingly
+ * @param {Discord.Client} client
  */
-module.exports = () => {
+module.exports = (client) => {
     // Unmute muted
     const pub = redis.createClient(process.env.RURL)
     pub.send_command('config', ['set', 'notify-keyspace-events', 'Ex'], SubscribeExpired)
@@ -29,7 +32,7 @@ module.exports = () => {
                         rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
 
-                        channel.send(embeds.unmute(member, client))
+                        channel.send(utl.embed.build(msg, `<@${member.user.id}> был(-а) размьючен(-а)`))
                     })
                     member.roles.remove(constants.roles.muted)
                 }
