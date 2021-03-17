@@ -24,19 +24,19 @@ module.exports.reapplyRoles = (member) => {
  * Calculate message activity stuff
  * @param {Array} lastNMessages
  */
-const activityCalculator = (lastNMessages, msg, role) => {
+const activityCalculator = (lastNMessages, msg, role, name) => {
     if(lastNMessages.length < n) {
         lastNMessages.push(msg.author.id)
         console.log("pushed", lastNMessages.length)
     }
     else {
         const rClient = redis.createClient(process.env.RURL)
-        rClient.get('activity', (err, res) => {
+        rClient.get(name, (err, res) => {
             if(err) throw err
             if(res) {
                 var bigData = new Map(JSON.parse(res))
                 lastNMessages.forEach(x => { bigData.set(x, (bigData.get(x) || 0) + 1) })
-                rClient.set('activity', JSON.stringify([...bigData]), err => { if(err) throw err })
+                rClient.set(name, JSON.stringify([...bigData]), err => { if(err) throw err })
 
                 var keys = Array.from(bigData.keys())
                 var values = Array.from(bigData.values())
@@ -72,7 +72,7 @@ const activityCalculator = (lastNMessages, msg, role) => {
                 var bigData = new Map()
                 lastNMessages.forEach(x => { bigData.set(x, (bigData.get(x) || 0) + 1) })
                 console.log([...bigData])
-                rClient.set('activity', JSON.stringify([...bigData]), err => { if(err) throw err })
+                rClient.set(name, JSON.stringify([...bigData]), err => { if(err) throw err })
                 rClient.quit()
                 lastNMessages = []
             }
@@ -91,7 +91,7 @@ var lastNDayMessages = []
 module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
     if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general)
-        activityCalculator(lastNDayMessages, msg, constants.roles.daylyActive)
+        activityCalculator(lastNDayMessages, msg, Fconstants.roles.daylyActive, 'activity')
 }
 var lastNNightMessage = []
 /**
@@ -101,5 +101,5 @@ var lastNNightMessage = []
 module.exports.nightTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
     if(timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6 && msg.channel.id == constants.channels.general)
-        activityCalculator(lastNNightMessage, msg, constants.roles.nightActive)
+        activityCalculator(lastNNightMessage, msg, constants.roles.nightActive, 'nightActivity')
 }
