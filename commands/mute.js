@@ -48,7 +48,7 @@ module.exports =
 
             var reasonIndex = args.findIndex(r => r.startsWith('-'))
             if(reasonIndex == -1) {
-                utl.embed(msg.member, 'Не указана причина мута!')
+                utl.embed(msg, 'Не указана причина мута!')
                 return
             }
             var reason = args.slice(reasonIndex, args.length).join(' ')
@@ -57,7 +57,7 @@ module.exports =
             console.log(args)
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
-                utl.embed(msg.member, 'Неверный формат времени!')
+                utl.embed(msg, 'Неверный формат времени!')
                 return
             }
 
@@ -102,7 +102,7 @@ module.exports =
                 } finally {
                     rClient.quit()
                 }
-                utl.embed(msg.member, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             } else {
                 var mmD = Math.floor(time / 60 / 60 / 24)
                 var mmH = Math.floor(time / 60 / 60) - (mmD * 24)
@@ -136,7 +136,7 @@ module.exports =
                         rClient.quit()
                     }
                 })
-                utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут** на ${time} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }
         } else
             utl.embed(msg, 'У Вас нет прав для этой команды!')
