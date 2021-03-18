@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const gameNames = ["Dota 2", "Counter-Strike: Global Offensive", "PUBG", "оsu!", "League of Legends", "VALORANT", "Among Us", "Minecraft", "Brawlhalla", "Apex", "Rainbow Six Siege", "Genshin Impact", "Fortnite"]
+const gameNames = ["Dota 2", "Counter-Strike: Global Offensive", "PLAYERUNKNOWN'SBATTLEGORUNDS", "оsu!", "League of Legends", "VALORANT", "Among Us", "Minecraft", "Brawlhalla", "Apex", "Rainbow Six Siege", "Genshin Impact", "Fortnite"]
 const redis = require('redis')
 const constants = require('../constants.json')
 /**
