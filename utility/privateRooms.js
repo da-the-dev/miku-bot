@@ -86,6 +86,8 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                         ],
                     parent: category
                 }).then(c => {
+                    console.log(c)
+                    console.log(newMember)
                     newMember.voice.setChannel(c)
                     newMember.roles.add(constants.roles.owner)
                 })
