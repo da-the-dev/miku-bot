@@ -72,8 +72,7 @@ const activityCalculator = (lastNMessages, msg, role, name) => {
                 var bigData = new Map()
                 lastNMessages.forEach(x => { bigData.set(x, (bigData.get(x) || 0) + 1) })
                 console.log([...bigData])
-                rClient.set(name, JSON.stringify([...bigData]), err => { if(err) throw err })
-                rClient.quit()
+                rClient.set(name, JSON.stringify([...bigData]), err => { if(err) throw err; rClient.quit() })
                 lastNMessages = []
             }
         })
