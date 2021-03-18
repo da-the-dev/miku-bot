@@ -13,11 +13,11 @@ var voiceAct = (id) => {
         if(err) throw err
         if(res) { // If there was user data before
             var userData = JSON.parse(res)
-            userData.money += 2
+            userData.money += 1
             rClient.set(id, JSON.stringify(userData), err => { if(err) throw err })
             rClient.quit()
         } else {
-            rClient.set(id, JSON.stringify({ 'money': 2 }), err => { if(err) throw err })
+            rClient.set(id, JSON.stringify({ 'money': 1 }), err => { if(err) throw err })
             rClient.quit()
         }
     })
@@ -25,7 +25,7 @@ var voiceAct = (id) => {
 
 const interval = 60000
 /**
- * @desctiption Give user 2 points every 1 minute in voicechat
+ * @desctiption Give user points every 1 minute in voicechat
  * @param {Discord.VoiceState} oldState
  * @param {Discord.VoiceState} newState
  */
@@ -78,14 +78,14 @@ module.exports.voiceActivityInit = (client) => {
 
 var chatActMessages = new Map()
 /**
- * @description Give user 1 point every 3 messages
+ * @description Give user 1 point every 10 messages
  * @param {Discord.Message} msg
  */
 module.exports.chatActivity = (msg) => {
     if(msg.channel.id == constants.channels.general && !msg.author.bot) { // Register only if in general
         var msgCount = chatActMessages.get(msg.author.id)
         if(msgCount) { // If user sent messages
-            if(++msgCount >= 3) {
+            if(++msgCount >= 10) {
                 chatActMessages.delete(msg.author.id)
                 const rClient = redis.createClient(process.env.RURL)
                 rClient.get(msg.author.id, (err, res) => {
