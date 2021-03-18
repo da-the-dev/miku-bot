@@ -76,7 +76,6 @@ module.exports.voiceActivityInit = (client) => {
     })
 }
 
-
 var chatActMessages = new Map()
 /**
  * @description Give user 1 point every 3 messages
@@ -88,14 +87,17 @@ module.exports.chatActivity = (msg) => {
         if(msgCount) { // If user sent messages
             if(++msgCount >= 3) {
                 chatActMessages.delete(msg.author.id)
+                const rClient = redis.createClient(process.env.RURL)
                 rClient.get(msg.author.id, (err, res) => {
                     if(err) throw err
                     if(res) { // If there was user data
                         var userData = JSON.parse(res)
                         userData.money += 1
                         rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.quit()
                     } else {
                         rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) throw err })
+                        rClient.quit()
                     }
                 })
                 chatActMessages.delete(msg.author.id)
