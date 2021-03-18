@@ -19,28 +19,28 @@ module.exports =
             }
 
             const rClient = redis.createClient(process.env.RURL)
-            rClient.get(mMember.user.id, (err, res) => {
+            rClient.get(mMember.user.id, async (err, res) => {
                 if(err) throw err
                 if(res) {
                     var userData = JSON.parse(res)
                     if(userData.ban) {
                         delete userData.ban
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
-                        mMember.roles.remove(constants.roles.localban)
+                        await mMember.roles.remove(constants.roles.localban)
                         utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     } else {
                         userData.ban = true
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
-                        mMember.roles.remove(mMember.roles.cache)
-                        mMember.roles.add(constants.roles.localban)
+                        await mMember.roles.remove(mMember.roles.cache)
+                        await mMember.roles.add(constants.roles.localban)
                         utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     }
                 } else {
                     rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) throw err })
-                    mMember.roles.remove(mMember.roles.cache)
-                    mMember.roles.add(constants.roles.localban)
+                    await mMember.roles.remove(mMember.roles.cache)
+                    await mMember.roles.add(constants.roles.localban)
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                     rClient.quit()
                 }
