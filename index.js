@@ -84,7 +84,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 client.on('message', msg => {
     // Activity
-    // utl.roles.daylyTextActivity(msg)
+    utl.roles.daylyTextActivity(msg)
     // utl.roles.nightTextActivity(msg)
 
     // Bot commands
