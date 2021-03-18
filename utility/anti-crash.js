@@ -83,13 +83,13 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
     })
 }
 
-const banPool = 10 - 1
 /**
  * @description Prevents admins from baning too many people in a short period of time
  * @param {Discord.GuildMember}
  * @param {Discord.Guild} guild
  */
 module.exports.monitorBans = (guild, member) => {
+    const banPool = 10
     getDef(() => {
         guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
             .then(audit => {
@@ -105,9 +105,9 @@ module.exports.monitorBans = (guild, member) => {
 
                 // Save only 'banPool' last entries
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                var lastEBEs = Array.from(eBE.values()).slice(0, banPool + 1)
+                var lastEBEs = Array.from(eBE.values()).slice(0, banPool)
 
-                var eBEOld = lastEBEs[banPool]
+                var eBEOld = lastEBEs[banPool - 1]
                 var eBENew = lastEBEs[0]
 
                 console.log((eBENew.createdTimestamp - eBEOld.createdTimestamp) / 1000)
@@ -123,7 +123,7 @@ module.exports.monitorBans = (guild, member) => {
  * @param {Discord.GuildMember} member
  */
 module.exports.monitorKicks = (member) => {
-    const kickPool = 10 - 1
+    const kickPool = 10
     getDef(() => {
         var guild = member.guild
         guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
@@ -140,9 +140,9 @@ module.exports.monitorKicks = (member) => {
 
                 // Save only 'kickPool' last entries
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                var lastEKEs = Array.from(eKE.values()).slice(0, kickPool + 1)
+                var lastEKEs = Array.from(eKE.values()).slice(0, kickPool)
 
-                var eKEOld = lastEKEs[kickPool]
+                var eKEOld = lastEKEs[kickPool - 1]
                 var eKENew = lastEKEs[0]
 
                 console.log((eKENew.createdTimestamp - eKEOld.createdTimestamp) / 1000)
@@ -177,7 +177,9 @@ module.exports.monitorRoleDelete = role => {
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
                 var lastERDEs = Array.from(eRDE.values()).slice(0, kickPool)
 
-                var eRDEOld = lastERDEs[kickPool]
+                console.log(lastERDEs.length)
+
+                var eRDEOld = lastERDEs[kickPool - 1]
                 var eRDENew = lastERDEs[0]
 
                 // console.log((eRDENew.createdTimestamp - eRDEOld.createdTimestamp) / 1000)
@@ -216,7 +218,7 @@ module.exports.monitorChannelDelete = channel => {
                     /**@type {Array<Discord.GuildAuditLogsEntry>} */
                     var lastECDEs = Array.from(eCDE.values()).slice(0, kickPool)
 
-                    var eCDEOld = lastECDEs[kickPool]
+                    var eCDEOld = lastECDEs[kickPool - 1]
                     var eCDENew = lastECDEs[0]
 
                     console.log((eCDENew.createdTimestamp - eCDEOld.createdTimestamp) / 1000)
