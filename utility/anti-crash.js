@@ -111,9 +111,9 @@ module.exports.monitorBans = (guild, member) => {
                 var eBENew = lastEBEs[0]
 
                 console.log((eBENew.createdTimestamp - eBEOld.createdTimestamp) / 1000)
-
-                if(eBENew.createdTimestamp - eBEOld.createdTimestamp < 120000)
-                    takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные баны за короткий промежуток времени')
+                if(eBEOld)
+                    if(eBENew.createdTimestamp - eBEOld.createdTimestamp < 120000)
+                        takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные баны за короткий промежуток времени')
             })
     })
 }
@@ -145,10 +145,9 @@ module.exports.monitorKicks = (member) => {
                 var eKEOld = lastEKEs[kickPool - 1]
                 var eKENew = lastEKEs[0]
 
-                console.log((eKENew.createdTimestamp - eKEOld.createdTimestamp) / 1000)
-
-                if(eKENew.createdTimestamp - eKEOld.createdTimestamp < 120000)
-                    takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные кики за короткий промежуток времени')
+                if(eKEOld)
+                    if(eKENew.createdTimestamp - eKEOld.createdTimestamp < 120000)
+                        takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные кики за короткий промежуток времени')
             })
     })
 }
@@ -183,11 +182,11 @@ module.exports.monitorRoleDelete = role => {
                 var eRDENew = lastERDEs[0]
 
                 // console.log((eRDENew.createdTimestamp - eRDEOld.createdTimestamp) / 1000)
-
-                if(eRDENew.createdTimestamp - eRDEOld.createdTimestamp < 120000) {
-                    guild.roles.create(role, 'Восстановлена удаленная роль')
-                    takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления ролей за короткий промежуток времени')
-                }
+                if(eRDEOld)
+                    if(eRDENew.createdTimestamp - eRDEOld.createdTimestamp < 120000) {
+                        guild.roles.create(role, 'Восстановлена удаленная роль')
+                        takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления ролей за короткий промежуток времени')
+                    }
             })
     })
 }
@@ -221,10 +220,9 @@ module.exports.monitorChannelDelete = channel => {
                     var eCDEOld = lastECDEs[kickPool - 1]
                     var eCDENew = lastECDEs[0]
 
-                    console.log((eCDENew.createdTimestamp - eCDEOld.createdTimestamp) / 1000)
-
-                    if(eCDENew.createdTimestamp - eCDEOld.createdTimestamp < 120000)
-                        takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления каналов за короткий промежуток времени')
+                    if(eCDEOld)
+                        if(eCDENew.createdTimestamp - eCDEOld.createdTimestamp < 120000)
+                            takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления каналов за короткий промежуток времени')
                 })
         })
 }
