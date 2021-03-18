@@ -35,7 +35,7 @@ module.exports.build = (msg, message) => {
     return new Discord.MessageEmbed()
         .setDescription(message)
         .setColor('#2F3136')
-        .setFooter(`${msg.author.tag} • ${this.calculateTime(msg)}`, msg.author.avatarURL()))
+        .setFooter(`${msg.author.tag} • ${this.calculateTime(msg)}`, msg.author.avatarURL())
 }
 
 module.exports.def = (msg, value) => {
