@@ -91,7 +91,7 @@ var lastNDayMessages = []
 module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
     if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general)
-        activityCalculator(lastNDayMessages, msg, Fconstants.roles.daylyActive, 'activity')
+        activityCalculator(lastNDayMessages, msg, constants.roles.daylyActive, 'activity')
 }
 var lastNNightMessage = []
 /**
