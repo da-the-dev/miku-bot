@@ -2,24 +2,27 @@ const Discord = require('discord.js')
 var voiceActIntervals = new Map()
 const redis = require('redis')
 const constants = require('../constants.json')
-/*
- * Here is the fuctionality that handles people getting money for being active on a server
- */
 
-var voiceAct = (newState) => {
-    rClient.get(newState.member.user.id, (err, res) => {
+/** 
+ * Here is the fuctionality that handles people getting money for being active on a server
+ * @param {string} id
+ */
+var voiceAct = (id) => {
+    const rClient = redis.createClient(process.env.RURL)
+    rClient.get(id, (err, res) => {
         if(err) throw err
         if(res) { // If there was user data before
             var userData = JSON.parse(res)
             userData.money += 2
-            rClient.set(newState.member.user.id, JSON.stringify(userData), err => { if(err) throw err })
+            rClient.set(id, JSON.stringify(userData), err => { if(err) throw err })
+            rClient.quit()
         } else {
-            rClient.set(newState.member.user.id, JSON.stringify({ 'money': 2 }), err => { if(err) throw err })
+            rClient.set(id, JSON.stringify({ 'money': 2 }), err => { if(err) throw err })
+            rClient.quit()
         }
     })
 }
 
-const rClient = redis.createClient(process.env.RURL)
 const interval = 60000
 /**
  * @desctiption Give user 2 points every 1 minute in voicechat
@@ -31,15 +34,17 @@ module.exports.voiceActivity = (oldState, newState) => {
         return
     // User joined a voicechannel
     if(newState.channelID) {
+        console.log(newState.member.user.username, 'joined')
         if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-            console.log(newState.member.user.username, 'joined')
-            var inter = setInterval(voiceAct, interval, newState)
+            console.log(newState.member.user.username, 'joined in a populated channel')
+            var inter = setInterval(voiceAct, interval, newState.member.id)
             if(!voiceActIntervals.get(newState.member.id))
                 voiceActIntervals.set(newState.member.id, inter)
         }
         if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
             var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
-            var inter = setInterval(voiceAct, interval, newState)
+            console.log(`give ${oldMember.user.username} money`)
+            var inter = setInterval(voiceAct, interval, newState.member.id)
             if(!voiceActIntervals.get(oldMember.user.id))
                 voiceActIntervals.set(oldMember.user.id, inter)
         }
@@ -51,6 +56,26 @@ module.exports.voiceActivity = (oldState, newState) => {
         }
     }
 }
+
+/**
+ * Give voice activity money when the bot restarts
+ * @param {Discord.Client} client
+ */
+module.exports.voiceActivityInit = (client) => {
+    var guild = client.guilds.cache.first()
+    var voiceChannels = guild.channels.cache.filter(c => c.type == 'voice')
+    voiceChannels.forEach(v => {
+        if(v.members.array().length > 1) {
+            v.members.forEach(m => {
+                console.log(m.id)
+                var inter = setInterval(voiceAct, interval, m.id)
+                if(!voiceActIntervals.get(m.id))
+                    voiceActIntervals.set(m.id, inter)
+            })
+        }
+    })
+}
+
 
 var chatActMessages = new Map()
 /**

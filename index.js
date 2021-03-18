@@ -37,6 +37,7 @@ client.once('ready', () => {
     console.log("BOT is online")
     utl.privateRooms.createRoom(client)
     utl.redisUnmute(client)
+    utl.moneyGet.voiceActivityInit(client)
 })
 
 // Role events
