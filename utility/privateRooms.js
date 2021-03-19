@@ -11,7 +11,7 @@ module.exports.createRoom = (client) => {
     console.log(guild.name)
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
-    var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       Private                     ︰ 数字")
+    var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       Private︰ 数字")
     /**@type {Discord.VoiceChannel} */
     var privateCreator = privateRoomCategory.children.find(c => c.type == 'voice' && c.name == "．create 部屋")
     if(!privateCreator)
@@ -55,9 +55,9 @@ module.exports.roomDeletion = async (oldState, newState) => {
     // Create private room
     if(newState.member.voice.channel) {
         var creator = newState.member.voice.channel
-        if(creator.name == '．create 部屋' && creator.parent.name == '⌗                       Private                     ︰ 数字') {
+        if(creator.name == '．create 部屋' && creator.parent.name == '⌗                       Private︰ 数字') {
             var guild = newState.member.guild
-            var category = guild.channels.cache.find(c => c.name == '⌗                       Private                     ︰ 数字')
+            var category = guild.channels.cache.find(c => c.name == '⌗                       Private︰ 数字')
             guild.channels.create(newState.member.user.username,
                 {
                     type: 'voice',
@@ -101,7 +101,7 @@ module.exports.roomDeletion = async (oldState, newState) => {
             role = newState.member.roles.cache.get(constants.roles.owner)
 
         // Delete if owner left
-        if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private                     ︰ 数字") {
+        if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
             console.log('delete owner room cause dis')
             oldState.member.roles.remove(constants.roles.owner)
             if(!channel.deleted)
@@ -111,7 +111,7 @@ module.exports.roomDeletion = async (oldState, newState) => {
         }
 
         // Delete empty room
-        if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private                     ︰ 数字") {
+        if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
             console.log('delete empty room')
             if(!channel.deleted)
                 channel.delete()
