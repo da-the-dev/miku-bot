@@ -87,7 +87,7 @@ module.exports =
 
                         await oldOwner.roles.remove(constants.roles.owner)
                         await mMember.roles.add(constants.roles.owner)
-                        utl.embed(msg.member, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
+                        utl.embed(msg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
                     } else {
                         utl.embed(msg, 'Пользователь не находится в Вашей комнате!')
                         break
