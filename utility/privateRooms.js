@@ -45,24 +45,20 @@ module.exports.createRoom = (client) => {
  * @description Handles private room deletion
  * @param {Discord.VoiceState} oldState 
  * @param {Discord.VoiceState} newState  
- * @param {Discord.Client} client  
  */
-module.exports.roomDeletion = async (oldState, newState, client) => {
-    var oldMember = oldState.member
-    var newMember = newState.member
-
+module.exports.roomDeletion = async (oldState, newState) => {
     // Ignore if channel didn't change
     if(oldState.channelID == newState.channelID) {
         return
     }
 
     // Create private room
-    if(newMember.voice.channel) {
-        var creator = newMember.voice.channel
+    if(newState.member.voice.channel) {
+        var creator = newState.member.voice.channel
         if(creator.name == '．create 部屋' && creator.parent.name == '⌗                       Private                     ︰ 数字') {
-            var guild = newMember.guild
+            var guild = newState.member.guild
             var category = guild.channels.cache.find(c => c.name == '⌗                       Private                     ︰ 数字')
-            var c = await guild.channels.create(newMember.user.username,
+            guild.channels.create(newState.member.user.username,
                 {
                     type: 'voice',
                     permissionOverwrites:
@@ -80,15 +76,19 @@ module.exports.roomDeletion = async (oldState, newState, client) => {
                                 deny: ['VIEW_CHANNEL', "CONNECT"]
                             },
                             {
-                                id: newMember.user.id,
+                                id: newState.member.user.id,
                                 allow: ['VIEW_CHANNEL', 'CONNECT']
                             }
                         ],
                     parent: category
                 })
-            console.log(newMember.user)
-            newMember.voice.setChannel(c.id)
-            newMember.roles.add(constants.roles.owner)
+                .then(c => {
+                    console.log(newState.member.user.tag)
+                    newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
+                        .then(m => {
+                            m.roles.add(constants.roles.owner)
+                        })
+                })
 
         }
     }
