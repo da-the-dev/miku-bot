@@ -40,18 +40,18 @@ client.once('ready', () => {
     utl.moneyGet.voiceActivityInit(client)
 })
 
-// Increace uptime
-const express = require('express')
-const app = express()
-const port = 3000
+// // Increace uptime
+// const express = require('express')
+// const app = express()
+// const port = 3000
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+// app.get('/', (req, res) => {
+//     res.send('Hello World!')
+// })
 
-var server = app.listen(port, () => {
-    console.log(`Uptimer at ${server.address().address}:${server.address().port}`)
-})
+// var server = app.listen(port, () => {
+//     console.log(`Uptimer at ${server.address().address}:${server.address().port}`)
+// })
 
 
 
@@ -99,8 +99,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 client.on('message', msg => {
     // Activity
-    // utl.roles.daylyTextActivity(msg)
-    // utl.roles.nightTextActivity(msg)
+    utl.roles.daylyTextActivity(msg)
+    utl.roles.nightTextActivity(msg)
 
     // Bot commands
     if(!msg.author.bot) {

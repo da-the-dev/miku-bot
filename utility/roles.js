@@ -21,32 +21,82 @@ module.exports.reapplyRoles = (member) => {
 }
 
 /**
- * Calculates and saves everything needed for dayly activity 
- * @param {Array} lastMessages - Array of last 'n' lastMessages
- * @param {string} role - Role ID to give to those who earned it
+ * Merges 2 string/number maps together
+ * @param {Map} map1 - First map
+ * @param {Map} map2 - Second map
+ * @returns {Map} Merge result
+ */
+const mergeMaps = (map1, map2) => {
+    function getUnique(array) {
+        var uniqueArray = [];
+
+        // Loop through array values
+        for(var value of array) {
+            if(uniqueArray.indexOf(value) === -1) {
+                uniqueArray.push(value);
+            }
+        }
+        return uniqueArray;
+    }
+
+    var joinedArray = Array.from([...map1]).concat(Array.from([...map2]))
+    console.log('joinedArray:', joinedArray)
+    for(i = 0; i < joinedArray.length; i++)
+        for(j = 0; j < joinedArray.length; j++)
+            if(joinedArray[i] != joinedArray[j])
+                if(joinedArray[i][0] == joinedArray[j][0]) {
+                    joinedArray[i][1] += joinedArray[j][1]
+                    joinedArray.splice(j, 1)
+                }
+    joinedArray.sort((a, b) => {
+        if(a > b) return 1
+        if(a < b) return -1
+        return 0
+    })
+    return new Map(joinedArray)
+}
+
+/**
+ * Calculates and saves everything needed for day/night activity 
+ * @param {Map} lastMessages - Map of last 'n' lastMessages
  * @param {string} activityName - Name of the activity field in db (day/night)
  * @param {Discord.Guild} guild - Guild where to look for members
  */
-const activityCalculator = (lastMessages, role, activityName, guild) => {
-    var bigData = new Map()
-    lastMessages.forEach(m => bigData.set(m, (bigData.get(x) || 0) + 1))
-    lastMessages.length = 0
+const activityCalculator = (lastMessages, activityName, guild) => {
+    const rClient = redis.createClient(process.env.RURL)
+    rClient.get(activityName, (err, res) => {
+        console.log('res:', res)
+        console.log('JSON.parse:', JSON.parse(res))
+        console.log('lastMessages:', [...lastMessages])
+        console.log()
+        var mergedMap
+        if(err) throw err
+        if(res) { // If there is db info about activity type
+            mergedMap = mergeMaps(lastMessages, new Map(JSON.parse(res)))
+            rClient.set(activityName, JSON.stringify([...mergedMap]), (err, res) => { if(err) throw err; console.log(res) })
+        } else { // If there's nothing, save last messsages
+            mergedMap = lastMessages
+            rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) throw err; console.log(res) })
+        }
 
-    let activies = [...bigData.entries()]
-        .filter(({ 1: v }) => v >= 500)
-        .map(([k]) => k)
-    console.log(activies)
+        console.log('mergedMap:', [...mergedMap])
+        var activies = [...mergedMap.entries()]  // Fitler for those who have 500+ messsages
+            .filter(({ 1: v }) => v >= 500)
+            .map(([k]) => k)
+        console.log('activies:', activies)
 
-    activies.forEach(a => {
-        guild.members.fetch(a).then(m => m.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive))
+        activies.forEach(async a => { // Give users their respective roles
+            await guild.members.fetch(a).then(m => m.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive))
+        })
+        lastMessages.clear()
+        rClient.quit()
     })
-
-    // lastNMessages.forEach(x => { bigData.set(x, (bigData.get(x) || 0) + 1) })
-    // rClient.set(name, JSON.stringify([...bigData]), err => { if(err) throw err })
-
 }
 
-var lastDayMessages = []
+const n = 3
+
+var lastDayMessages = new Map()
+var dayCounter = 0
 /**
  * If user sent 500+ messages during the day give a role
  * @param {Discord.Message} msg
@@ -54,18 +104,51 @@ var lastDayMessages = []
 module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
     if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == "819932384375734292")
-        if(lastDayMessages.length <= n)
-            lastDayMessages.push(msg.author.id)
-        else
-            activityCalculator(lastNDayMessages, constants.roles.daylyActive, 'activity')
+        if(dayCounter < n) { // If not enough messages has been collected, keep collecting
+            console.log(dayCounter)
+            lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
+            dayCounter++
+        }
+        else { // If enough messages collected, calculate and reset the counter
+            activityCalculator(lastDayMessages, 'day', msg.guild)
+            dayCounter = 0
+        }
+
 }
-var lastNNightMessage = []
+var lastNightMessages = []
+var nightCounter = 0
 /**
  * If user sent 500+ messages during the NIGHT give a role
  * @param {Discord.Message} msg
  */
 module.exports.nightTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    if(timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6 && msg.channel.id == "819932384375734292")
-        activityCalculator(lastNNightMessage, msg, constants.roles.nightActive, 'nightActivity')
+    if(timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6 && msg.channel.id == constants.channels.general)
+        if(nightCounter <= n) { // If not enough messages has been collected, keep collecting
+            lastNightMessages.set((lastNightMessages.get(msg.author.id) || 0) + 1)
+            nightCounter++
+        }
+        else { // If enough messages collected, calculate
+            activityCalculator(lastNightMessages, 'night', msg.guild)
+            nightCounter = 0
+        }
+}
+
+/**
+ * If user sent 500+ messages during a specific time window give a role
+ * @param {Discord.Message} msg
+ */
+module.exports.daylyTextActivity = (msg) => {
+    var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general)
+        if(dayCounter < n) { // If not enough messages has been collected, keep collecting
+            console.log(dayCounter)
+            lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
+            dayCounter++
+        }
+        else { // If enough messages collected, calculate and reset the counter
+            activityCalculator(lastDayMessages, 'day', msg.guild)
+            dayCounter = 0
+        }
+
 }
