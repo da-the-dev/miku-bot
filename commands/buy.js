@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const utl = require('../utility')
+const constants = require('../constants.json')
 const emojies = ['⬅️', '➡️']
 module.exports =
     /**
@@ -68,7 +69,7 @@ module.exports =
                                             rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                                             rClient.quit()
 
-                                            m.edit(utl.embed.build(msg, `Вы успешно приобрели роль <@&${selectedRole.id}>. Зайдите в инвентарь командой \`${client.prefix}inv\`, чтобы посмотреть Ваши роли`))
+                                            m.edit(utl.embed.build(msg, `Вы успешно приобрели роль <@&${selectedRole.id}>.\nПолный список команд магазина вы можете посмотреть в <#${constants.channels.commands}>`))
                                             m.reactions.removeAll()
                                             return
                                         }

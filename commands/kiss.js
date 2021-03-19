@@ -45,6 +45,7 @@ module.exports =
                             m.edit(new Discord.MessageEmbed()
                                 .setDescription(`<@${mMember.id}> тебя проигнорировал(-а)`)
                                 .setColor('#2F3136')
+                                .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
                             )
                             m.reactions.removeAll()
                             return
@@ -53,6 +54,7 @@ module.exports =
                             m.edit(new Discord.MessageEmbed()
                                 .setDescription(`<@${mMember.id}> тебе отказал(-а)`)
                                 .setColor('#2F3136')
+                                .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
                             )
                             m.reactions.removeAll()
                             return

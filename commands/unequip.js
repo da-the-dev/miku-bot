@@ -30,7 +30,7 @@ module.exports =
                         }
                         var role = rolesData.find(r => r.pos == pos)
                         msg.member.roles.remove(role.id)
-                        utl.embed(msg, `Роль <@&${role.id}> снята`)
+                        utl.embed(msg, `Роль <@&${role.id}> успешно снята`)
                         rClient.quit()
                     }
                 })

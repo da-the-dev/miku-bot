@@ -1,4 +1,19 @@
 const Discord = require('discord.js')
+const utl = require('../utility')
+
+/**
+ * Calculate time when the message was sent
+ * @param {Discord.Message} msg
+ */
+const calculateTime = (msg) => {
+    var time = 'Сегодня, в '
+    var offset = msg.createdAt.getTimezoneOffset() + 180
+    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
+    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
+    time += `${hours}:${minutes}`
+    return time
+}
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -104,6 +119,7 @@ module.exports =
                 }
             ])
             .setColor('#2F3136')
-            .setFooter(`Запросил(-а) ${msg.author.tag}`, msg.author.avatarURL())
+            .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
+
         msg.channel.send(embed)
     }
