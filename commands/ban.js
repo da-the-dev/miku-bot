@@ -32,15 +32,15 @@ module.exports =
                     } else {
                         userData.ban = true
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
-                        await mMember.roles.remove(mMember.roles.cache)
-                        await mMember.roles.add(constants.roles.localban)
+                        mMember.roles.remove(mMember.roles.cache)
+                            .then(() => { mMember.roles.add(constants.roles.localban) })
                         utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     }
                 } else {
                     rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) throw err })
-                    await mMember.roles.remove(mMember.roles.cache)
-                    await mMember.roles.add(constants.roles.localban)
+                    mMember.roles.remove(mMember.roles.cache)
+                        .then(() => { mMember.roles.add(constants.roles.localban) })
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                     rClient.quit()
                 }
