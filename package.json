@@ -17,10 +17,9 @@
   },
   "homepage": "https://github.com/da-the-dev/miku-bot#readme",
   "dependencies": {
-    "discord-fetch-all": "^3.0.2",
-    "discord-fetch-messages": "^2.0.0",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "moment": "^2.29.1",
     "node-redis-scan": "^1.2.1",
     "node-schedule": "^2.0.0",

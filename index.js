@@ -40,6 +40,21 @@ client.once('ready', () => {
     utl.moneyGet.voiceActivityInit(client)
 })
 
+// Increace uptime
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+})
+
+var server = app.listen(port, () => {
+    console.log(`Uptimer at ${server.address().address}:${server.address().port}`)
+})
+
+
+
 // Role events
 client.on('roleUpdate', (oldRole, newRole) => {
     utl.anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)

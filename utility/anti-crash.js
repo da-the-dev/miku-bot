@@ -197,7 +197,7 @@ module.exports.monitorRoleDelete = role => {
  */
 module.exports.monitorChannelDelete = channel => {
     const kickPool = 2
-    if(channel.parent.name != '⌗                       private rooms')
+    if(channel.parent.name != '⌗                       Private                     ︰ 数字')
         getDef(() => {
             var guild = channel.guild
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
