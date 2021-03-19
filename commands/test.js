@@ -9,16 +9,9 @@ module.exports =
      * @description Usage: .test <args>
      */
     async (args, msg, client) => {
-        const Fetcher = require('discord-fetch-messages')
         if(msg.author.id == process.env.MYID) {
-            const fetcher = new Fetcher.Fetcher(client);
-
-            fetcher.on('fetchChannel', async channel => {
-                console.log(`Fetching <#${channel.id}>.`);
-            });
-
-            // await fetcher.fetchGuild(guildID);
-            console.log((await fetcher.fetchChannel(msg.channel)).array().length)
+            // utl.embed(msg, "test")
+            console.log(utl.welcome(msg.member, msg.guild))
         }
     }
 

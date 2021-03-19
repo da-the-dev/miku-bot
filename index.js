@@ -68,7 +68,7 @@ client.on('guildMemberAdd', (member) => {
     utl.anticrash.monitorBotInvites(member)
     utl.verify.mark(member)
     utl.roles.reapplyRoles(member)
-    // utl.antiraid(member)
+    utl.welcome(member, client.guilds.cache.first())
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
