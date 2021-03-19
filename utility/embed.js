@@ -1,10 +1,6 @@
 const Discord = require('discord.js')
 
-/**
- * Calculate time when the message was sent
- * @param {Discord.Message} msg
- */
-module.exports.calculateTime = (msg) => {
+const calculateTime = (msg) => {
     var time = 'Сегодня, в '
     var offset = msg.createdAt.getTimezoneOffset() + 180
     var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
@@ -25,6 +21,19 @@ module.exports =
             .setColor('#2F3136')
             .setFooter(`${msg.author.tag} • ${this.calculateTime(msg)}`, msg.author.avatarURL()))
     }
+
+/**
+ * Calculate time when the message was sent
+ * @param {Discord.Message} msg
+ */
+module.exports.calculateTime = (msg) => {
+    var time = 'Сегодня, в '
+    var offset = msg.createdAt.getTimezoneOffset() + 180
+    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
+    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
+    time += `${hours}:${minutes}`
+    return time
+}
 
 /**
  * Return MessageEmbeded embed reply

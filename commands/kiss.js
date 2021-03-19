@@ -1,13 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const calculateTime = (msg) => {
-    var time = 'Сегодня, в '
-    var offset = msg.createdAt.getTimezoneOffset() + 180
-    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
-    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
-    time += `${hours}:${minutes}`
-    return time
-}
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -45,7 +38,7 @@ module.exports =
                             m.edit(new Discord.MessageEmbed()
                                 .setDescription(`<@${mMember.id}> тебя проигнорировал(-а)`)
                                 .setColor('#2F3136')
-                                .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
+                                .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
                             )
                             m.reactions.removeAll()
                             return
@@ -54,7 +47,7 @@ module.exports =
                             m.edit(new Discord.MessageEmbed()
                                 .setDescription(`<@${mMember.id}> тебе отказал(-а)`)
                                 .setColor('#2F3136')
-                                .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
+                                .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
                             )
                             m.reactions.removeAll()
                             return
@@ -65,7 +58,7 @@ module.exports =
                                 .setDescription(`<@${msg.member.id}> поцеловал(-а) <@${mMember.id}>`)
                                 .setImage(utl.reactions.kissReactions[Math.floor(Math.random() * 7)])
                                 .setColor('#2F3136')
-                                .setFooter(`${msg.author.tag} • ${calculateTime(msg)} `, msg.author.avatarURL()))
+                                .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)} `, msg.author.avatarURL()))
                             m.reactions.removeAll()
                             return
                         }
