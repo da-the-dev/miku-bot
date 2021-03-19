@@ -35,7 +35,7 @@ module.exports =
                             rClient.quit()
                             return
                         }
-                        msg.channel.send(utl.embed.build(msg.member, `Вы уверены, что хотите купить роль <@&${selectedRole.id}>?`))
+                        msg.channel.send(utl.embed.build(msg, `Вы уверены, что хотите купить роль <@&${selectedRole.id}>?`))
                             .then(async m => {
                                 await m.react('✅')
                                 await m.react('❌')
