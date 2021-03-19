@@ -47,7 +47,7 @@ module.exports.createRoom = (client) => {
  * @param {Discord.VoiceState} newState  
  * @param {Discord.Client} client  
  */
-module.exports.roomDeletion = (oldState, newState, client) => {
+module.exports.roomDeletion = async (oldState, newState, client) => {
     var oldMember = oldState.member
     var newMember = newState.member
 
@@ -62,7 +62,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
         if(creator.name == '．create 部屋' && creator.parent.name == '⌗                       Private                     ︰ 数字') {
             var guild = newMember.guild
             var category = guild.channels.cache.find(c => c.name == '⌗                       Private                     ︰ 数字')
-            guild.channels.create(newMember.user.username,
+            var c = await guild.channels.create(newMember.user.username,
                 {
                     type: 'voice',
                     permissionOverwrites:
@@ -85,12 +85,11 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                             }
                         ],
                     parent: category
-                }).then(c => {
-                    console.log(c)
-                    console.log(newMember)
-                    newMember.voice.setChannel(c)
-                    newMember.roles.add(constants.roles.owner)
                 })
+            console.log(newMember.user)
+            newMember.voice.setChannel(c.id)
+            newMember.roles.add(constants.roles.owner)
+
         }
     }
 
