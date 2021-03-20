@@ -54,7 +54,6 @@ module.exports =
             var reason = args.slice(reasonIndex, args.length).join(' ')
             reason = reason.slice(1)
             args = args.slice(0, reasonIndex)
-            console.log(args)
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
                 utl.embed(msg, 'Неверный формат времени!')

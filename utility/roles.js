@@ -97,10 +97,11 @@ var dayCounter = 0
  */
 module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == "819932384375734292")
+    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general)
         if(dayCounter < n) { // If not enough messages has been collected, keep collecting
             lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
             dayCounter++
+            console.log('[AC] Added message')
         }
         else { // If enough messages collected, calculate and reset the counter
             console.log('[AC] Calculating day activity...')
@@ -121,6 +122,7 @@ module.exports.nightTextActivity = (msg) => {
         if(nightCounter <= n) { // If not enough messages has been collected, keep collecting
             lastNightMessages.set((lastNightMessages.get(msg.author.id) || 0) + 1)
             nightCounter++
+            console.log('[AC] Added message')
         }
         else { // If enough messages collected, calculate
             console.log('[AC] Calculating night activity...')

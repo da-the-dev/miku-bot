@@ -32,7 +32,6 @@ module.exports =
                 if(err) throw err
                 if(res) {
                     var userData = JSON.parse(res)
-                    console.log(userData.money)
                     if(!userData.money)
                         utl.embed(msg, `У <@${mMember.id}> на счету **0** <:__:813854413579354143>`)
                     else
