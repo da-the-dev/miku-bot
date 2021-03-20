@@ -19,7 +19,7 @@ module.exports =
         msg.channel.send(new Discord.MessageEmbed()
             .setDescription(message)
             .setColor('#2F3136')
-            .setFooter(`${msg.author.tag} • ${this.calculateTime(msg)}`, msg.author.avatarURL()))
+            .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL()))
     }
 
 /**
