@@ -39,12 +39,9 @@ module.exports =
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#1** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
                     rClient.quit()
                 } else {
-                    console.log(res)
                     var userData = JSON.parse(res)
-                    if(!userData.warns) { // Never have been warned before
+                    if(!userData.warns) // Never have been warned before
                         userData.warns = []
-                        console.log('never has been warned')
-                    }
 
                     userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
 

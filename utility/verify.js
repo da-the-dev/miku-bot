@@ -7,7 +7,7 @@ const constants = require('../constants.json')
  */
 module.exports.verify = async (reaction, user) => {
     if(reaction.message.id == 819295686415482921) {
-        console.log('verified user', user.tag)
+        console.log(`[VR] Verified user '${user.tag}'`)
         const constants = require('../constants.json')
         reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
         const calculateTime = () => {
@@ -24,7 +24,6 @@ module.exports.verify = async (reaction, user) => {
             .setColor('#2F3136')
             .setFooter(`${user.tag} • ${calculateTime()}`, user.avatarURL())
         var msg = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
-        console.log(msg)
         setTimeout((msg) => {
             msg.delete()
         }, 60000, msg)
@@ -35,6 +34,6 @@ module.exports.verify = async (reaction, user) => {
  * @param {Discord.GuildMember} member
  */
 module.exports.mark = (member) => {
-    console.log('dever')
+    console.log(`[VR] Marked user '${member.user.username}'`)
     member.roles.add(member.guild.roles.cache.get(constants.roles.verify))
 }

@@ -27,7 +27,6 @@ const buildPage = (page, footerUser, footerURL, msg) => {
             })
 
             var length = rolesData.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
-            console.log(length)
             for(i = (page - 1) * 9; i < length; i++)
                 embed.addField(`⌗ ${rolesData[i].pos} — ${rolesData[i].price}<:__:813854413579354143>`, ` <@&${rolesData[i].id}>`, true)
 
@@ -49,8 +48,6 @@ const buildPage = (page, footerUser, footerURL, msg) => {
  */
 module.exports = (reaction, user, client) => {
     var msg = reaction.message
-    // console.log(!msg.embeds[0], !msg.embeds[0].footer, !msg.embeds[0].footer.text.includes('стр'), user.id == client.user.id, user.bot)
-    // console.log(!(!msg.embeds[0] || !msg.embeds[0].footer || !msg.embeds[0].footer.text.includes('стр') || user.id == client.user.id || user.bot))
     if(!(!msg.embeds[0] || !msg.embeds[0].footer || !msg.embeds[0].footer.text.includes('стр') || user.id == client.user.id || user.bot)) {
         var footerUser = msg.embeds[0].footer.text.slice(0, msg.embeds[0].footer.text.indexOf('•') - 1)
         if(user.username != footerUser)

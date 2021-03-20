@@ -18,42 +18,26 @@ client.prefix = prefix
 // Commands
 var commandNames = fs.readdirSync(__dirname + '/commands')
 client.commands = new Array()
+console.log('[F] Bot functions')
 commandNames.forEach(c => {
     client.commands.push({
         'name': c.slice(0, c.length - 3),
         'foo': require(__dirname + '/commands/' + c),
         'allowedInGeneral': require(__dirname + '/commands/' + c).allowedInGeneral
     })
-    console.log({
-        'name': c.slice(0, c.length - 3),
-        'foo': require(__dirname + '/commands/' + c),
-        'allowedInGeneral': require(__dirname + '/commands/' + c).allowedInGeneral
-    })
+    console.log(
+        `[F] Name: ${c.slice(0, c.length - 3)}; 'allowedInGeneral': ${require(__dirname + '/commands/' + c).allowedInGeneral}`
+    )
 })
 
 // General events
 client.login(process.env.BOTTOKEN)
 client.once('ready', () => {
-    console.log("BOT is online")
+    console.log("[BOT] BOT is online")
     utl.privateRooms.createRoom(client)
     utl.redisUnmute(client)
     utl.moneyGet.voiceActivityInit(client)
 })
-
-// // Increace uptime
-// const express = require('express')
-// const app = express()
-// const port = 3000
-
-// app.get('/', (req, res) => {
-//     res.send('Hello World!')
-// })
-
-// var server = app.listen(port, () => {
-//     console.log(`Uptimer at ${server.address().address}:${server.address().port}`)
-// })
-
-
 
 // Role events
 client.on('roleUpdate', (oldRole, newRole) => {
@@ -112,7 +96,6 @@ client.on('message', msg => {
                 if(args[0].slice(0, args[0].indexOf('\n')) == "say") {
                     client.commands.find(c => c.name == "say").foo(args, msg, client)
                     msg.delete()
-                        .catch(err => console.log('say exeption', err))
                     return
                 }
 
@@ -122,13 +105,13 @@ client.on('message', msg => {
                 if(c.name == args[0]) {
                     if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
                         c.foo(args, msg, client)
-                        msg.delete().catch(err => console.log('regular', err))
+                        msg.delete()
                     }
                     else if(msg.channel.id == constants.channels.general && !c.allowedInGeneral)
-                        msg.delete().catch(err => console.log('regular', err))
+                        msg.delete()
                     else {
                         c.foo(args, msg, client)
-                        msg.delete().catch(err => console.log('regular', err))
+                        msg.delete()
                     }
                     return
                 }
@@ -141,7 +124,6 @@ client.on('message', msg => {
         if(msg.channel.id == '810876164960813086') {
             if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
                 msg.delete()
-                    .catch(err => console.log('selfy exeption', err))
             else
                 msg.react('<a:__:819566414368473098>')
         }

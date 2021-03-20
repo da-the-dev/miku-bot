@@ -8,7 +8,6 @@ const constants = require('../constants.json')
 module.exports.createRoom = (client) => {
     // Create 'createRoom'
     var guild = client.guilds.cache.first()
-    console.log(guild.name)
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
     var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       Private︰ 数字")
@@ -83,7 +82,6 @@ module.exports.roomDeletion = async (oldState, newState) => {
                     parent: category
                 })
                 .then(c => {
-                    console.log(newState.member.user.tag)
                     newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
                         .then(m => {
                             m.roles.add(constants.roles.owner)
@@ -102,20 +100,20 @@ module.exports.roomDeletion = async (oldState, newState) => {
 
         // Delete if owner left
         if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
-            console.log('delete owner room cause dis')
+            console.log('[PR] delete owner room cause dis')
             oldState.member.roles.remove(constants.roles.owner)
             if(!channel.deleted)
                 channel.delete()
-                    .catch(console.log('index.voiceStateUpdate: fail to delete after owner left'))
+                    .catch(console.log('[PR] fail to delete after owner left'))
             return
         }
 
         // Delete empty room
         if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
-            console.log('delete empty room')
+            console.log('[PR] delete empty room')
             if(!channel.deleted)
                 channel.delete()
-                    .catch(console.log('index.voiceStateUpdate: fail to delete after room empty'))
+                    .catch(console.log('[PR] fail to delete after room empty'))
             return
         }
     }

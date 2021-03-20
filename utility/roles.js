@@ -40,7 +40,6 @@ const mergeMaps = (map1, map2) => {
     }
 
     var joinedArray = Array.from([...map1]).concat(Array.from([...map2]))
-    console.log('joinedArray:', joinedArray)
     for(i = 0; i < joinedArray.length; i++)
         for(j = 0; j < joinedArray.length; j++)
             if(joinedArray[i] != joinedArray[j])
@@ -65,31 +64,26 @@ const mergeMaps = (map1, map2) => {
 const activityCalculator = (lastMessages, activityName, guild) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(activityName, (err, res) => {
-        console.log('res:', res)
-        console.log('JSON.parse:', JSON.parse(res))
-        console.log('lastMessages:', [...lastMessages])
-        console.log()
         var mergedMap
         if(err) throw err
         if(res) { // If there is db info about activity type
             mergedMap = mergeMaps(lastMessages, new Map(JSON.parse(res)))
-            rClient.set(activityName, JSON.stringify([...mergedMap]), (err, res) => { if(err) throw err; console.log(res) })
+            rClient.set(activityName, JSON.stringify([...mergedMap]), (err, res) => { if(err) throw err })
         } else { // If there's nothing, save last messsages
             mergedMap = lastMessages
-            rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) throw err; console.log(res) })
+            rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) throw err })
         }
 
-        console.log('mergedMap:', [...mergedMap])
         var activies = [...mergedMap.entries()]  // Fitler for those who have 500+ messsages
             .filter(({ 1: v }) => v >= 500)
             .map(([k]) => k)
-        console.log('activies:', activies)
 
         activies.forEach(async a => { // Give users their respective roles
             await guild.members.fetch(a).then(m => m.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive))
         })
         lastMessages.clear()
         rClient.quit()
+        console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
     })
 }
 
@@ -105,11 +99,11 @@ module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
     if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == "819932384375734292")
         if(dayCounter < n) { // If not enough messages has been collected, keep collecting
-            console.log(dayCounter)
             lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
             dayCounter++
         }
         else { // If enough messages collected, calculate and reset the counter
+            console.log('[AC] Calculating day activity...')
             activityCalculator(lastDayMessages, 'day', msg.guild)
             dayCounter = 0
         }
@@ -129,26 +123,8 @@ module.exports.nightTextActivity = (msg) => {
             nightCounter++
         }
         else { // If enough messages collected, calculate
+            console.log('[AC] Calculating night activity...')
             activityCalculator(lastNightMessages, 'night', msg.guild)
             nightCounter = 0
         }
-}
-
-/**
- * If user sent 500+ messages during a specific time window give a role
- * @param {Discord.Message} msg
- */
-module.exports.daylyTextActivity = (msg) => {
-    var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general)
-        if(dayCounter < n) { // If not enough messages has been collected, keep collecting
-            console.log(dayCounter)
-            lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
-            dayCounter++
-        }
-        else { // If enough messages collected, calculate and reset the counter
-            activityCalculator(lastDayMessages, 'day', msg.guild)
-            dayCounter = 0
-        }
-
 }

@@ -27,7 +27,7 @@ const takeAndNotify = (member, reason) => {
     roles.forEach(r => {
         member.roles.remove(r, `Подозрительная деятельность: ${reason}`)
             .catch(err => {
-                console.log('anti-crash:takeAndNotify: fail to remove executor\'s admin roles', 'reason:', reason)
+                console.log('[AC] takeAndNotify: fail to remove executor\'s admin roles', 'reason:', reason)
             })
     })
 
@@ -76,8 +76,6 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
                 }, 'В роль были добавлены администраторские права, поэтому я их убрала ;)')
 
                 takeAndNotify(executor, 'выдача роли администраторских прав')
-            } else {
-                console.log('mistaken for myself')
             }
         }
     })
@@ -110,7 +108,6 @@ module.exports.monitorBans = (guild, member) => {
                 var eBEOld = lastEBEs[banPool - 1]
                 var eBENew = lastEBEs[0]
 
-                console.log((eBENew.createdTimestamp - eBEOld.createdTimestamp) / 1000)
                 if(eBEOld)
                     if(eBENew.createdTimestamp - eBEOld.createdTimestamp < 120000)
                         takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные баны за короткий промежуток времени')
@@ -176,12 +173,10 @@ module.exports.monitorRoleDelete = role => {
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
                 var lastERDEs = Array.from(eRDE.values()).slice(0, kickPool)
 
-                console.log(lastERDEs.length)
 
                 var eRDEOld = lastERDEs[kickPool - 1]
                 var eRDENew = lastERDEs[0]
 
-                // console.log((eRDENew.createdTimestamp - eRDEOld.createdTimestamp) / 1000)
                 if(eRDEOld)
                     if(eRDENew.createdTimestamp - eRDEOld.createdTimestamp < 120000) {
                         guild.roles.create(role, 'Восстановлена удаленная роль')
@@ -203,7 +198,6 @@ module.exports.monitorChannelDelete = channel => {
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
                 .then(audit => {
                     var executor = audit.entries.first().executor
-                    console.log(executor.tag)
 
                     // Executor Role Delete Entries
                     var eCDE = audit.entries.filter(e => e.executor.id == executor.id)

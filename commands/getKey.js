@@ -13,16 +13,15 @@ module.exports =
             const rClient = redis.createClient(process.env.RURL)
             try {
                 rClient.get(args[1], (err, reply) => {
-                    console.log('getting key...')
+                    console.log('[DB] Getting key...')
                     if(err) {
                         console.log(err)
                         return
                     }
                     if(reply) {
                         console.log(reply)
-                        // msg.reply(warns)
                     } else {
-                        msg.reply('no data')
+                        console.log(`[DB] No data about ${args[1]} found!`)
                     }
                 })
             } finally {

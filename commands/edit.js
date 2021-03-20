@@ -10,7 +10,7 @@ module.exports =
     async (args, msg, client) => {
         args.shift()
         args = args.join(' ').split('\n')
-        console.log(args)
+
         var messageID = args[0]
         args.shift()
         if(!messageID) {
@@ -19,7 +19,6 @@ module.exports =
         }
 
         var stringData = args.join('\n').trim()
-        console.log(stringData)
         var jsonData = {}
         if(!stringData) {
             utl.embed(msg, 'Вы не указали данные для эмбеда!')

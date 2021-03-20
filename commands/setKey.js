@@ -20,7 +20,7 @@ module.exports =
             try {
                 rClient.set(key, JSON.stringify(data), err => {
                     if(err) throw err
-                    console.log('key set')
+                    console.log(`[DB] Key '${args[1]}' set to ${args.join(' ').length > 10 ? args.join(' ') : args.join(' ').slice(10) + '...'}`)
                 })
             } finally {
                 rClient.quit()

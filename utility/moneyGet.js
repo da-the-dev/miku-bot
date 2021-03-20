@@ -34,22 +34,22 @@ module.exports.voiceActivity = (oldState, newState) => {
         return
     // User joined a voicechannel
     if(newState.channelID) {
-        console.log(newState.member.user.username, 'joined')
+        console.log(`[MG] '${newState.member.user.username}' joined`)
         if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-            console.log(newState.member.user.username, 'joined in a populated channel')
+            console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
             var inter = setInterval(voiceAct, interval, newState.member.id)
             if(!voiceActIntervals.get(newState.member.id))
                 voiceActIntervals.set(newState.member.id, inter)
         }
         if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
             var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
-            console.log(`give ${oldMember.user.username} money`)
+            console.log(`[MG] give '${oldMember.user.username}' money`)
             var inter = setInterval(voiceAct, interval, newState.member.id)
             if(!voiceActIntervals.get(oldMember.user.id))
                 voiceActIntervals.set(oldMember.user.id, inter)
         }
     } else { // User left a voicechannel
-        console.log(newState.member.user.username, 'left')
+        console.log(`[MG] '${newState.member.user.username}' left`)
         clearInterval(voiceActIntervals.get(newState.member.id))
         if(oldState.channel.members.size == 1) {
             clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
@@ -67,7 +67,6 @@ module.exports.voiceActivityInit = (client) => {
     voiceChannels.forEach(v => {
         if(v.members.array().length > 1) {
             v.members.forEach(m => {
-                console.log(m.id)
                 var inter = setInterval(voiceAct, interval, m.id)
                 if(!voiceActIntervals.get(m.id))
                     voiceActIntervals.set(m.id, inter)

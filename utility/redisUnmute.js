@@ -14,7 +14,7 @@ module.exports = (client) => {
         sub = redis.createClient(process.env.RURL)
         const expired_subKey = '__keyevent@0__:expired'
         sub.subscribe(expired_subKey, function() {
-            console.log(' [i] Subscribed to "' + expired_subKey + '" event channel : ' + r)
+            console.log(`[DB] Now listeting to '${expired_subKey}' events`)
             sub.on('message', function(chan, msg) {
                 if(msg.startsWith('muted-')) {
                     /**@type {Array<string>} */
