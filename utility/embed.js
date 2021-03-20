@@ -44,13 +44,13 @@ module.exports.build = (msg, message) => {
     return new Discord.MessageEmbed()
         .setDescription(message)
         .setColor('#2F3136')
-        .setFooter(`${msg.author.tag} • ${this.calculateTime(msg)}`, msg.author.avatarURL())
+        .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
 }
 
 module.exports.def = (msg, value) => {
     var message = new Discord.MessageEmbed()
         .setColor('#FF0000')
-        .setFooter(`${msg.author.tag} • ${this.calculateTime(msg)} `, msg.author.avatarURL())
+        .setFooter(`${msg.author.tag} • ${calculateTime(msg)} `, msg.author.avatarURL())
     if(value)
         message.setDescription(`Антикраш защита **включена**!`)
     else
