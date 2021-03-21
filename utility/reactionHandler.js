@@ -10,7 +10,7 @@ const reactions = require('./reactions')
  */
 const buildMessage = (msg, reactions, desc, name) => {
     if(!msg.deleted) msg.delete()
-    var rand = Math.round(Math.random() * reactions.length)
+    var rand = Math.floor(Math.random() * reactions.length)
 
     msg.channel.send((new Discord.MessageEmbed()
         .setAuthor(`Реакция: ${name}`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
