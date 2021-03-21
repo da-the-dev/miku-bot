@@ -19,8 +19,7 @@ module.exports = (oldPresence, newPresence) => {
                     if(userData.gameRoles || userData.gameRoles == undefined)
                         newPresence.member.roles.add(constants.gameRoles[act.name])
                     rClient.quit()
-                } else
-                    newPresence.member.roles.remove(constants.gameRolesArray)
+                }
             })
         } else
             newPresence.member.roles.remove(constants.gameRolesArray)

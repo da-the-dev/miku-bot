@@ -110,7 +110,7 @@ module.exports.daylyTextActivity = (msg) => {
         }
 
 }
-var lastNightMessages = []
+var lastNightMessages = new Map()
 var nightCounter = 0
 /**
  * If user sent 500+ messages during the NIGHT give a role
