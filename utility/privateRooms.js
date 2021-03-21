@@ -63,6 +63,10 @@ module.exports.roomDeletion = (oldState, newState) => {
                     permissionOverwrites:
                         [
                             {
+                                id: constants.roles.verify,
+                                deny: ['VIEW_CHANNEL', "CONNECT"]
+                            },
+                            {
                                 id: constants.roles.muted,
                                 deny: ['VIEW_CHANNEL', "CONNECT"]
                             },
