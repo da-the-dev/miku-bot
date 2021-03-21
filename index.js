@@ -49,9 +49,9 @@ client.on('roleDelete', role => {
 
 // Member events
 client.on('guildMemberAdd', (member) => {
-    utl.anticrash.monitorBotInvites(member)
     utl.verify.mark(member)
     utl.roles.reapplyRoles(member)
+    utl.anticrash.monitorBotInvites(member)
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
@@ -71,9 +71,8 @@ client.on('channelDelete', channel => {
 // Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)
-    if(newState.channel)
-        if(newState.channel.name != '．create 部屋')
-            utl.moneyGet.voiceActivity(oldState, newState)
+    if(newState.channel && newState.channel.name != '．create 部屋')
+        utl.moneyGet.voiceActivity(oldState, newState)
 })
 
 // Message events
