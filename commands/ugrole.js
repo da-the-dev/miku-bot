@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const utl = require('../utility')
+const constants = require('../constants.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -22,9 +23,12 @@ module.exports =
                     userData.gameRoles = false
 
                 rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                rClient.quit()
                 utl.embed(msg, `Игровые роли ${userData.gameRoles ? '**включены**' : '**выключены**'}`)
             } else {
                 rClient.set(msg.author.id, JSON.stringify({ gameRoles: false }), err => { if(err) throw err })
+                rClient.quit()
+                msg.member.roles.remove(constants.gameRolesArray)
                 utl.embed(msg, `Игровые роли **выключены**`)
             }
         })
