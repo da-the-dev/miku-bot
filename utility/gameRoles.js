@@ -16,10 +16,8 @@ module.exports = (oldPresence, newPresence) => {
                 if(err) throw err
                 if(res) {
                     var userData = JSON.parse(res)
-                    if(userData.gameRoles)
+                    if(userData.gameRoles || userData.gameRoles == undefined)
                         newPresence.member.roles.add(constants.gameRoles[act.name])
-                    else
-                        newPresence.member.roles.remove(constants.gameRolesArray)
                     rClient.quit()
                 } else
                     newPresence.member.roles.remove(constants.gameRolesArray)
