@@ -73,7 +73,7 @@ client.on('channelDelete', channel => {
 // Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)
-    if((newState.channel || oldState.channel) && newState.channel.name != '．create 部屋')
+    if((newState.channel || oldState.channel) && newState.channel && newState.channel.name != '．create 部屋')
         utl.moneyGet.voiceActivity(oldState, newState)
 })
 
