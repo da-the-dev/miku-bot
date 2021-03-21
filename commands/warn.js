@@ -59,3 +59,4 @@ module.exports =
             utl.embed(msg, 'У Вас нет прав для этой команды!')
         }
     }
+module.exports.allowedInGeneral = true
