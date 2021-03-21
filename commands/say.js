@@ -14,7 +14,7 @@ module.exports =
         var stringData = args.join('\n')
         var jsonData = {}
         if(stringData == "") {
-            utl.embed('\n`安`[EmbedBuilder](https://embedbuilder.nadekobot.me/)\n\n\n\n')
+            utl.embed(msg, '\n`安`[EmbedBuilder](https://embedbuilder.nadekobot.me/)\n\n\n\n')
             return
         }
 
