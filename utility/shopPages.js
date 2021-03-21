@@ -54,10 +54,10 @@ module.exports = (reaction, user, client) => {
             return
 
         var footerURL = msg.embeds[0].footer.iconURL
-        var footerPage = msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('•'))
+        var footerPage = msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('• стр'))
 
         var index1 = footerPage.indexOf('1')
-
+        console.log(footerPage, reaction.emoji.name, index1)
         if(reaction.emoji.name == '⬅️' && index1 == -1) { // 
             console.log('Second page, flip to first')
             buildPage(1, footerUser, footerURL, msg)
