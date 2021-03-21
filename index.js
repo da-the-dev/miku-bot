@@ -51,7 +51,8 @@ client.on('roleDelete', role => {
 client.on('guildMemberAdd', (member) => {
     utl.verify.mark(member)
     utl.roles.reapplyRoles(member)
-    utl.anticrash.monitorBotInvites(member)
+    if(member.user.bot)
+        utl.anticrash.monitorBotInvites(member)
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
