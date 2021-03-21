@@ -10,7 +10,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .buy <pos>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         if(!args[1]) {
             utl.embed(msg, 'Не указан номер роли для покупки!')
             return

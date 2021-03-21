@@ -10,7 +10,7 @@ module.exports =
      * @param {Discord.Client} client Discord client object
      * @description Usage: .unmute <member>
      */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()

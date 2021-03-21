@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .give <member> <ammount>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         // Check if admin
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mMember = msg.mentions.members.first()

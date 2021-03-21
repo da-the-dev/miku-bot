@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .transfer <member> <ammount>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember) {
             utl.embed(msg, 'Не указан участник!')

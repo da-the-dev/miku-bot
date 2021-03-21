@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .equip <roleIndex>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var pos = args[1]
         if(!pos) {
             utl.embed(msg, 'Не указан индекс роли для одевания!')

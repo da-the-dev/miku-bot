@@ -9,7 +9,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .shop
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var embed = new Discord.MessageEmbed()
             .setColor('#2F3136')
             .setFooter(`${msg.author.username} • ${utl.embed.calculateTime(msg)} • стр 1/2`, msg.author.avatarURL())

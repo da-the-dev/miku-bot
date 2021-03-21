@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .kiss <member>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember)
             return

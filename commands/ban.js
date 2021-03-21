@@ -9,7 +9,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .ban <member>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var curatorRole = msg.guild.roles.cache.get(constants.roles.curator)
         if(msg.member.roles.cache.find(r => r.position >= curatorRole.position)) {
             var mMember = msg.mentions.members.first()

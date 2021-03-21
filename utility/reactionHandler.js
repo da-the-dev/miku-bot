@@ -8,7 +8,7 @@ const reactions = require('./reactions')
  * @param {Array<string>} reactions
  * @param {string} desc
  */
-const buildMessage = async (msg, reactions, desc, name) => {
+const buildMessage = (msg, reactions, desc, name) => {
     if(!msg.deleted) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
@@ -28,7 +28,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Handles reaction commands
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         switch(args[0]) {
             case 'angry':

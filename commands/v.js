@@ -9,7 +9,6 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .v <setting> <value> 
     */
-
     async (args, msg, client) => {
         if(!msg.member.roles.cache.has(constants.roles.owner)) {
             utl.embed(msg, 'У Вас нет прав на эту команду!')

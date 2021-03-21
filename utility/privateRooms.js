@@ -45,7 +45,7 @@ module.exports.createRoom = (client) => {
  * @param {Discord.VoiceState} oldState 
  * @param {Discord.VoiceState} newState  
  */
-module.exports.roomDeletion = async (oldState, newState) => {
+module.exports.roomDeletion = (oldState, newState) => {
     // Ignore if channel didn't change
     if(oldState.channelID == newState.channelID) {
         return

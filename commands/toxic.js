@@ -9,7 +9,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .toxic <member>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)
         if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
             var mMember = msg.mentions.members.first()

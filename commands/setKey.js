@@ -7,8 +7,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .setKey <key> <data>
     */
-
-    async (args, msg, client) => {
+    (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
             var key = args[1]
             args.shift()

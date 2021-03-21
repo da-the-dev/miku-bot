@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .bal
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember) {
             const rClient = redis.createClient(process.env.RURL)

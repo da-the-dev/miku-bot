@@ -7,8 +7,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .getKey <key> 
     */
-
-    async (args, msg, client) => {
+    (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
             const rClient = redis.createClient(process.env.RURL)
             try {

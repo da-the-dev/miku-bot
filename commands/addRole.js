@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .addRole <role> <positon> <price>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mRole = msg.mentions.roles.first()
             if(!mRole) {

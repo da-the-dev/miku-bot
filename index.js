@@ -71,14 +71,17 @@ client.on('channelDelete', channel => {
 // Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)
-    utl.moneyGet.voiceActivity(oldState, newState)
+    if(newState.channel)
+        if(newState.channel.name != '．create 部屋')
+            utl.moneyGet.voiceActivity(oldState, newState)
 })
 
 // Message events
-client.on('messageReactionAdd', async (reaction, user) => {
+client.on('messageReactionAdd', (reaction, user) => {
     utl.fetch.fetchReactions(reaction)
     utl.verify.verify(reaction, user)
-    utl.shop(reaction, user, client)
+    if(reaction.message.channel.id != '810201527478124555')
+        utl.shop(reaction, user, client)
 })
 client.on('message', msg => {
     // Activity

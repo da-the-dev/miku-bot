@@ -9,8 +9,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .unwarn <member>
     */
-
-    async (args, msg, client) => {
+    (args, msg, client) => {
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {

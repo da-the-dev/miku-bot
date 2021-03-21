@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .ugrole
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
         rClient.get(msg.author.id, (err, res) => {
             if(err) throw err

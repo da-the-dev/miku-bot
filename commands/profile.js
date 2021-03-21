@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .profile
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         // Member to get the profile of
         var pMember = msg.member
         var mMember = msg.mentions.members.first()

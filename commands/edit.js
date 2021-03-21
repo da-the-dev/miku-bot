@@ -7,7 +7,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .edit <id>\n<jsonData>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         args.shift()
         args = args.join(' ').split('\n')
 

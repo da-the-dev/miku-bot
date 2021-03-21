@@ -8,7 +8,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .def
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         if(msg.author.id == process.env.MYID || msg.author.id == process.env.SERID) {
             const rClient = redis.createClient(process.env.RURL)
             rClient.get('defenses', (err, res) => {

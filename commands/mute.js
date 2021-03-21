@@ -29,7 +29,7 @@ module.exports =
      * @description Usage: .mute <member> <time> "<reason>"
      * @example .mute @daym bro 5h "reason"
      */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
