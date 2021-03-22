@@ -6,7 +6,7 @@ const constants = require('../constants.json')
  * @param {Discord.User} user 
  */
 module.exports.verify = async (reaction, user) => {
-    if(reaction.message.id == 819295686415482921) {
+    if(reaction.message.id == '819295686415482921' && user.id != '810942432274415636') {
         console.log(`[VR] Verified user '${user.tag}'`)
         const constants = require('../constants.json')
         reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
@@ -31,9 +31,12 @@ module.exports.verify = async (reaction, user) => {
 }
 
 /**
+ * Marks new users for verification
  * @param {Discord.GuildMember} member
  */
-module.exports.mark = (member) => {
-    console.log(`[VR] Marked user '${member.user.username}'`)
-    member.roles.add(member.guild.roles.cache.get(constants.roles.verify))
+module.exports.mark = async (member) => {
+    member.roles.add(constants.roles.verify)
+        .then(m => {
+            console.log(`[VR] Marked user '${m.user.username}'`)
+        })
 }
