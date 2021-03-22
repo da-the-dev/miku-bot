@@ -21,7 +21,6 @@ module.exports = (oldPresence, newPresence) => {
                     rClient.quit()
                 }
             })
-        } else
-            newPresence.member.roles.remove(constants.gameRolesArray)
+        }
     }
 }

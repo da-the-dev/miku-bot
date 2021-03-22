@@ -6,10 +6,11 @@ const constants = require('../constants.json')
  * @param {Discord.User} user 
  */
 module.exports.verify = async (reaction, user) => {
-    if(reaction.message.id == '819295686415482921' && user.id != '810942432274415636') {
+    if(reaction.message.id == '819295686415482921') {
         console.log(`[VR] Verified user '${user.tag}'`)
         const constants = require('../constants.json')
         reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
+        console.log('verify 1')
         const calculateTime = () => {
             var time = 'Сегодня, в '
             var offset = reaction.emoji.createdAt.getTimezoneOffset() + 180
@@ -23,10 +24,12 @@ module.exports.verify = async (reaction, user) => {
             .setImage('https://cdn.discordapp.com/attachments/810255515854569472/822563512634966056/welcome01.png')
             .setColor('#2F3136')
             .setFooter(`${user.tag} • ${calculateTime()}`, user.avatarURL())
-        var msg = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
-        setTimeout((msg) => {
-            msg.delete()
-        }, 60000, msg)
+        if(user.id != '810942432274415636') {
+            var msg = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
+            setTimeout((msg) => {
+                msg.delete()
+            }, 60000, msg)
+        }
     }
 }
 
@@ -38,5 +41,6 @@ module.exports.mark = async (member) => {
     member.roles.add(constants.roles.verify)
         .then(m => {
             console.log(`[VR] Marked user '${m.user.username}'`)
+            m.roles.cache.array().forEach(r => console.log(r.name))
         })
 }
