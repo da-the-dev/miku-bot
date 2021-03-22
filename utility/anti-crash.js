@@ -29,6 +29,7 @@ const takeAndNotify = (member, reason) => {
             .catch(err => {
                 console.log('[AC] takeAndNotify: fail to remove executor\'s admin roles', 'reason:', reason)
             })
+        console.log('anticrash 1')
     })
 
     member.user.createDM()
@@ -43,6 +44,7 @@ const takeAndNotify = (member, reason) => {
  */
 module.exports.monitorBotInvites = member => {
     if(member.user.bot) {
+        console.log('dis a bot')
         getDef(() => {
             member.kick('Бот был добавлен, пока антикраш защита была включена')
             member.guild.fetchAuditLogs({ type: 28 })

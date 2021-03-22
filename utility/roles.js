@@ -16,6 +16,7 @@ module.exports.reapplyRoles = (member) => {
                 await member.roles.add(constants.roles.toxic)
             if(userData.ban)
                 await member.roles.add(constants.roles.localban)
+            console.log("might've reaplied")
         }
         rClient.quit()
     })

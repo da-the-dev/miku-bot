@@ -49,6 +49,7 @@ client.on('roleDelete', role => {
 
 // Member events
 client.on('guildMemberAdd', (member) => {
+    console.log('+1 member')
     utl.verify.mark(member)
     utl.roles.reapplyRoles(member)
     if(member.user.bot)
@@ -58,6 +59,7 @@ client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
 })
 client.on('guildMemberRemove', member => {
+    console.log('-1 member :(')
     utl.loveroomMonitor.roomDeletion(member)
     utl.anticrash.monitorKicks(member)
 })
