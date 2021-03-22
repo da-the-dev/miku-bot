@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const moneytop = require('../commands/mtop.js')
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -10,8 +11,7 @@ module.exports =
      */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
-            // utl.embed(msg, "test")
-            console.log(utl.welcome(msg.member, msg.guild))
+            moneytop(args, msg, client)
         }
     }
 
