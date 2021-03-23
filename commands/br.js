@@ -21,31 +21,36 @@ module.exports =
         const set = util.promisify(rClient.set).bind(rClient)
         get(msg.author.id)
             .then(res => {
-                var userData = JSON.parse(res)
-                if(!userData.money) {
+                if(res) {
+                    var userData = JSON.parse(res)
+                    if(!userData.money) {
+                        utl.embed(msg, `У Вас нет денег чтобы играть!`)
+                        rClient.quit()
+                        return
+                    }
+                    if(userData.money < bet) {
+                        utl.embed(msg, 'Ставка больше Вашего баланса!')
+                        rClient.quit()
+                        return
+                    }
+
+                    var rand = Math.floor(Math.random() * 100) + 1
+                    if(rand >= 70) {
+                        utl.embed(msg, `Вы выиграли! Ваша ставка удвоена и добавлена в баланс: **${userData.money}** + **${bet * 2}** = ${userData.money + bet * 2} <:__:813854413579354143>`)
+                        userData.money += bet * 2
+                    }
+                    else {
+                        userData.money -= bet
+                        utl.embed(msg, `Вы проиграли! Из вашего баланса вычтена ставка: **${userData.money}** - **${bet}** = **${userData.money - bet}** <:__:813854413579354143>`)
+                    }
+
+                    set(msg.author.id, JSON.stringify(userData))
+                        .then(res => {
+                            rClient.quit()
+                        })
+                } else {
                     utl.embed(msg, `У Вас нет денег чтобы играть!`)
                     rClient.quit()
-                    return
                 }
-                if(userData.money < bet) {
-                    utl.embed(msg, 'Ставка больше Вашего баланса!')
-                    rClient.quit()
-                    return
-                }
-
-                var rand = Math.floor(Math.random() * 100) + 1
-                if(rand >= 70) {
-                    utl.embed(msg, `Вы выиграли! Ваша ставка удвоена и добавлена в баланс: **${userData.money}** + **${bet * 2}** = ${userData.money + bet * 2} <:__:813854413579354143>`)
-                    userData.money += bet * 2
-                }
-                else {
-                    userData.money -= bet
-                    utl.embed(msg, `Вы проиграли! Из вашего баланса вычтена ставка: **${userData.money}** - **${bet}** = **${userData.money - bet}** <:__:813854413579354143>`)
-                }
-
-                set(msg.author.id, JSON.stringify(userData))
-                    .then(res => {
-                        rClient.quit()
-                    })
             })
     }
