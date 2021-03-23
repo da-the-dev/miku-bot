@@ -15,7 +15,6 @@ var voiceAct = (id) => {
             var userData = JSON.parse(res)
             userData.money ? userData.money += 1 : userData.money = 1
             userData.voiceTime ? userData.voiceTime += 1 : userData.voiceTime = 1
-
             rClient.set(id, JSON.stringify(userData), err => { if(err) throw err })
             rClient.quit()
         } else {
