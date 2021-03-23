@@ -13,11 +13,13 @@ var voiceAct = (id) => {
         if(err) throw err
         if(res) { // If there was user data before
             var userData = JSON.parse(res)
-            userData.money += 1
+            userData.money ? userData.money += 1 : userData.money = 1
+            userData.voiceTime ? userData.voiceTime += 1 : userData.voiceTime = 1
+
             rClient.set(id, JSON.stringify(userData), err => { if(err) throw err })
             rClient.quit()
         } else {
-            rClient.set(id, JSON.stringify({ 'money': 1 }), err => { if(err) throw err })
+            rClient.set(id, JSON.stringify({ 'money': 1, 'voiceTime': 1 }), err => { if(err) throw err })
             rClient.quit()
         }
     })
@@ -32,6 +34,7 @@ const interval = 60000
 module.exports.voiceActivity = (oldState, newState) => {
     if(newState.channelID == oldState.channelID)
         return
+
     // User joined a voicechannel
     if(newState.channelID) {
         console.log(`[MG] '${newState.member.user.username}' joined`)
