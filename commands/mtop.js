@@ -9,7 +9,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .moneytop
+     * @description Usage: .mtop
      */
     async (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
@@ -39,7 +39,10 @@ module.exports =
 
 
                         var embed = new Discord.MessageEmbed()
-                            .setDescription('Топ пользователей по количеству конфет')
+                            .setAuthor('Топ пользователей по балансу', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
+                            .setColor('#2F3136')
+                            .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+
 
                         var bKeys = Array.from(bigData.keys())
                         var bValues = Array.from(bigData.values())
@@ -50,11 +53,13 @@ module.exports =
                             var name = member.nickname
                             if(!name)
                                 name = member.user.username
-                            desciption += `${name} - ${bValues[i]}`
-                        }
-                        embed.setDescription(desciption)
-                        msg.reply(embed)
 
+                            embed.addField('\`#.⠀\`', `\`\`\`${i + 1}.\`\`\``, true)
+                            embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
+                            embed.addField("`⠀⠀⠀⠀ Баланс⠀⠀⠀⠀ `", `\`\`\`${bValues[i]}\`\`\``, true)
+                        }
+
+                        msg.reply(embed)
                         rClient.quit()
                     })
             })
