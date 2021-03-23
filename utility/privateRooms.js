@@ -47,63 +47,56 @@ module.exports.createRoom = (client) => {
  */
 module.exports.roomDeletion = (oldState, newState) => {
     // Ignore if channel didn't change
-    if(oldState.channelID == newState.channelID) {
+    if(oldState.channelID == newState.channelID)
         return
-    }
 
     // Create private room
-    if(newState.member.voice.channel) {
-        var creator = newState.member.voice.channel
-        if(creator.name == '．create 部屋' && creator.parent.name == '⌗                       Private︰ 数字') {
-            var guild = newState.member.guild
-            var category = guild.channels.cache.find(c => c.name == '⌗                       Private︰ 数字')
-            guild.channels.create(newState.member.user.username,
-                {
-                    type: 'voice',
-                    permissionOverwrites:
-                        [
-                            {
-                                id: constants.roles.verify,
-                                deny: ['VIEW_CHANNEL', "CONNECT"]
-                            },
-                            {
-                                id: constants.roles.muted,
-                                deny: ['VIEW_CHANNEL', "CONNECT"]
-                            },
-                            {
-                                id: constants.roles.toxic,
-                                deny: ['VIEW_CHANNEL', "CONNECT"]
-                            },
-                            {
-                                id: constants.roles.localban,
-                                deny: ['VIEW_CHANNEL', "CONNECT"]
-                            },
-                            {
-                                id: newState.member.user.id,
-                                allow: ['VIEW_CHANNEL', 'CONNECT']
-                            }
-                        ],
-                    parent: category
-                })
-                .then(c => {
-                    newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
-                        .then(m => {
-                            m.roles.add(constants.roles.owner)
-                        })
-                })
-
-        }
+    if(newState.channel && newState.member.voice.channel.id == constants.channels.creator) {
+        var guild = newState.member.guild
+        var category = guild.channels.cache.get(constants.categories.privateRooms)
+        guild.channels.create(newState.member.user.username,
+            {
+                type: 'voice',
+                permissionOverwrites:
+                    [
+                        {
+                            id: constants.roles.verify,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: constants.roles.muted,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: constants.roles.toxic,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: constants.roles.localban,
+                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                        },
+                        {
+                            id: newState.member.user.id,
+                            allow: ['VIEW_CHANNEL', 'CONNECT']
+                        }
+                    ],
+                parent: category
+            })
+            .then(c => {
+                newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
+                    .then(m => {
+                        m.roles.add(constants.roles.owner)
+                    })
+            })
     }
 
-    if(oldState.channel) {
+    if(oldState.channel && oldState.channel.id != constants.channels.creator) {
         var channel = oldState.channel
 
         var role = oldState.member.roles.cache.get(constants.roles.owner)
-        if(!role)
-            role = newState.member.roles.cache.get(constants.roles.owner)
 
         // Delete if owner left
-        if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
+        if(role) {
             console.log('[PR] delete owner room cause dis')
             oldState.member.roles.remove(constants.roles.owner)
             console.log('pm1 1')
