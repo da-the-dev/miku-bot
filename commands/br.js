@@ -34,7 +34,6 @@ module.exports =
                 }
 
                 var rand = Math.floor(Math.random() * 100) + 1
-                console.log(rand)
                 if(rand >= 70) {
                     utl.embed(msg, `Вы выиграли! Ваша ставка удвоена и добавлена в баланс: **${userData.money}** + **${bet * 2}** = ${userData.money + bet * 2} <:__:813854413579354143>`)
                     userData.money += bet * 2
