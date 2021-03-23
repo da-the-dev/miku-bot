@@ -90,7 +90,7 @@ module.exports.roomDeletion = (oldState, newState) => {
             })
     }
 
-    if(oldState.channel && oldState.channel.id != constants.channels.creator) {
+    if(oldState.channel && oldState.channel.id != constants.channels.creator && oldState.channel.parentID == constants.categories.privateRooms) {
         var channel = oldState.channel
 
         var role = oldState.member.roles.cache.get(constants.roles.owner)
