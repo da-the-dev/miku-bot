@@ -93,7 +93,8 @@ module.exports.chatActivity = (msg) => {
                     if(err) throw err
                     if(res) { // If there was user data
                         var userData = JSON.parse(res)
-                        userData.money += 1
+                        userData.money ? userData.money += 1 : userData.money = 1
+
                         rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
                         rClient.quit()
                     } else {
