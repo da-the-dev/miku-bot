@@ -48,15 +48,20 @@ module.exports =
                         var bValues = Array.from(bigData.values())
 
                         var desciption = embed.description + '\n\n'
-                        for(i = 0; i < topAmount; i++) {
-                            var member = msg.guild.members.cache.get(bKeys[i])
-                            var name = member.nickname
-                            if(!name)
-                                name = member.user.username
+                        var counter = 0
+                        var successCounter = 0
 
-                            embed.addField('\`#.⠀\`', `\`\`\`${i + 1}.\`\`\``, true)
-                            embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
-                            embed.addField("`⠀⠀⠀⠀ Баланс⠀⠀⠀⠀ `", `\`\`\`${bValues[i]}\`\`\``, true)
+                        while(successCounter < topAmount) {
+                            var member = msg.guild.members.cache.get(bKeys[counter])
+                            if(member) {
+                                var name = member.nickname ? member.nickname : member.user.username
+
+                                embed.addField('\`#.⠀\`', `\`\`\`${successCounter + 1}.\`\`\``, true)
+                                embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
+                                embed.addField("`⠀⠀⠀⠀ Баланс⠀⠀⠀⠀ `", `\`\`\`${bValues[counter]}\`\`\``, true)
+                                successCounter++
+                            }
+                            counter++
                         }
 
                         msg.reply(embed)

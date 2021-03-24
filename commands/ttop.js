@@ -38,7 +38,7 @@ module.exports =
                         bigData = new Map(Array.from([...bigData]).slice(0, topAmount))
 
                         var embed = new Discord.MessageEmbed()
-                            .setAuthor('Топ пользователей по времени в голсовом канале', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
+                            .setAuthor('Топ пользователей по голосовому онлайну', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
                             .setColor('#2F3136')
                             .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
@@ -48,25 +48,31 @@ module.exports =
                         console.log(bKeys, bValues)
 
                         var desciption = embed.description + '\n\n'
-                        for(i = 0; i < topAmount; i++) {
-                            var member = msg.guild.members.cache.get(bKeys[i])
-                            var name = member.nickname
-                            if(!name)
-                                name = member.user.username
+                        var counter = 0
+                        var successCounter = 0
 
-                            var time = bValues[i]
-                            var mmD = Math.floor(time / 60 / 24)
-                            var mmH = Math.floor(time / 60) - (mmD * 24)
-                            var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
-                            var muteMsg = ''
+                        while(successCounter < topAmount) {
+                            var member = msg.guild.members.cache.get(bKeys[counter])
+                            if(member) {
+                                var name = member.nickname ? member.nickname : member.user.username
 
-                            if(mmD) muteMsg += mmD.toString() + "d "
-                            if(mmH) muteMsg += mmH.toString() + "h "
-                            if(mmM) muteMsg += mmM.toString() + "m "
+                                var time = bValues[counter] // Minutes
+                                console.log(time)
+                                var mmD = Math.floor(time / 24 / 60)
+                                var mmH = Math.floor(time / 60) - (mmD * 24)
+                                var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
+                                var muteMsg = ''
 
-                            embed.addField('\`#.⠀\`', `\`\`\`${i + 1}.\`\`\``, true)
-                            embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
-                            embed.addField("`⠀⠀⠀⠀ Время⠀⠀⠀⠀ `", `\`\`\`${muteMsg}\`\`\``, true)
+                                if(mmD) muteMsg += mmD.toString() + "d "
+                                if(mmH) muteMsg += mmH.toString() + "h "
+                                if(mmM) muteMsg += mmM.toString() + "m "
+
+                                embed.addField('\`#.⠀\`', `\`\`\`${successCounter + 1}.\`\`\``, true)
+                                embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
+                                embed.addField("`⠀⠀⠀⠀ Время⠀⠀⠀⠀ `", `\`\`\`${muteMsg}\`\`\``, true)
+                                successCounter++
+                            }
+                            counter++
                         }
 
                         msg.reply(embed)

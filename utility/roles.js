@@ -81,7 +81,8 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             .map(([k]) => k)
 
         activies.forEach(async a => { // Give users their respective roles
-            await guild.members.fetch(a).then(m => m.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive))
+            var member = guild.members.cache.get(a)
+            member ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
         })
         lastMessages.clear()
         rClient.quit()
@@ -99,7 +100,7 @@ var dayCounter = 0
  */
 module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general)
+    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general && !msg.author.bot)
         if(dayCounter < n) { // If not enough messages has been collected, keep collecting
             lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
             dayCounter++
@@ -120,7 +121,7 @@ var nightCounter = 0
  */
 module.exports.nightTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    if(timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6 && msg.channel.id == constants.channels.general)
+    if(timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6 && msg.channel.id == constants.channels.general && !msg.author.bot)
         if(nightCounter <= n) { // If not enough messages has been collected, keep collecting
             lastNightMessages.set(msg.author.id, (lastNightMessages.get(msg.author.id) || 0) + 1)
             nightCounter++
