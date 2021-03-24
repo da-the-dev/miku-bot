@@ -6,7 +6,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .poke <member>
+    * @description Usage: .pat <member>
     */
     (args, msg, client) => {
         var mMember = msg.mentions.members.first()
@@ -16,27 +16,14 @@ module.exports =
             return
 
         let request = require('request')
-        request('https://nekos.life/api/v2/img/poke', (err, res, body) => {
+        request('https://nekos.life/api/v2/img/pat', (err, res, body) => {
             let arr = JSON.parse((body))
             var firstEmbed = new Discord.MessageEmbed()
-                .setDescription(`<@${msg.member.id}> тыкает <@${mMember.id}>`)
+                .setDescription(`<@${msg.member.id}> погладил(-а) <@${mMember.id}>`)
                 .setColor('#2F3136')
                 .setTimestamp()
                 .setImage(arr.url)
             msg.channel.send(firstEmbed)
         })
     }
-module.exports.allowedInGeneral = true
-=======
-            let request = require('request')
-            request('https://nekos.life/api/v2/img/poke',(err,res,body) =>{
-            let arr = JSON.parse((body))
-        var firstEmbed = new Discord.MessageEmbed()
-            .setDescription(`<@${msg.member.id}> тыкает <@${mMember.id}>`)
-            .setColor('#2F3136')
-            .setTimestamp()
-            .setImage(arr.url)
-        msg.channel.send(firstEmbed)
-    })
-}
 module.exports.allowedInGeneral = true
