@@ -56,8 +56,9 @@ module.exports =
                             if(member) {
                                 var name = member.nickname ? member.nickname : member.user.username
 
-                                var time = bValues[counter]
-                                var mmD = Math.floor(time / 60 / 24)
+                                var time = bValues[counter] // Minutes
+                                console.log(time)
+                                var mmD = Math.floor(time / 24 / 60)
                                 var mmH = Math.floor(time / 60) - (mmD * 24)
                                 var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
                                 var muteMsg = ''
