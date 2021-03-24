@@ -81,7 +81,8 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             .map(([k]) => k)
 
         activies.forEach(async a => { // Give users their respective roles
-            await guild.members.fetch(a).then(m => m.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive))
+            var member = guild.members.cache.get(a)
+            member ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
         })
         lastMessages.clear()
         rClient.quit()
