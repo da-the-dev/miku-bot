@@ -38,7 +38,7 @@ module.exports =
                         bigData = new Map(Array.from([...bigData]).slice(0, topAmount))
 
                         var embed = new Discord.MessageEmbed()
-                            .setAuthor('Топ пользователей по времени в голсовом канале', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
+                            .setAuthor('Топ пользователей по голосовому онлайну', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
                             .setColor('#2F3136')
                             .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 

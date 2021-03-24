@@ -34,14 +34,14 @@ module.exports =
                         return
                     }
 
-                    var rand = Math.floor(Math.random() * 100) + 1
+                    var rand = Math.floor(Math.random() * 99) + 1
                     if(rand >= 70) {
-                        utl.embed(msg, `Вы выиграли! Ваша ставка удвоена и добавлена в баланс: **${userData.money}** + **${bet * 2}** = ${userData.money + bet * 2} <:__:813854413579354143>`)
                         userData.money += bet * 2
+                        utl.embed(msg, `Вы выиграли! Ваш баланс: **${userData.money}** <:__:813854413579354143>`)
                     }
                     else {
                         userData.money -= bet
-                        utl.embed(msg, `Вы проиграли! Из вашего баланса вычтена ставка: **${userData.money}** - **${bet}** = **${userData.money - bet}** <:__:813854413579354143>`)
+                        utl.embed(msg, `Вы проиграли! Ваш баланс: **${userData.money}** <:__:813854413579354143>`)
                     }
 
                     set(msg.author.id, JSON.stringify(userData))
