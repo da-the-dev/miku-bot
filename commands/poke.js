@@ -15,12 +15,6 @@ module.exports =
         if(mMember.id == msg.member.id)
             return
 
-        var name1 = msg.member.nickname
-        if(!name1)
-            name1 = msg.author.username
-        var name2 = mMember.nickname
-        if(!name2)
-            name2 = mMember.user.username
             let request = require('request')
             request('https://nekos.life/api/v2/img/poke',(err,res,body) =>{
             let arr = JSON.parse((body))
