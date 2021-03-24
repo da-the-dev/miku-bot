@@ -31,7 +31,7 @@ commandNames.forEach(c => {
 })
 
 // General events
-client.login(process.env.BOTTOKEN)
+client.login("NzE1OTEzNjYxNTY2NDE4OTk1.XtEIjQ.9ETXKyHcvHwp5va6j0NSC0OS2io")
 client.once('ready', () => {
     console.log("[BOT] BOT is online")
     utl.privateRooms.createRoom(client)
@@ -49,7 +49,6 @@ client.on('roleDelete', role => {
 
 // Member events
 client.on('guildMemberAdd', (member) => {
-    console.log('+1 member')
     utl.verify.mark(member)
     utl.roles.reapplyRoles(member)
     if(member.user.bot)
@@ -59,8 +58,6 @@ client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
 })
 client.on('guildMemberRemove', member => {
-    console.log('-1 member :(')
-    utl.loveroomMonitor.roomDeletion(member)
     utl.anticrash.monitorKicks(member)
 })
 client.on('presenceUpdate', (oldPresence, newPresence) => {
@@ -75,7 +72,7 @@ client.on('channelDelete', channel => {
 // Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)
-    if((newState.channel || oldState.channel) && newState.channel && newState.channel.name != '．create 部屋')
+    if(newState.channel && newState.channel.name != '．create 部屋')
         utl.moneyGet.voiceActivity(oldState, newState)
 })
 

@@ -85,7 +85,6 @@ module.exports =
                         var mMember = msg.mentions.members.first()
 
                         await oldOwner.roles.remove(constants.roles.owner)
-                        console.log('v 1')
                         await mMember.roles.add(constants.roles.owner)
                         utl.embed(msg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
                     } else {

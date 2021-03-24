@@ -29,7 +29,6 @@ const takeAndNotify = (member, reason) => {
             .catch(err => {
                 console.log('[AC] takeAndNotify: fail to remove executor\'s admin roles', 'reason:', reason)
             })
-        console.log('anticrash 1')
     })
 
     member.user.createDM()
@@ -44,7 +43,6 @@ const takeAndNotify = (member, reason) => {
  */
 module.exports.monitorBotInvites = member => {
     if(member.user.bot) {
-        console.log('dis a bot')
         getDef(() => {
             member.kick('Бот был добавлен, пока антикраш защита была включена')
             member.guild.fetchAuditLogs({ type: 28 })
@@ -162,8 +160,7 @@ module.exports.monitorRoleDelete = role => {
         guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
             .then(audit => {
                 var executor = audit.entries.first().executor
-                if(executor.id == process.env.MYID)
-                    return
+
                 // Executor Role Delete Entries
                 var eRDE = audit.entries.filter(e => e.executor.id == executor.id)
                 eRDE = eRDE.sort((a, b) => { // Sort from OLD to NEW
@@ -195,14 +192,12 @@ module.exports.monitorRoleDelete = role => {
  */
 module.exports.monitorChannelDelete = channel => {
     const kickPool = 2
-    if(channel.parent && channel.parent.name != '⌗                       Private︰ 数字')
+    if(channel.parent.name != '⌗                       Private︰ 数字')
         getDef(() => {
             var guild = channel.guild
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
                 .then(audit => {
                     var executor = audit.entries.first().executor
-                    if(executor.id == process.env.MYID)
-                        return
 
                     // Executor Role Delete Entries
                     var eCDE = audit.entries.filter(e => e.executor.id == executor.id)

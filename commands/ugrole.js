@@ -29,7 +29,6 @@ module.exports =
                 rClient.set(msg.author.id, JSON.stringify({ gameRoles: false }), err => { if(err) throw err })
                 rClient.quit()
                 msg.member.roles.remove(constants.gameRolesArray)
-                console.log('ugrole 1')
                 utl.embed(msg, `Игровые роли **выключены**`)
             }
         })

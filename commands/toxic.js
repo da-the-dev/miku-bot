@@ -27,7 +27,6 @@ module.exports =
                         delete userData.toxic
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
                         mMember.roles.remove(constants.roles.toxic)
-                        console.log('toxic 1')
                         utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
                         rClient.quit()
                     } else {

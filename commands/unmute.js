@@ -38,7 +38,7 @@ module.exports =
                             console.error(err)
 
                         mMember.roles.remove(constants.roles.muted)
-                        console.log('unmute 1')
+
                         var userData = JSON.parse(res)
                         if(userData.mute) delete userData.mute
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })

@@ -23,6 +23,7 @@
     "moment": "^2.29.1",
     "node-redis-scan": "^1.2.1",
     "node-schedule": "^2.0.0",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "request": "^2.88.2"
   }
 }

@@ -35,7 +35,6 @@ module.exports = (client) => {
                         channel.send(utl.embed.build(msg, `<@${member.user.id}> был(-а) размьючен(-а)`))
                     })
                     member.roles.remove(constants.roles.muted)
-                    console.log('redisUn 1')
                 }
             })
         })

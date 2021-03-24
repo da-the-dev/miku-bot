@@ -106,7 +106,6 @@ module.exports.roomDeletion = (oldState, newState) => {
         if(role && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
             console.log('[PR] delete owner room cause dis')
             oldState.member.roles.remove(constants.roles.owner)
-            console.log('pm1 1')
             if(!channel.deleted)
                 channel.delete()
                     .catch(console.log('[PR] fail to delete after owner left'))

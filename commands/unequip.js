@@ -30,7 +30,6 @@ module.exports =
                         }
                         var role = rolesData.find(r => r.pos == pos)
                         msg.member.roles.remove(role.id)
-                        console.log('uneqip 1')
                         utl.embed(msg, `Роль <@&${role.id}> успешно снята`)
                         rClient.quit()
                     }

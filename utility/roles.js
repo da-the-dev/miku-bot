@@ -4,21 +4,19 @@ const Discord = require('discord.js')
 
 module.exports.reapplyRoles = (member) => {
     const rClient = redis.createClient(process.env.RURL)
-    rClient.get(member.id, async (err, res) => {
+    rClient.get(member.id, (err, res) => {
         if(err) throw err
         if(res) {
             var userData = JSON.parse(res)
 
             // Reapply roles
             if(userData.mute)
-                await member.roles.add(constants.roles.muted)
+                member.roles.add(constants.roles.muted)
             if(userData.toxic)
-                await member.roles.add(constants.roles.toxic)
+                member.roles.add(constants.roles.toxic)
             if(userData.ban)
-                await member.roles.add(constants.roles.localban)
-            console.log("might've reaplied")
+                member.roles.add(constants.roles.localban)
         }
-        rClient.quit()
     })
 }
 
@@ -112,7 +110,7 @@ module.exports.daylyTextActivity = (msg) => {
         }
 
 }
-var lastNightMessages = new Map()
+var lastNightMessages = []
 var nightCounter = 0
 /**
  * If user sent 500+ messages during the NIGHT give a role
@@ -122,7 +120,7 @@ module.exports.nightTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
     if(timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6 && msg.channel.id == constants.channels.general)
         if(nightCounter <= n) { // If not enough messages has been collected, keep collecting
-            lastNightMessages.set(msg.author.id, (lastNightMessages.get(msg.author.id) || 0) + 1)
+            lastNightMessages.set((lastNightMessages.get(msg.author.id) || 0) + 1)
             nightCounter++
             console.log('[AC] Added message')
         }
