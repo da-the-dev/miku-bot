@@ -49,7 +49,6 @@ module.exports =
 
                 while(successCounter < topAmount) {
                     var member = msg.guild.members.cache.get(bKeys[counter])
-                    console.log(member)
                     if(member) {
                         var name = member.nickname ? member.nickname : member.user.username
 
@@ -59,7 +58,6 @@ module.exports =
                         successCounter++
                     }
                     counter++
-                    console.log(counter, successCounter)
                 }
 
                 msg.reply(embed)
