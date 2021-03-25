@@ -13,7 +13,7 @@ const buildMessage = (msg, reactions, desc, name) => {
     var rand = Math.floor(Math.random() * reactions.length)
 
     msg.channel.send((new Discord.MessageEmbed()
-        .setAuthor(`Реакция: ${name}`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
+        .setAuthor(`Реакция: ${name}`, `https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png`)
         .setDescription(`<@${msg.member.id}> ${desc}`)
         .setImage(reactions[rand])
         .setColor('#2F3136')
@@ -21,23 +21,29 @@ const buildMessage = (msg, reactions, desc, name) => {
     ))
 }
 
-const buildMessageRequest = (msg, reactions, desc, name) => {
+/**
+ * @description Constructs an embed to send, but using request
+ * @param {Discord.Message} msg
+ * @param {Array<string>} reactions
+ * @param {string} desc
+ */
+const buildMessageRequest = (msg, desc, name) => {
     if(!msg.deleted) msg.delete()
-    var rand = Math.floor(Math.random() * reactions.length)
+
+    console.log(desc, name)
 
     let request = require('request')
-    request(`https://nekos.life/api/v2/img/${name}`,(err,res,body) =>{
-    let arr = JSON.parse((body))
+    request(`https://nekos.life/api/v2/img/${name}`, (err, res, body) => {
+        let arr = JSON.parse(body)
 
-    msg.channel.send((new Discord.MessageEmbed()
-        .setAuthor(`Реакция: ${name}`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
-        .setDescription(`<@${msg.member.id}> ${desc}`)
-        .setImage(arr.url)
-        .setColor('#2F3136')
-        .setFooter(`${msg.author.tag}`, msg.author.avatarURL())
-        .setTimestamp()
-    ))
-})
+        msg.channel.send((new Discord.MessageEmbed()
+            .setAuthor(`Реакция: ${name}`, `https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png`)
+            .setDescription(`<@${msg.member.id}> ${desc}`)
+            .setImage(arr.url)
+            .setColor('#2F3136')
+            .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+        ))
+    })
 }
 
 module.exports =
@@ -53,7 +59,7 @@ module.exports =
                 var mMember = msg.mentions.members.first()
                 if(mMember)
                     if(mMember.id != msg.member.id)
-                        buildMessage(msg, reactions.angryReactions, `разозлился(-ась) на <@${mMember.id}>`, "Злость")
+                        buildMessage(msg, reactions.angryReactions, `разозлился(-ась) на <@${mMember.id}>`, `Злость`)
                     else {
                         msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
                         msg.delete()
@@ -63,7 +69,7 @@ module.exports =
                 var mMember = msg.mentions.members.first()
                 if(mMember)
                     if(mMember.id != msg.member.id)
-                        buildMessage(msg, reactions.hitReactions, `ударил(-а) <@${mMember.id}>`, "Удар")
+                        buildMessage(msg, reactions.hitReactions, `ударил(-а) <@${mMember.id}>`, `Удар`)
                     else {
                         msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
                         msg.delete()
@@ -73,51 +79,14 @@ module.exports =
                 var mMember = msg.mentions.members.first()
                 if(mMember)
                     if(mMember.id != msg.member.id)
-                        buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, "Объятие")
+                        buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, `Объятие`)
                     else {
                         msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
                         msg.delete()
                     }
                 break
             case 'sad':
-                buildMessage(msg, reactions.sadReactions, 'грустит', "Грусть")
+                buildMessage(msg, reactions.sadReactions, 'грустит', `Грусть`)
                 break
-        case 'pat':
-            if(mMember)
-                    if(mMember.id != msg.member.id)
-                    buildMessageRequest(msg, "погладил(-а)", "Погладил(-а)")
-            else {
-                msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
-                msg.delete()
-            }
-                break
-            
-            case 'poke':
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                    buildMessageRequest(msg, "ткнул(-а)", "Ткнул(-а)")
-            else {
-                msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
-                msg.delete()
-            }
-                break
-                case 'slap':
-                    if(mMember)
-                    if(mMember.id != msg.member.id)
-                    buildMessageRequest(msg, "ударил(-а)", "Ударил(-a)")
-                    else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
-                        msg.delete()
-                    }
-                        break
-                case 'cuddle':
-                    if(mMember)
-                    if(mMember.id != msg.member.id)
-                    buildMessageRequest(msg, "потискал(-а)", "Потискал(-a)")
-                    else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
-                        msg.delete()
-                    }
-                        break
         }
     }
