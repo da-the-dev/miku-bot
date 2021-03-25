@@ -1,19 +1,18 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const reactions = require('./reactions')
-
+const request = require('request')
 /**
  * @description Constructs an embed to send
- * @param {Discord.Message} msg
- * @param {Array<string>} reactions
- * @param {string} desc
+ * @param {Discord.Message} msg - Message to reply to
+ * @param {Array<string>} reactions - Reaction's GIF array
+ * @param {string} desc - Embed's description
  */
-const buildMessage = (msg, reactions, desc, name) => {
+const buildMessage = (msg, reactions, desc) => {
     if(!msg.deleted) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
     msg.channel.send((new Discord.MessageEmbed()
-        .setAuthor(`Реакция: ${name}`, `https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png`)
         .setDescription(`<@${msg.member.id}> ${desc}`)
         .setImage(reactions[rand])
         .setColor('#2F3136')
@@ -23,21 +22,21 @@ const buildMessage = (msg, reactions, desc, name) => {
 
 /**
  * @description Constructs an embed to send, but using request
- * @param {Discord.Message} msg
- * @param {Array<string>} reactions
- * @param {string} desc
+ * @param {Discord.Message} msg - Message to reply to
+ * @param {Array<string>} name - Reaction name for the API
+ * @param {string} desc - Embed's description
  */
-const buildMessageRequest = (msg, desc, name) => {
+const buildMessageRequest = (msg, name, desc) => {
     if(!msg.deleted) msg.delete()
 
-    console.log(desc, name)
-
     let request = require('request')
+    console.log(`https://nekos.life/api/v2/img/${name}`)
     request(`https://nekos.life/api/v2/img/${name}`, (err, res, body) => {
-        let arr = JSON.parse(body)
+
+        console.log('err', err, 'body', body, 'res', res)
+        let arr = JSON.parse((body))
 
         msg.channel.send((new Discord.MessageEmbed()
-            .setAuthor(`Реакция: ${name}`, `https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png`)
             .setDescription(`<@${msg.member.id}> ${desc}`)
             .setImage(arr.url)
             .setColor('#2F3136')
@@ -87,6 +86,49 @@ module.exports =
                 break
             case 'sad':
                 buildMessage(msg, reactions.sadReactions, 'грустит', `Грусть`)
+                break
+
+            case 'pat':
+                var mMember = msg.mentions.members.first()
+                if(mMember)
+                    if(mMember.id != msg.member.id)
+                        buildMessageRequest(msg, 'pat', `погладил(-а) <@${mMember.id}>`)
+                    else {
+                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
+                break
+
+            case 'poke':
+                var mMember = msg.mentions.members.first()
+                if(mMember)
+                    if(mMember.id != msg.member.id)
+                        buildMessageRequest(msg, 'poke', `ткнул(-а) <@${mMember.id}>`)
+                    else {
+                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
+
+                break
+            case 'slap':
+                var mMember = msg.mentions.members.first()
+                if(mMember)
+                    if(mMember.id != msg.member.id)
+                        buildMessageRequest(msg, 'slap', `шлепнул(-а) <@${mMember.id}>`)
+                    else {
+                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
+                break
+            case 'cuddle':
+                var mMember = msg.mentions.members.first()
+                if(mMember)
+                    if(mMember.id != msg.member.id)
+                        buildMessageRequest(msg, 'cuddle', `потискал(-а) <@${mMember.id}>`)
+                    else {
+                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
                 break
         }
     }

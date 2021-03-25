@@ -124,7 +124,7 @@ client.on('message', msg => {
             }
 
             // Reactions
-            // utl.reactionHandler(args, msg, client)
+            utl.reactionHandler(args, msg, client)
         }
         // Selfy moderation
         if(msg.channel.id == '810876164960813086') {
