@@ -21,6 +21,25 @@ const buildMessage = (msg, reactions, desc, name) => {
     ))
 }
 
+const buildMessageRequest = (msg, reactions, desc, name) => {
+    if(!msg.deleted) msg.delete()
+    var rand = Math.floor(Math.random() * reactions.length)
+
+    let request = require('request')
+    request(`https://nekos.life/api/v2/img/${name}`,(err,res,body) =>{
+    let arr = JSON.parse((body))
+
+    msg.channel.send((new Discord.MessageEmbed()
+        .setAuthor(`Реакция: ${name}`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
+        .setDescription(`<@${msg.member.id}> ${desc}`)
+        .setImage(arr.url)
+        .setColor('#2F3136')
+        .setFooter(`${msg.author.tag}`, msg.author.avatarURL())
+        .setTimestamp()
+    ))
+})
+}
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -63,5 +82,42 @@ module.exports =
             case 'sad':
                 buildMessage(msg, reactions.sadReactions, 'грустит', "Грусть")
                 break
+        case 'pat':
+            if(mMember)
+                    if(mMember.id != msg.member.id)
+                    buildMessageRequest(msg, "погладил(-а)", "Погладил(-а)")
+            else {
+                msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                msg.delete()
+            }
+                break
+            
+            case 'poke':
+                if(mMember)
+                    if(mMember.id != msg.member.id)
+                    buildMessageRequest(msg, "ткнул(-а)", "Ткнул(-а)")
+            else {
+                msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                msg.delete()
+            }
+                break
+                case 'slap':
+                    if(mMember)
+                    if(mMember.id != msg.member.id)
+                    buildMessageRequest(msg, "ударил(-а)", "Ударил(-a)")
+                    else {
+                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
+                        break
+                case 'cuddle':
+                    if(mMember)
+                    if(mMember.id != msg.member.id)
+                    buildMessageRequest(msg, "потискал(-а)", "Потискал(-a)")
+                    else {
+                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        msg.delete()
+                    }
+                        break
         }
     }
