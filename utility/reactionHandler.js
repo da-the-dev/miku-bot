@@ -29,9 +29,9 @@ module.exports =
     * @description Handles reaction commands
     */
     (args, msg, client) => {
-        var mMember = msg.mentions.members.first()
         switch(args[0]) {
             case 'angry':
+                var mMember = msg.mentions.members.first()
                 if(mMember)
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.angryReactions, `разозлился(-ась) на <@${mMember.id}>`, "Злость")
@@ -41,6 +41,7 @@ module.exports =
                     }
                 break
             case 'hit':
+                var mMember = msg.mentions.members.first()
                 if(mMember)
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.hitReactions, `ударил(-а) <@${mMember.id}>`, "Удар")
@@ -50,6 +51,7 @@ module.exports =
                     }
                 break
             case 'hug':
+                var mMember = msg.mentions.members.first()
                 if(mMember)
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, "Объятие")
