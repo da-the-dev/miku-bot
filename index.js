@@ -84,6 +84,7 @@ client.on('messageReactionAdd', (reaction, user) => {
     utl.verify.verify(reaction, user)
     if(reaction.message.channel.id != '810201527478124555')
         utl.shop(reaction, user, client)
+    utl.reportHandler.reportAssignmentHandler(reaction, user, client)
 })
 client.on('message', msg => {
     // Activity
