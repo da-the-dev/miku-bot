@@ -15,6 +15,10 @@ module.exports =
             utl.embed(msg, 'Не указана ставка!')
             return
         }
+        if(bet < 50) {
+            utl.embed(msg, 'Ставка должна быть больше 50 <:__:813854413579354143>!')
+            return
+        }
 
         const rClient = redis.createClient(process.env.RURL)
         const get = util.promisify(rClient.get).bind(rClient)
@@ -35,12 +39,13 @@ module.exports =
                     }
 
                     var rand = Math.floor(Math.random() * 99) + 1
-                    if(rand >= 70) {
+                    if(rand >= 95) {
                         userData.money += bet * 2
                         utl.embed(msg, `Вы выиграли! Ваш баланс: **${userData.money}** <:__:813854413579354143>`)
                     }
                     else {
                         userData.money -= bet
+                        userData.money < 0 ? userData = 0 : null
                         utl.embed(msg, `Вы проиграли! Ваш баланс: **${userData.money}** <:__:813854413579354143>`)
                     }
 
