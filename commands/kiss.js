@@ -10,17 +10,14 @@ module.exports =
     */
     (args, msg, client) => {
         var mMember = msg.mentions.members.first()
-        if(!mMember)
+        if(!mMember) {
+            utl.embed(msg, 'Не указан пользователь!')
             return
-        if(mMember.id == msg.member.id)
+        }
+        if(mMember.id == msg.member.id) {
+            utl.embed(msg, 'Не лучшая идея')
             return
-
-        var name1 = msg.member.nickname
-        if(!name1)
-            name1 = msg.author.username
-        var name2 = mMember.nickname
-        if(!name2)
-            name2 = mMember.user.username
+        }
 
         var firstEmbed = new Discord.MessageEmbed()
             .setDescription(`<@${mMember.id}>, с тобой хочет поцеловаться <@${msg.member.id}>, что ответишь?`)
