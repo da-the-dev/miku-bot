@@ -4,8 +4,9 @@ const constants = require('../constants.json')
  * 
  * @param {Discord.MessageReaction} reaction 
  * @param {Discord.User} user 
+ * @param {Discord.Client} client 
  */
-module.exports.verify = async (reaction, user) => {
+module.exports.verify = async (reaction, user, client) => {
     if(reaction.message.id == '819295686415482921') {
         console.log(`[VR] Verified user '${user.tag}'`)
 
@@ -24,15 +25,16 @@ module.exports.verify = async (reaction, user) => {
             .setColor('#2F3136')
             .setFooter(`${user.tag} • ${calculateTime()}`, user.avatarURL())
 
-        if(user.id != '810942432274415636') { // My second account ID
-            var m = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
-            m.react('<:__:824359401895886908>')
-            setTimeout(m => {
-                m.delete()
-            }, 60000, m)
+        // if(user.id != '810942432274415636') { // My second account ID
+        var m = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
+        client.welcomeReactionReward = true
+        setTimeout(m => {
+            client.welcomeReactionReward = false
+            m.delete()
+        }, 60000, m)
 
-        } else // Send my 2 acc's welcome message to dev channel instead
-            reaction.message.guild.channels.cache.get(constants.channels.dev).send(`<@${user.id}>`, emb)
+        // } else // Send my 2 acc's welcome message to dev channel instead
+        //     reaction.message.guild.channels.cache.get(constants.channels.dev).send(`<@${user.id}>`, emb)
 
     }
 }

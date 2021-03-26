@@ -11,22 +11,15 @@ module.exports =
      */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {
-            console.log('elderly job start')
-            msg.guild.members.fetch({ cache: true })
-                .then(() => {
-                    msg.guild.members.cache.forEach(async m => {
-                        console.log(m.displayName, Date.now() - m.joinedTimestamp, Date.now() - m.joinedTimestamp > 7.884e+9)
-                        if(Date.now() - m.joinedTimestamp > 7.884e+9 && !m.user.bot) {
-                            await m.roles.add('824914346345496598')
-                        }
+            var c = msg.content.toLocaleLowerCase()
+            console.log(c)
+            if(c.includes('добрый') || c.includes('привет') || c.includes('хай') || c.includes('welcome') || c.includes('салам') || c.includes('добро')) {
+                console.log('yes')
+                msg.channel.send('s')
+                    .then(m => {
+                        m.react('<:__:824359401895886908>')
                     })
-                })
-            console.log('elderly job end')
-            var member = msg.guild.members.cache.get("793038961588961300")
-            console.log(7.884e+9)
-            console.log(member.joinedAt.toLocaleDateString())
-            console.log(Date.now() - member.joinedTimestamp)
-            console.log(Date.now() - member.joinedTimestamp > 7.884e+9)
+            }
         }
     }
 
