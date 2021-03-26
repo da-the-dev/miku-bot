@@ -25,10 +25,11 @@ module.exports.verify = async (reaction, user) => {
             .setFooter(`${user.tag} • ${calculateTime()}`, user.avatarURL())
 
         if(user.id != '810942432274415636') { // My second account ID
-            reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
-                .then(m => {
-                    m.delete(60000)
-                })
+            var m = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
+            setTimeout(m => {
+                m.delete()
+            }, 60000, m)
+
         } else // Send my 2 acc's welcome message to dev channel instead
             reaction.message.guild.channels.cache.get(constants.channels.dev).send(`<@${user.id}>`, emb)
 
