@@ -27,7 +27,7 @@ const calculateTime = (timestamp) => {
  * @param {Discord.Client} client - Bot client
  */
 module.exports.reportAssignmentHandler = async (reaction, user, client) => {
-    if(reaction.message.channel.id == constants.channels.dev) {
+    if(reaction.message.channel.id == constants.channels.reports) {
         if(reaction.emoji.name == "☑️" && user.id != client.user.id) {
             const rClient = redis.createClient(process.env.RURL)
             const get = util.promisify(rClient.get).bind(rClient)
