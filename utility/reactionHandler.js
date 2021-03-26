@@ -60,7 +60,7 @@ module.exports =
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.angryReactions, `разозлился(-ась) на <@${mMember.id}>`, `Злость`)
                     else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        utl.embed(msg, 'Не лучшая идея')
                         msg.delete()
                     }
                 break
@@ -70,7 +70,7 @@ module.exports =
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.hitReactions, `ударил(-а) <@${mMember.id}>`, `Удар`)
                     else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        utl.embed(msg, 'Не лучшая идея')
                         msg.delete()
                     }
                 break
@@ -80,7 +80,7 @@ module.exports =
                     if(mMember.id != msg.member.id)
                         buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, `Объятие`)
                     else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        utl.embed(msg, 'Не лучшая идея')
                         msg.delete()
                     }
                 break
@@ -94,7 +94,7 @@ module.exports =
                     if(mMember.id != msg.member.id)
                         buildMessageRequest(msg, 'pat', `погладил(-а) <@${mMember.id}>`)
                     else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        utl.embed(msg, 'Не лучшая идея')
                         msg.delete()
                     }
                 break
@@ -105,7 +105,7 @@ module.exports =
                     if(mMember.id != msg.member.id)
                         buildMessageRequest(msg, 'poke', `ткнул(-а) <@${mMember.id}>`)
                     else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        utl.embed(msg, 'Не лучшая идея')
                         msg.delete()
                     }
 
@@ -126,7 +126,7 @@ module.exports =
                     if(mMember.id != msg.member.id)
                         buildMessageRequest(msg, 'cuddle', `потискал(-а) <@${mMember.id}>`)
                     else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
+                        utl.embed(msg, 'Не лучшая идея')
                         msg.delete()
                     }
                 break
