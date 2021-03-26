@@ -45,7 +45,7 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
             const takenReport = reaction.message.embeds[0]
             takenReport.setDescription(description)
             takenReport.setFooter(`Report-System • ${calculateTime(Date.now())}`, client.user.avatarURL())
-            takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Жалоба на⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.guilty}\`\`\``, true)
+            takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀Жалоба на⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.guilty}\`\`\``, true)
             takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀Содержимое жалобы⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.description}\`\`\``, true)
 
             reaction.message.edit(takenReport)
@@ -59,26 +59,31 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
             return
         }
 
-        if(reaction.emoji.name == "✅" && user.id != client.user.id) {
+        var moderID = reaction.message.embeds[0].description
+        moderID = moderID.slice(moderID.indexOf('<') + 2, moderID.length - 1)
+
+        if(reaction.emoji.name == "✅" && user.id != client.user.id && user.id == moderID) {
             var name = reaction.message.embeds[0].author.name
             name = name.slice(0, name.indexOf('•') - 1)
             var successEmbed = new Discord.MessageEmbed()
                 .setDescription(`<@${user.id}> закрыл репорт с пометкой **выполнен**`)
-                .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].url)
+                .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].author.proxyIconURL)
                 .setColor(reaction.message.embeds[0].color)
                 .setFooter(`Report-System • ${calculateTime(Date.now())}`, client.user.avatarURL())
             reaction.message.edit(successEmbed)
                 .then(m => {
                     m.reactions.removeAll()
                 })
+            return
         }
 
-        if(reaction.emoji.name == "❌" && user.id != client.user.id) {
+
+        if(reaction.emoji.name == "❌" && user.id != client.user.id && user.id == moderID) {
             var name = reaction.message.embeds[0].author.name
             name = name.slice(0, name.indexOf('•') - 1)
             var successEmbed = new Discord.MessageEmbed()
                 .setDescription(`<@${user.id}> закрыл репорт с пометкой **не выполнен**`)
-                .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].url)
+                .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].author.proxyIconURL)
                 .setColor(reaction.message.embeds[0].color)
                 .setFooter(`Report-System • ${calculateTime(Date.now())}`, client.user.avatarURL())
             reaction.message.edit(successEmbed)
