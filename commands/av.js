@@ -13,11 +13,11 @@ module.exports =
             .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
         var mMember = msg.mentions.members.first()
         if(!mMember) {
-            embed.setDescription(`Аватар <@${msg.member.id}>`)
-            embed.setImage(msg.author.avatarURL())
+            embed.setDescription(`:white_small_square: Аватар пользователя <@${msg.member.id}>`)
+            embed.setImage(msg.author.displayAvatarURL({ dynamic: true }))
         } else {
-            embed.setDescription(`Аватар <@${mMember.id}>`)
-            embed.setImage(mMember.user.avatarURL())
+            embed.setDescription(`:white_small_square: Аватар пользователя <@${mMember.id}>`)
+            embed.setImage(mMember.user.displayAvatarURL({ dynamic: true }))
         }
 
         msg.channel.send(embed)
