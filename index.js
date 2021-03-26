@@ -37,6 +37,7 @@ client.once('ready', () => {
     utl.privateRooms.createRoom(client)
     utl.redisUnmute(client)
     utl.moneyGet.voiceActivityInit(client)
+    utl.elderlyRole(client.guilds.cache.first())
 })
 
 // Role events
