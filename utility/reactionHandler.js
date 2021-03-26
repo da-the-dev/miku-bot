@@ -9,7 +9,6 @@ const reactions = require('./reactions')
  * @param {string} description - Embed's description
  */
 const buildMessage = (msg, reactions, description) => {
-    console.log(msg)
     if(!msg.deleted) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
@@ -22,44 +21,20 @@ const buildMessage = (msg, reactions, description) => {
 }
 
 /**
- * @description Constructs an embed to send, but using request
- * @param {Discord.Message} msg - Message to reply to
- * @param {Array<string>} name - Reaction name for the API
- * @param {string} description - Embed's description
- */
-
-const buildMessageRequest = (msg, name, description) => {
-    if(!msg.deleted) msg.delete()
-
-    let request = require('request')
-    console.log(`https://nekos.life/api/v2/img/${name}`)
-    request(`https://nekos.life/api/v2/img/${name}`, (err, res, body) => {
-
-        // console.log('err', err, 'body', body, 'res', res)
-        let arr = JSON.parse((body))
-
-        msg.channel.send((new Discord.MessageEmbed()
-            .setDescription(`<@${msg.member.id}> ${description}`)
-            .setImage(arr.url)
-            .setColor('#2F3136')
-            .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
-        ))
-    })
-}
-
-/**
  * Handles multiple types of reactions in one function
  * @param {Discord.GuildMember} mMember
  * @param {Array} args - Build function parametrs
  */
 const reactionHandle = (mMember, ...args) => {
     var msg = args.find(a => a.channel)
-    var description = args.find(a => typeof a == 'string')
-    var dIndex = args.findIndex(a => typeof a == 'string')
-
-    args[dIndex]
-
-    if(mMember != null && mMember.id != msg.author.id) {
+    if(mMember === null) {
+        buildMessage(...args)
+        return
+    }
+    var msg = args.find(a => a.channel)
+    if(mMember != undefined && mMember.id != msg.author.id) {
+        var dIndex = args.findIndex(a => typeof a == 'string')
+        args[dIndex] = args[dIndex] + ` <@${mMember.id}>`
         buildMessage(...args)
     } else {
         utl.embed(msg, 'Не лучшая идея')
@@ -77,89 +52,63 @@ module.exports =
         switch(args[0]) {
             // buildMessage reactions
             case 'angry':
-                var mMember = msg.mentions.members.first()
-                // console.log(mMember)
-                reactionHandle(null, msg, reactions.angryReactions, `разозлился(-ась) на`, `Злость`)
+                reactionHandle(msg.mentions.members.first(), msg, reactions.angry, `разозлился(-ась) на`)
                 break
             case 'hit':
-                var mMember = msg.mentions.members.first()
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessage(msg, reactions.hitReactions, `ударил(-а)`, `Удар`)
-                    else {
-                        utl.embed(msg, 'Не лучшая идея')
-                        msg.delete()
-                    }
+                reactionHandle(msg.mentions.members.first(), msg, reactions.hit, `ударил(-а)`)
                 break
             case 'hug':
-                var mMember = msg.mentions.members.first()
-                reactionHandle(mMember, msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`)
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessage(msg, reactions.hugReactions, `обнял(-а) <@${mMember.id}>`, `Объятие`)
-                    else {
-                        utl.embed(msg, 'Не лучшая идея')
-                        msg.delete()
-                    }
+                reactionHandle(msg.mentions.members.first(), msg, reactions.hug, `обнял(-а)`)
                 break
             case 'sad':
-                buildMessage(msg, reactions.sadReactions, 'грустит', `Грусть`)
+                reactionHandle(null, msg, reactions.sad, 'грустит')
+                break
+
+            case 'slap':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.slap, `ударил(-а) по лицу`)
+                break
+            case 'poke':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.poke, `ткнул(-а)`)
+                break
+            case 'pat':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.poke, `погладил(-а)`)
+                break
+            case 'cuddle':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.cuddle, `тискает`)
                 break
 
             case 'bite':
-                var mMember = msg.mentions.members.first()
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessage(msg, reactions.biteReactions, `укусил(-а) <@${mMember.id}>`)
-                    else {
-                        utl.embed(msg, 'Не лучшая идея')
-                        msg.delete()
-                    }
+                reactionHandle(msg.mentions.members.first(), msg, reactions.bite, `укусил(-а)`)
+                break
+            case 'cheek':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.cheek, `поцеловал(-а) в щеку`)
+                break
+            case 'cry':
+                reactionHandle(null, msg, reactions.cry, `плачет`)
+                break
+            case 'happy':
+                reactionHandle(null, msg, reactions.happy, `радуется`)
                 break
 
-            // buildMessageRequest reactions
-            case 'pat':
-                var mMember = msg.mentions.members.first()
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessageRequest(msg, 'pat', `погладил(-а) <@${mMember.id}>`)
-                    else {
-                        utl.embed(msg, 'Не лучшая идея')
-                        msg.delete()
-                    }
+            case 'lick':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.lick, `лижет`)
                 break
-            case 'poke':
-                var mMember = msg.mentions.members.first()
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessageRequest(msg, 'poke', `ткнул(-а) <@${mMember.id}>`)
-                    else {
-                        utl.embed(msg, 'Не лучшая идея')
-                        msg.delete()
-                    }
-
+            case 'love':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.love, `признается в любви`)
                 break
-            case 'slap':
-                var mMember = msg.mentions.members.first()
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessageRequest(msg, 'slap', `шлепнул(-а) <@${mMember.id}>`)
-                    else {
-                        msg.channel.send(embeds.error(msg.member, 'Не лучшая идея'))
-                        msg.delete()
-                    }
+            case 'sleep':
+                reactionHandle(null, msg, reactions.sleep, `спит`)
                 break
-            case 'cuddle':
-                var mMember = msg.mentions.members.first()
-                if(mMember)
-                    if(mMember.id != msg.member.id)
-                        buildMessageRequest(msg, 'cuddle', `потискал(-а) <@${mMember.id}>`)
-                    else {
-                        utl.embed(msg, 'Не лучшая идея')
-                        msg.delete()
-                    }
+            case 'smoke':
+                reactionHandle(null, msg, reactions.smoke, `курит`)
                 break
 
+            case 'tea':
+                reactionHandle(null, msg, reactions.tea, `наслаждается чаем`)
+                break
+            case 'virt':
+                reactionHandle(msg.mentions.members.first(), msg, reactions.virt, `виртует с`)
+                break
 
         }
     }
