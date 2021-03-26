@@ -22,6 +22,16 @@ module.exports =
             return
         }
 
+        // Reply to report with response message
+        msg.channel.send(
+            new Discord.MessageEmbed()
+                .setDescription(```Жалоба на пользователя ${mMember.user.tag} отправлена на рассмотрение!```)
+                .setAuthor(msg.author.tag, msg.author.avatarURL())
+                .setColor('#2F3136')
+                .setFooter(`Hoteru • Жалобы • ${utl.embed.calculateTime(msg)}`, client.user.avatarURL())
+        )
+
+
         var description = `Жалоба на пользователя: **${mMember.user.tag}**\nТекст жалобы: *${args.join()}*\n`
         if(msg.member.voice.channel)
             description += `[*Голосовой канал пожаловавшегося*](${await (await msg.member.voice.channel.createInvite()).url})\n`
