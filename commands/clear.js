@@ -16,8 +16,13 @@ module.exports =
                 util.embed(msg, 'Не указано количество сообщений!')
                 return
             }
-            msg.channel.bulkDelete(msgAmount, true)
-                .then(msgs => util.embed(msg, `Удалено **${msgs.size}** сообщений`))
+            if(msgAmount <= 100)
+                msg.channel.bulkDelete(msgAmount, true)
+                    .then(msgs => util.embed(msg, `Удалено **${msgs.size}** сообщений`))
+            else {
+                util.embed(msg, 'Указано более 100 сообщений!')
+                return
+            }
         } else
             util.embed(msg, 'У Вас нет прав на эту команду!')
     }
