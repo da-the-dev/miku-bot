@@ -16,12 +16,18 @@ module.exports =
             utl.embed(msg, 'Не указан участник!')
             return
         }
+        if(mMember.id == msg.author.id) {
+            utl.embed(msg, 'Не лучшая идея')
+            return
+        }
+
         args.shift()
         args.shift()
         if(args.length <= 0) {
             utl.embed(msg, 'Не указана причина!')
             return
         }
+
 
         // Reply to report with response message
         var replyEmbed = new Discord.MessageEmbed()
