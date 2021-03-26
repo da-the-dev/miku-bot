@@ -51,7 +51,7 @@ module.exports =
         const rClient = redis.createClient(process.env.RURL)
         const set = util.promisify(rClient.set).bind(rClient)
 
-        var data = { guilty: mMember.user.tag, description: args.join() }
+        var data = { guilty: mMember.user.tag, description: args.join(' ') }
         if(msg.member.voice.channel)
             data.reportVoiceChannel = (await msg.member.voice.channel.createInvite()).url
         if(mMember.voice.channel)

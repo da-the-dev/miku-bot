@@ -59,8 +59,9 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
             return
         }
 
+        await reaction.message.channel.messages.fetch(reaction.message.id, true)
         var moderID = reaction.message.embeds[0].description
-        moderID = moderID.slice(moderID.indexOf('<') + 2, moderID.length - 1)
+        moderID = moderID.slice(moderID.indexOf('<') + 2, moderID.indexOf('>'))
 
         if(reaction.emoji.name == "✅" && user.id != client.user.id && user.id == moderID) {
             var name = reaction.message.embeds[0].author.name
