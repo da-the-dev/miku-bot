@@ -26,6 +26,7 @@ module.exports.verify = async (reaction, user) => {
 
         if(user.id != '810942432274415636') { // My second account ID
             var m = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
+            m.react('<:__:824359401895886908>')
             setTimeout(m => {
                 m.delete()
             }, 60000, m)
