@@ -20,6 +20,12 @@ const calculateTime = (timestamp) => {
     return time
 }
 
+/**
+ * Handles report reactions
+ * @param {Discord.MessageReaction} reaction - Reaction
+ * @param {Discord.User} user - Reaction's user
+ * @param {Discord.Client} client - Bot client
+ */
 module.exports.reportAssignmentHandler = async (reaction, user, client) => {
     if(reaction.message.channel.id == constants.channels.dev) {
         if(reaction.emoji.name == "☑️" && user.id != client.user.id) {
@@ -28,16 +34,13 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
 
             var name = reaction.message.embeds[0].author.name
             name = name.slice(0, name.indexOf('•') - 1)
-            console.log(`report-${name}`)
             var reportInfo = JSON.parse(await get(`report-${name}`))
-            console.log(reportInfo)
             rClient.del(`report-${reaction.message.embeds[0].author.name}`)
             rClient.quit()
 
             var description = `\n:white_small_square: За жалобу взялся(-ась) <@${user.id}>\n`
             reportInfo.reportVoiceChannel ? description += `:white_small_square: [Канал пожаловавшегося](${reportInfo.reportVoiceChannel})\n` : null
             reportInfo.guiltyVoiceChannel ? description += `:white_small_square: [Канал виновника](${reportInfo.guiltyVoiceChannel})` : null
-            console.log(description)
 
             const takenReport = reaction.message.embeds[0]
             takenReport.setDescription(description)
@@ -52,6 +55,35 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                             await m.react('✅')
                             await m.react('❌')
                         })
+                })
+            return
+        }
+
+        if(reaction.emoji.name == "✅" && user.id != client.user.id) {
+            var name = reaction.message.embeds[0].author.name
+            name = name.slice(0, name.indexOf('•') - 1)
+            var successEmbed = new Discord.MessageEmbed()
+                .setDescription(`<@${user.id}> закрыл репорт с пометкой **выполнен**`)
+                .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].url)
+                .setColor(reaction.message.embeds[0].color)
+                .setFooter(`Report-System • ${calculateTime(Date.now())}`, client.user.avatarURL())
+            reaction.message.edit(successEmbed)
+                .then(m => {
+                    m.reactions.removeAll()
+                })
+        }
+
+        if(reaction.emoji.name == "❌" && user.id != client.user.id) {
+            var name = reaction.message.embeds[0].author.name
+            name = name.slice(0, name.indexOf('•') - 1)
+            var successEmbed = new Discord.MessageEmbed()
+                .setDescription(`<@${user.id}> закрыл репорт с пометкой **не выполнен**`)
+                .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].url)
+                .setColor(reaction.message.embeds[0].color)
+                .setFooter(`Report-System • ${calculateTime(Date.now())}`, client.user.avatarURL())
+            reaction.message.edit(successEmbed)
+                .then(m => {
+                    m.reactions.removeAll()
                 })
         }
     }

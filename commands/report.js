@@ -37,7 +37,7 @@ module.exports =
             .setAuthor(`${msg.author.tag} • Отправил жалобу `, msg.author.avatarURL())
             .setFooter(`Report-System • ${utl.embed.calculateTime(msg)}`, client.user.avatarURL())
 
-        msg.channel.send('', { embed: reportEmbed, files: Array.from(msg.attachments.values()) })
+        msg.guild.channels.cache.get(constants.channels.reports).send('', { embed: reportEmbed, files: Array.from(msg.attachments.values()) })
             .then(m => {
                 m.react('☑️')
             })
