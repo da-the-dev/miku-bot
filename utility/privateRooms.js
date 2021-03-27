@@ -88,24 +88,24 @@ module.exports.roomDeletion = (oldState, newState) => {
             })
             .then(c => {
                 newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
-                    .then(m => {
-                        m.roles.add(constants.roles.owner)
-                    })
             })
     }
 
     if(oldState.channel && oldState.channel.id != constants.channels.creator && oldState.channel.parentID == constants.categories.privateRooms) {
         var channel = oldState.channel
-        var oldOwner = oldState.member
-        if(channel.members.size <= 0) {
+        if(channel.members.size <= 0 && !channel.deleted) {
             channel.delete()
             return
         }
+        var oldOwner = oldState.member
 
         console.log(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
         if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE')) {
-            channel.permissionsFor(oldOwner).remove()
-            channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE')).permissionsIn(channel).add('CREATE_INSTANT_INVITE')
+            channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
+                .then(c => {
+                    var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
+                    channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
+                })
         }
     }
 }
