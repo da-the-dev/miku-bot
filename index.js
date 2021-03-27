@@ -112,14 +112,18 @@ client.on('message', msg => {
                 var c = client.commands[i]
                 if(c.name == args[0]) {
                     if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
-                        c.foo(args, msg, client)
                         msg.delete()
+                            .then(() => {
+                                c.foo(args, msg, client)
+                            })
                     }
                     else if(msg.channel.id == constants.channels.general && !c.allowedInGeneral)
                         msg.delete()
                     else {
-                        c.foo(args, msg, client)
                         msg.delete()
+                            .then(() => {
+                                c.foo(args, msg, client)
+                            })
                     }
                     return
                 }

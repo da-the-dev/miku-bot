@@ -8,21 +8,30 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Handles reaction commands
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)
         if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
-            var msgAmount = args[1]
+            // msg.delete()
+            var msgAmount = Number(args[1])
             if(!msgAmount) {
                 util.embed(msg, 'Не указано количество сообщений!')
                 return
             }
-            if(msgAmount <= 100)
-                msg.channel.bulkDelete(msgAmount, true)
-                    .then(msgs => util.embed(msg, `Удалено **${msgs.size}** сообщений`))
-            else {
-                util.embed(msg, 'Указано более 100 сообщений!')
+            if(!Number.isInteger(msgAmount) && !Number.isFinite(msgAmount) && !Number.isNaN(msgAmount)) {
+                util.embed(msg, 'Указано неверное количество сообщений!')
                 return
             }
+
+            var hundreds = Math.floor(msgAmount / 100)
+            var rest = msgAmount % 100
+
+            console.log(msgAmount, hundreds, rest)
+            for(i = 0; i < hundreds; i++) {
+                console.log(i)
+                await msg.channel.bulkDelete(100)
+            }
+            rest > 0 ? await msg.channel.bulkDelete(rest) : null
+            util.embed(msg, `Удалено **${msgAmount}** сообщений`).then(m => m.delete({ timeout: 3000 }))
         } else
             util.embed(msg, 'У Вас нет прав на эту команду!')
     }

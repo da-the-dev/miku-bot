@@ -14,12 +14,14 @@ module.exports =
      * Standard embed reply
      * @param {Discord.Message} msg - Disord message
      * @param {string} message - Text message to send
+     * @returns {Promise<Discord.Message>}
      */
     (msg, message) => {
-        msg.channel.send(new Discord.MessageEmbed()
+        return msg.channel.send(new Discord.MessageEmbed()
             .setDescription(message)
             .setColor('#2F3136')
             .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL()))
+
     }
 
 /**
