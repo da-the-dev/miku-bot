@@ -29,18 +29,6 @@ module.exports.reapplyRoles = (member) => {
  * @returns {Map} Merge result
  */
 const mergeMaps = (map1, map2) => {
-    function getUnique(array) {
-        var uniqueArray = [];
-
-        // Loop through array values
-        for(var value of array) {
-            if(uniqueArray.indexOf(value) === -1) {
-                uniqueArray.push(value);
-            }
-        }
-        return uniqueArray;
-    }
-
     var joinedArray = Array.from([...map1]).concat(Array.from([...map2]))
     for(i = 0; i < joinedArray.length; i++)
         for(j = 0; j < joinedArray.length; j++)
@@ -86,11 +74,11 @@ const activityCalculator = (lastMessages, activityName, guild) => {
         })
         lastMessages.clear()
         rClient.quit()
-        console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
+        // console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
     })
 }
 
-const n = 3
+const n = 3 - 1
 
 var lastDayMessages = new Map()
 var dayCounter = 0
@@ -104,10 +92,10 @@ module.exports.daylyTextActivity = (msg) => {
         if(dayCounter < n) { // If not enough messages has been collected, keep collecting
             lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
             dayCounter++
-            console.log('[AC] Added message')
+            // console.log('[AC] Added message')
         }
         else { // If enough messages collected, calculate and reset the counter
-            console.log('[AC] Calculating day activity...')
+            // console.log('[AC] Calculating day activity...')
             activityCalculator(lastDayMessages, 'day', msg.guild)
             dayCounter = 0
         }
@@ -125,10 +113,10 @@ module.exports.nightTextActivity = (msg) => {
         if(nightCounter <= n) { // If not enough messages has been collected, keep collecting
             lastNightMessages.set(msg.author.id, (lastNightMessages.get(msg.author.id) || 0) + 1)
             nightCounter++
-            console.log('[AC] Added message')
+            // console.log('[AC] Added message')
         }
         else { // If enough messages collected, calculate
-            console.log('[AC] Calculating night activity...')
+            // console.log('[AC] Calculating night activity...')
             activityCalculator(lastNightMessages, 'night', msg.guild)
             nightCounter = 0
         }
