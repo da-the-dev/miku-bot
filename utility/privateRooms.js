@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const constants = require('../constants.json')
 
 /**
- * @description Handles the room creation
+ * @description Create the "creator" voice channel
  * @param {Discord.Client} client
  */
 module.exports.createRoom = (client) => {
@@ -61,23 +61,27 @@ module.exports.roomDeletion = (oldState, newState) => {
                     [
                         {
                             id: constants.roles.verify,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                            deny: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
+                        },
+                        {
+                            id: newState.member.guild.id,
+                            deny: ['CREATE_INSTANT_INVITE']
                         },
                         {
                             id: constants.roles.muted,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                            deny: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
                         },
                         {
                             id: constants.roles.toxic,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                            deny: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
                         },
                         {
                             id: constants.roles.localban,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
+                            deny: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
                         },
                         {
                             id: newState.member.user.id,
-                            allow: ['VIEW_CHANNEL', 'CONNECT']
+                            allow: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
                         }
                     ],
                 parent: category
@@ -92,27 +96,16 @@ module.exports.roomDeletion = (oldState, newState) => {
 
     if(oldState.channel && oldState.channel.id != constants.channels.creator && oldState.channel.parentID == constants.categories.privateRooms) {
         var channel = oldState.channel
-
-        var role = oldState.member.roles.cache.get(constants.roles.owner)
-
-        // Delete if owner left
-        if(role) {
-            console.log('[PR] delete owner room cause dis')
-            oldState.member.roles.remove(constants.roles.owner)
-            console.log('pm1 1')
-            if(!channel.deleted)
-                channel.delete()
-                    .catch(console.log('[PR] fail to delete after owner left'))
+        var oldOwner = oldState.member
+        if(channel.members.size <= 0) {
+            channel.delete()
             return
         }
 
-        // Delete empty room
-        if(channel.members.size <= 0 && channel.name != '．create 部屋' && channel.parent.name == "⌗                       Private︰ 数字") {
-            console.log('[PR] delete empty room')
-            if(!channel.deleted)
-                channel.delete()
-                    .catch(console.log('[PR] fail to delete after room empty'))
-            return
+        console.log(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
+        if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE')) {
+            channel.permissionsFor(oldOwner).remove()
+            channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE')).permissionsIn(channel).add('CREATE_INSTANT_INVITE')
         }
     }
 }
