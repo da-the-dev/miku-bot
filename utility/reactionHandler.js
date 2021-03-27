@@ -107,7 +107,7 @@ module.exports =
                 reactionHandle(null, msg, reactions.tea, `наслаждается чаем`)
                 break
             case 'virt':
-                reactionHandle(msg.mentions.members.first(), msg, reactions.virt, `виртует с`)
+                reactionHandle(msg.mentions.members.first(), msg, reactions.virt, `виртит с`)
                 break
 
         }
