@@ -11,7 +11,6 @@ module.exports =
     async (args, msg, client) => {
         var chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)
         if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
-            // msg.delete()
             var msgAmount = Number(args[1])
             if(!msgAmount) {
                 util.embed(msg, 'Не указано количество сообщений!')
@@ -25,11 +24,9 @@ module.exports =
             var hundreds = Math.floor(msgAmount / 100)
             var rest = msgAmount % 100
 
-            console.log(msgAmount, hundreds, rest)
-            for(i = 0; i < hundreds; i++) {
-                console.log(i)
-                await msg.channel.bulkDelete(100)
-            }
+            for(i = 0; i < hundreds; i++)
+                msg.channel.bulkDelete(100)
+
             rest > 0 ? await msg.channel.bulkDelete(rest) : null
             util.embed(msg, `Удалено **${msgAmount}** сообщений`).then(m => m.delete({ timeout: 3000 }))
         } else
