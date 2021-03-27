@@ -1,5 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
+
+var timeout = null
 /**
  * 
  * @param {Discord.MessageReaction} reaction 
@@ -25,17 +27,20 @@ module.exports.verify = async (reaction, user, client) => {
             .setColor('#2F3136')
             .setFooter(`${user.tag} • ${calculateTime()}`, user.avatarURL())
 
-        // if(user.id != '810942432274415636') { // My second account ID
         var m = await reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, emb)
-        client.welcomeReactionReward = true
-        setTimeout(m => {
-            client.welcomeReactionReward = false
-            m.delete()
-        }, 60000, m)
-
-        // } else // Send my 2 acc's welcome message to dev channel instead
-        //     reaction.message.guild.channels.cache.get(constants.channels.dev).send(`<@${user.id}>`, emb)
-
+        if(!client.welcomeReactionReward) { // Enable if is false and add 1 min timeout
+            client.welcomeReactionReward = true
+            timeout = setTimeout(m => {
+                client.welcomeReactionReward = false
+                m.delete()
+            }, 60000, m)
+        } else { // If previous timeout hasn't finished, start a new one
+            clearTimeout(timeout)
+            timeout = setTimeout(m => {
+                client.welcomeReactionReward = false
+                m.delete()
+            }, 60000, m)
+        }
     }
 }
 
