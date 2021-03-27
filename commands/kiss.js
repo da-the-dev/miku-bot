@@ -53,7 +53,7 @@ module.exports =
                             m.edit(new Discord.MessageEmbed()
                                 .setAuthor(`Реакция: Поцелуй`, "https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png")
                                 .setDescription(`<@${msg.member.id}> поцеловал(-а) <@${mMember.id}>`)
-                                .setImage(utl.reactions.kissReactions[Math.floor(Math.random() * 7)])
+                                .setImage(utl.reactions.kiss[Math.floor(Math.random() * utl.reactions.kiss.length)])
                                 .setColor('#2F3136')
                                 .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)} `, msg.author.avatarURL()))
                             m.reactions.removeAll()
