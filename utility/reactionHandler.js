@@ -71,7 +71,7 @@ module.exports =
                 reactionHandle(msg.mentions.members.first(), msg, reactions.poke, `ткнул(-а)`)
                 break
             case 'pat':
-                reactionHandle(msg.mentions.members.first(), msg, reactions.poke, `погладил(-а)`)
+                reactionHandle(msg.mentions.members.first(), msg, reactions.pat, `погладил(-а)`)
                 break
             case 'cuddle':
                 reactionHandle(msg.mentions.members.first(), msg, reactions.cuddle, `тискает`)
