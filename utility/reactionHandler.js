@@ -168,7 +168,7 @@ module.exports =
                 reactionHandle(msg.mentions.members.first(), permisson, msg, msg.mentions.members.first(), 'тебе предлагает повиртить', reactions.virt, `виртит с`)
                 break
             case 'kiss':
-                reactionHandle(msg.mentions.members.first(), permisson, msg, msg.mentions.members.first(), 'хочет тебя поцеловать', reactions.kiss, `целует`)
+                reactionHandle(msg.mentions.members.first(), permisson, msg, msg.mentions.members.first(), 'тебя хочет поцеловать', reactions.kiss, `целует`)
                 break
         }
     }
