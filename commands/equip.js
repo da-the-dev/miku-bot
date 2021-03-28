@@ -36,7 +36,7 @@ module.exports =
                         }
                         var role = rolesData.find(r => r.pos == pos)
                         msg.member.roles.add(role.id)
-                        utl.embed(msg, `Роль <@&${role.id}> успешно одета`)
+                        utl.embed(msg, `Роль <@&${role.id}> успешно надета`)
                         rClient.quit()
                     }
                 })
