@@ -26,14 +26,22 @@ module.exports =
 
 /**
  * Calculate time when the message was sent
- * @param {Discord.Message} msg
+ * @param {(Discord.Message|number)} source
  */
-module.exports.calculateTime = (msg) => {
+module.exports.calculateTime = (source) => {
     var time = 'Сегодня, в '
-    var offset = msg.createdAt.getTimezoneOffset() + 180
-    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
-    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
-    time += `${hours}:${minutes}`
+    if(typeof source == 'number') {
+        var date = new Date(source)
+        var offset = date.getTimezoneOffset() + 180
+        var hours = (date.getHours() + offset / 60).toString().padStart(2, '0')
+        var minutes = date.getMinutes().toString().padStart(2, '0')
+        time += `${hours}:${minutes}`
+    } else {
+        var offset = source.createdAt.getTimezoneOffset() + 180
+        var hours = (source.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
+        var minutes = source.createdAt.getMinutes().toString().padStart(2, '0')
+        time += `${hours}:${minutes}`
+    }
     return time
 }
 

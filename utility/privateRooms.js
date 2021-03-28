@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
+const utl = require('../utility')
 
 /**
  * @description Create the "creator" voice channel
@@ -45,7 +46,7 @@ module.exports.createRoom = (client) => {
  * @param {Discord.VoiceState} oldState 
  * @param {Discord.VoiceState} newState  
  */
-module.exports.roomDeletion = (oldState, newState) => {
+module.exports.roomDeletion = (oldState, newState, client) => {
     // Ignore if channel didn't change
     if(oldState.channelID == newState.channelID)
         return
@@ -106,6 +107,13 @@ module.exports.roomDeletion = (oldState, newState) => {
                     .then(c => {
                         var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
                         channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
+
+                        newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
+                            embed: new Discord.MessageEmbed()
+                                .setColor('#2F3136')
+                                .setDescription(`Вы были назначены овнером приватной комнаты • \`${channel.name}\``)
+                                .setFooter(`Hoteru • ${utl.embed.calculateTime(Date.now())}`, client.user.avatarURL())
+                        })
                     })
         }
     }
