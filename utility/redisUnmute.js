@@ -16,6 +16,7 @@ module.exports = (client) => {
         sub.subscribe(expired_subKey, function() {
             console.log(`[DB] Now listeting to '${expired_subKey}' events`)
             sub.on('message', function(chan, msg) {
+                console.log(msg)
                 if(msg.startsWith('muted-')) {
                     /**@type {Array<string>} */
                     var data = msg.split('-')
@@ -36,7 +37,8 @@ module.exports = (client) => {
                     })
                     member.roles.remove(constants.roles.muted)
                     console.log('redisUn 1')
-                }
+                } else if(msg.startsWith('pics'))
+                    client.guilds.cache.first().members.cache.get(msg.split('-').pop()).roles.remove(constants.roles.pics)
             })
         })
     }
