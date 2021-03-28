@@ -17,8 +17,8 @@ module.exports =
                 return
             }
 
-            mMember.roles.add(constants.roles.selfie)
-            utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.selfie}>`)
+            mMember.roles.remove(constants.roles.selfie)
+            utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.selfie}>`)
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')
     }

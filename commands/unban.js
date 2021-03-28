@@ -7,7 +7,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .ban <member>
+    * @description Usage: .unban <member>
     */
     (args, msg, client) => {
         var curatorRole = msg.guild.roles.cache.get(constants.roles.curator)
@@ -23,21 +23,13 @@ module.exports =
                 if(err) throw err
                 if(res) {
                     var userData = JSON.parse(res)
-                    console.log(userData)
-                    if(!userData.ban) {
-                        userData.ban = true
+                    if(userData.ban) {
+                        delete userData.ban
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
-                        mMember.roles.remove(mMember.roles.cache)
-                            .then(() => { mMember.roles.add(constants.roles.localban) })
-                        utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
+                        await mMember.roles.remove(constants.roles.localban)
+                        utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     }
-                } else {
-                    rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) throw err })
-                    mMember.roles.remove(mMember.roles.cache)
-                        .then(() => { mMember.roles.add(constants.roles.localban) })
-                    utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
-                    rClient.quit()
                 }
             })
         } else
