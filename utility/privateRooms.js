@@ -101,11 +101,12 @@ module.exports.roomDeletion = (oldState, newState) => {
 
         console.log(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
         if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE')) {
-            channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
-                .then(c => {
-                    var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
-                    channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
-                })
+            if(channel.permissionOverwrites.get(oldOwner.id))
+                channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
+                    .then(c => {
+                        var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
+                        channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
+                    })
         }
     }
 }

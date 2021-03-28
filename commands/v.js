@@ -10,7 +10,10 @@ module.exports =
     * @description Usage: .v <setting> <value> 
     */
     async (args, msg, client) => {
-        if(!msg.member.permissionsIn(msg.member.voice.channel).toArray().includes('CREATE_INSTANT_INVITE')) {
+        if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
+            return
+
+        if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
             utl.embed(msg, 'У Вас нет прав на эту команду!')
             return
         }
