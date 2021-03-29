@@ -77,7 +77,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                         },
                         {
                             id: constants.roles.toxic,
-                            deny: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
+                            deny: ['CREATE_INSTANT_INVITE']
                         },
                         {
                             id: constants.roles.localban,
