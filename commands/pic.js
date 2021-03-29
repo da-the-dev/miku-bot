@@ -4,43 +4,13 @@ const constants = require('../constants.json')
 const utl = require('../utility')
 
 /**
- * Updates user's money data
- * @param {string} id - Member's ID
- * @param {number} price - Price to subtract
- * @return {boolean} - False if can't subtrack
- */
-const updateUserData = (id, price) => {
-    const rClient = redis.createClient(process.env.RURL)
-    const get = require('util').promisify(rClient.get).bind(rClient)
-    const set = require('util').promisify(rClient.set).bind(rClient)
-
-    get(id)
-        .then(res => {
-            if(res) {
-                var userData = JSON.parse(res)
-                if(!userData.money || userData.money < price) {
-                    rClient.quit()
-                    return false
-                }
-                else {
-                    userData.money -= price
-                    set(id, JSON.stringify(userData))
-                        .then(() => { rClient.quit() })
-                }
-            } else {
-                rClient.quit()
-                return false
-            }
-        })
-}
-/**
  * Buys the pic role for some time
  * @param {Discord.Message} msg - OG message
  * @param {Discord.GuildMember} member - Member who bought it
  * @param {number} duration - Duration in seconds
  * @param {number} price - Price
  */
-const buyRole = (msg, member, duration, price) => {
+const buyRole = async (msg, member, duration, price) => {
     const rClient = redis.createClient(process.env.RURL)
     const get = require('util').promisify(rClient.get).bind(rClient)
     const set = require('util').promisify(rClient.set).bind(rClient)
@@ -48,15 +18,34 @@ const buyRole = (msg, member, duration, price) => {
     const del = require('util').promisify(rClient.del).bind(rClient)
     const ttl = require('util').promisify(rClient.ttl).bind(rClient)
 
+    var res = await get(member.id)
+    if(res) {
+        var userData = JSON.parse(res)
+        if(res) {
+            var userData = JSON.parse(res)
+            if(!userData.money || userData.money < price) {
+                rClient.quit()
+                utl.embed(msg, "У Вас недостаточно конфет!")
+                return false
+            }
+            else {
+                userData.money -= price
+                await set(member.id, JSON.stringify(userData))
+            }
+        } else {
+            rClient.quit()
+            utl.embed(msg, "У Вас недостаточно конфет!")
+            return false
+        }
+    }
+
+
     get('pics-' + member.id)
         .then(async res => {
             console.log('res type:', typeof res, res)
             if(res != null) {
                 console.log('extend')
-                if(updateUserData(member.id, price) == false) {
-                    utl.embed(msg, 'У Вас недостаточно конфет для покупки роли!')
-                    rClient.quit()
-                }
+
                 var remaining = await ttl('pics-' + member.id)
                 console.log(remaining)
                 set('pics-' + member.id, '').then(() => {
@@ -71,10 +60,6 @@ const buyRole = (msg, member, duration, price) => {
                 ).then(m => m.reactions.removeAll())
             } else {
                 console.log('buys')
-                if(updateUserData(member.id, price) == false) {
-                    utl.embed(msg, 'У Вас недостаточно конфет для покупки роли!')
-                    rClient.quit()
-                }
                 set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, duration).then(() => {
                         rClient.quit()
