@@ -25,10 +25,6 @@ module.exports.createRoom = (client) => {
                             deny: ['VIEW_CHANNEL', "CONNECT"]
                         },
                         {
-                            id: constants.roles.toxic,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
-                        },
-                        {
                             id: constants.roles.localban,
                             deny: ['VIEW_CHANNEL', "CONNECT"]
                         },
