@@ -11,7 +11,7 @@ module.exports.createRoom = (client) => {
     var guild = client.guilds.cache.first()
     /**@type {Discord.CategoryChannel} */
     // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
-    var privateRoomCategory = guild.channels.cache.find(c => c.type == "category" && c.name == "⌗                       Private︰ 数字")
+    var privateRoomCategory = guild.channels.cache.get(constants.categories.privateRooms)
     /**@type {Discord.VoiceChannel} */
     var privateCreator = privateRoomCategory.children.find(c => c.type == 'voice' && c.name == "．create 部屋")
     if(!privateCreator)
@@ -38,7 +38,10 @@ module.exports.createRoom = (client) => {
                         }
                     ],
                 parent: privateRoomCategory
-            })
+            }).then(c => client.creator = c.id)
+    else {
+        client.creator = privateCreator.id
+    }
 }
 
 /**
@@ -52,7 +55,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
         return
 
     // Create private room
-    if(newState.channel && newState.member.voice.channel.id == constants.channels.creator) {
+    if(newState.channel && newState.member.voice.channel.id == client.creator) {
         var guild = newState.member.guild
         var category = guild.channels.cache.get(constants.categories.privateRooms)
         guild.channels.create(newState.member.user.username,
@@ -85,14 +88,15 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                             allow: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
                         }
                     ],
-                parent: category
+                parent: category,
+                position: 0
             })
             .then(c => {
                 newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
             })
     }
 
-    if(oldState.channel && oldState.channel.id != constants.channels.creator && oldState.channel.parentID == constants.categories.privateRooms) {
+    if(oldState.channel && oldState.channel.id != client.creator && oldState.channel.parentID == constants.categories.privateRooms) {
         var channel = oldState.channel
         if(channel.members.size <= 0 && !channel.deleted) {
             channel.delete()
