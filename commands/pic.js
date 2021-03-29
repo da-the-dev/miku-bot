@@ -4,6 +4,36 @@ const constants = require('../constants.json')
 const utl = require('../utility')
 
 /**
+ * Updates user's money data
+ * @param {string} id - Member's ID
+ * @param {number} price - Price to subtract
+ * @return {boolean} - False if can't subtrack
+ */
+const updateUserData = (id, price) => {
+    const rClient = redis.createClient(process.env.RURL)
+    const get = require('util').promisify(rClient.get).bind(rClient)
+    const set = require('util').promisify(rClient.set).bind(rClient)
+
+    get(id)
+        .then(res => {
+            if(res) {
+                var userData = JSON.parse(res)
+                if(!userData.money || userData.money < price) {
+                    rClient.quit()
+                    return false
+                }
+                else {
+                    userData.money -= price
+                    set(id, JSON.stringify(userData))
+                        .then(() => { rClient.quit() })
+                }
+            } else {
+                rClient.quit()
+                return false
+            }
+        })
+}
+/**
  * Buys the pic role for some time
  * @param {Discord.Message} msg - OG message
  * @param {Discord.GuildMember} member - Member who bought it
@@ -16,35 +46,46 @@ const buyRole = (msg, member, duration, price) => {
     const set = require('util').promisify(rClient.set).bind(rClient)
     const expire = require('util').promisify(rClient.expire).bind(rClient)
     const del = require('util').promisify(rClient.del).bind(rClient)
+    const ttl = require('util').promisify(rClient.ttl).bind(rClient)
 
     get('pics-' + member.id)
-        .then(res => {
-            console.log(res)
-            if(res == "") {
-                console.log(res.slice(4))
-                set('pics-' + member.id, res + duration).then(() => {
-                    expire('pics-' + member.id, res + duration).then(() => {
+        .then(async res => {
+            console.log('res type:', typeof res, res)
+            if(res != null) {
+                console.log('extend')
+                if(updateUserData(member.id, price) == false) {
+                    utl.embed(msg, 'У Вас недостаточно конфет для покупки роли!')
+                    rClient.quit()
+                }
+                var remaining = await ttl('pics-' + member.id)
+                console.log(remaining)
+                set('pics-' + member.id, '').then(() => {
+                    expire('pics-' + member.id, remaining + duration).then(() => {
                         rClient.quit()
-                    }).catch(err => { throw err })
+                    }).catch(err => { throw err }).then(() => { console.log('set key:', 'pics-' + member.id) })
                 }).catch(err => { throw err })
                 msg.edit(new Discord.MessageEmbed()
-                    .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на ***${duration / 24 / 60 / 60}** дней`)
+                    .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
                     .setColor('#2F3136')
                     .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                )
+                ).then(m => m.reactions.removeAll())
             } else {
-                console.log(typeof duration, duration)
-                set('pics-' + member.id, duration).then(() => {
+                console.log('buys')
+                if(updateUserData(member.id, price) == false) {
+                    utl.embed(msg, 'У Вас недостаточно конфет для покупки роли!')
+                    rClient.quit()
+                }
+                set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, duration).then(() => {
                         rClient.quit()
                     }).catch(err => { throw err })
-                }).catch(err => { throw err })
+                }).catch(err => { throw err }).then(() => { console.log('set key:', 'pics-' + member.id) })
                 member.roles.add(constants.roles.pics)
                 msg.edit(new Discord.MessageEmbed()
-                    .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на ***${duration / 24 / 60 / 60}** дней`)
+                    .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
                     .setColor('#2F3136')
                     .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                )
+                ).then(m => m.reactions.removeAll())
             }
         })
 }
@@ -57,7 +98,7 @@ module.exports =
     * @description Usage: .pic
     */
     (args, msg, client) => {
-        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}>\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}>\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}>\n<${constants.emojies.escape}> — Отмена\n`)
+        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}\n<${constants.emojies.escape}> — Отмена\n`)
         msg.channel.send(emb)
             .then(async m => {
                 await m.react(constants.emojies.one)
@@ -75,7 +116,6 @@ module.exports =
                 m.awaitReactions(filter, { max: 1 })
                     .then(reactions => {
                         var reaction = reactions.first()
-                        console.log(reaction.emoji.identifier)
                         switch(reaction.emoji.identifier) {
                             case constants.emojies.one:
                                 buyRole(m, msg.member, 7 * 24 * 60 * 60, 1000)
