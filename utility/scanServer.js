@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const e = require('express')
 const constants = require('../constants.json')
 const utl = require('../utility')
 /**
