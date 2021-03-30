@@ -20,7 +20,7 @@ module.exports =
         return msg.channel.send(new Discord.MessageEmbed()
             .setDescription(message)
             .setColor('#2F3136')
-            .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL()))
+            .setFooter(`${msg.member.displayName} • ${calculateTime(msg)}`, msg.author.avatarURL()))
 
     }
 
@@ -54,7 +54,7 @@ module.exports.build = (msg, message) => {
     return new Discord.MessageEmbed()
         .setDescription(message)
         .setColor('#2F3136')
-        .setFooter(`${msg.author.tag} • ${calculateTime(msg)}`, msg.author.avatarURL())
+        .setFooter(`${msg.member.displayName} • ${calculateTime(msg)}`, msg.author.avatarURL())
 }
 
 module.exports.def = (msg, value) => {
