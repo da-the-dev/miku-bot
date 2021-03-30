@@ -31,15 +31,17 @@ module.exports = (client) => {
                 ).then(m => {
                     m.react(`<${constants.emojies.sweet}>`)
                     client.verifyMsg = m.id
-                    console.log('recreated message')
                 })
             }
             else if(msgs.first().reactions.cache.array().length <= 0) {
                 msgs.first().react(`<${constants.emojies.sweet}>`)
                     .then(m => {
                         client.verifyMsg = m.id
-                        console.log('reaplied reaction')
                     })
+            } else {
+                client.verifyMsg = msgs.first().id
             }
+
+            console.log(client.verifyMsg)
         })
 }

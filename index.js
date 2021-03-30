@@ -84,7 +84,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 client.on('messageReactionAdd', (reaction, user) => {
     utl.fetch.fetchReactions(reaction)
     utl.verify.verify(reaction, user, client)
-    if(reaction.message.channel.id != '810201527478124555')
+    if(reaction.message.channel.id != client.verifyMsg)
         utl.shop(reaction, user, client)
     utl.reportHandler.reportAssignmentHandler(reaction, user, client)
 })
