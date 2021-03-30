@@ -34,10 +34,11 @@ commandNames.forEach(c => {
 client.login(process.env.BOTTOKEN)
 client.once('ready', () => {
     console.log("[BOT] BOT is online")
-    utl.privateRooms.createRoom(client)
+
     utl.redisUnmute(client)
     utl.moneyGet.voiceActivityInit(client)
     utl.elderlyRole(client.guilds.cache.first())
+    utl.scanServer(client)
 })
 
 // Role events

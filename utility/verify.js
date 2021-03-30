@@ -9,7 +9,7 @@ var timeout = null
  * @param {Discord.Client} client 
  */
 module.exports.verify = async (reaction, user, client) => {
-    if(reaction.message.id == '819295686415482921') {
+    if(reaction.message.id == client.verifyMsg) {
         console.log(`[VR] Verified user '${user.tag}'`)
 
         var member = await reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
