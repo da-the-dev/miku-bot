@@ -68,6 +68,9 @@ client.on('guildMemberRemove', member => {
 client.on('presenceUpdate', (oldPresence, newPresence) => {
     utl.gameRoles(oldPresence, newPresence)
 })
+client.on('guildMemberUpdate', (oldMember, newMember) => {
+    utl.boosterTracker(oldMember, newMember)
+})
 
 // Channel events
 client.on('channelDelete', channel => {
