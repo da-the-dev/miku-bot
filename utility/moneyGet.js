@@ -10,15 +10,15 @@ const constants = require('../constants.json')
 var voiceAct = (id) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(id, (err, res) => {
-        if(err) throw err
+        if(err) console.log(err)
         if(res) { // If there was user data before
             var userData = JSON.parse(res)
             userData.money ? userData.money += 1 : userData.money = 1
             userData.voiceTime ? userData.voiceTime += 1 : userData.voiceTime = 1
-            rClient.set(id, JSON.stringify(userData), err => { if(err) throw err })
+            rClient.set(id, JSON.stringify(userData), err => { if(err) console.log(err) })
             rClient.quit()
         } else {
-            rClient.set(id, JSON.stringify({ 'money': 1, 'voiceTime': 1 }), err => { if(err) throw err })
+            rClient.set(id, JSON.stringify({ 'money': 1, 'voiceTime': 1 }), err => { if(err) console.log(err) })
             rClient.quit()
         }
     })
@@ -90,15 +90,15 @@ module.exports.chatActivity = (msg) => {
                 chatActMessages.delete(msg.author.id)
                 const rClient = redis.createClient(process.env.RURL)
                 rClient.get(msg.author.id, (err, res) => {
-                    if(err) throw err
+                    if(err) console.log(err)
                     if(res) { // If there was user data
                         var userData = JSON.parse(res)
                         userData.money ? userData.money += 1 : userData.money = 1
 
-                        rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
                     } else {
-                        rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) throw err })
+                        rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) console.log(err) })
                         rClient.quit()
                     }
                 })

@@ -11,7 +11,7 @@ module.exports =
         if(msg.author.id == process.env.MYID) {
             const rClient = redis.createClient(process.env.RURL)
             rClient.flushdb(err => {
-                if(err) throw err
+                if(err) console.log(err)
                 console.log('!!!DATABASE FLUSHED!!!')
             })
         }

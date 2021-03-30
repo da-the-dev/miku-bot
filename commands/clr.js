@@ -23,7 +23,7 @@ module.exports =
 
         const rClient = redis.createClient(process.env.RURL)
         rClient.get(msg.author.id, (err, res) => {
-            if(err) throw err
+            if(err) console.log(err)
             if(res) {
                 var userData = JSON.parse(res)
                 if(!userData.money || userData.money < 10000) {
@@ -113,16 +113,16 @@ module.exports =
                                             userData.loveroom = { 'id': c.id, 'partner': mMember.id }
                                             console.log(userData.loveroom)
                                             rClient.set(msg.author.id, JSON.stringify(userData), err => {
-                                                if(err) throw err
+                                                if(err) console.log(err)
 
                                                 rClient.get(mMember.id, (err, res) => {
-                                                    if(err) throw err
+                                                    if(err) console.log(err)
                                                     if(res) {
                                                         var userData = JSON.parse(res)
                                                         userData.loveroom = { 'id': c.id, 'partner': msg.author.id }
-                                                        rClient.set(mMember.id, JSON.stringify(userData), err => { if(err) throw err })
+                                                        rClient.set(mMember.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                                                     } else
-                                                        rClient.set(mMember.id, JSON.stringify({ 'loveroom': { 'id': c.id, 'partner': msg.author.id } }), err => { if(err) throw err })
+                                                        rClient.set(mMember.id, JSON.stringify({ 'loveroom': { 'id': c.id, 'partner': msg.author.id } }), err => { if(err) console.log(err) })
 
                                                     rClient.quit()
                                                 })

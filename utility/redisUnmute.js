@@ -25,12 +25,12 @@ module.exports = (client) => {
                     var member = guild.members.cache.get(data[0])
                     const rClient = redis.createClient(process.env.RURL)
                     rClient.get(data[0], (err, res) => {
-                        if(err) throw err
+                        if(err) console.log(err)
                         var userData = JSON.parse(res)
                         var channel = guild.channels.cache.get(userData.mute[0])
                         delete userData.mute
 
-                        rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
 
                         channel.send(utl.embed.build(msg, `<@${member.user.id}> был(-а) размьючен(-а)`))

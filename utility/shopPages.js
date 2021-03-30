@@ -16,7 +16,7 @@ const buildPage = (page, footerUser, footerURL, msg) => {
 
     const rClient = require('redis').createClient(process.env.RURL)
     rClient.get('roles', (err, res) => {
-        if(err) throw err
+        if(err) console.log(err)
         if(res) {
             /**@type {Array<object>} */
             var rolesData = JSON.parse(res)

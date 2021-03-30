@@ -18,7 +18,7 @@ module.exports =
             const rClient = redis.createClient(process.env.RURL)
             try {
                 rClient.set(key, JSON.stringify(data), err => {
-                    if(err) throw err
+                    if(err) console.log(err)
                     console.log(`[DB] Key '${key}' set to ${args.join(' ').length > 10 ? args.join(' ') : args.join(' ').slice(10) + '...'}`)
                 })
             } finally {

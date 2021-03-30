@@ -28,7 +28,7 @@ module.exports =
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get('roles', (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     /**@type {Array<object>} */
                     var rolesData = JSON.parse(res)
@@ -40,10 +40,10 @@ module.exports =
                         rolesData.push({ 'id': mRole.id, 'pos': pos, 'price': price })
                     }
 
-                    rClient.set('roles', JSON.stringify(rolesData), err => { if(err) throw err })
+                    rClient.set('roles', JSON.stringify(rolesData), err => { if(err) console.log(err) })
                     rClient.quit()
                 } else {
-                    rClient.set('roles', JSON.stringify([{ 'id': mRole.id, 'pos': pos, 'price': price }]), err => { if(err) throw err })
+                    rClient.set('roles', JSON.stringify([{ 'id': mRole.id, 'pos': pos, 'price': price }]), err => { if(err) console.log(err) })
                     rClient.quit()
                 }
             })

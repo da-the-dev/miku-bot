@@ -16,7 +16,7 @@ module.exports =
         }
         const rClient = redis.createClient(process.env.RURL)
         rClient.get(msg.author.id, (err, res) => {
-            if(err) throw err
+            if(err) console.log(err)
             if(res) {
                 rClient.get('roles', (eerr, rres) => {
                     if(eerr) throw eerr

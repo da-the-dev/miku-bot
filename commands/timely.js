@@ -12,7 +12,7 @@ module.exports =
         const rClient = redis.createClient(process.env.RURL)
 
         rClient.get(msg.author.id, (err, res) => {
-            if(err) throw err
+            if(err) console.log(err)
             if(res) {
                 var userData = JSON.parse(res)
                 if(userData.rewardTime) { // Check if user can collect the reward
@@ -24,7 +24,7 @@ module.exports =
                             if(userData.streak = 14)
                                 userData.streak = 1
                             userData.rewardTime = msg.createdTimestamp
-                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                             rClient.quit()
                             utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<:__:813854413579354143> `)
                         } else {
@@ -32,7 +32,7 @@ module.exports =
                             userData.money += 20
                             userData.streak = 1
                             userData.rewardTime = msg.createdTimestamp
-                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                             rClient.quit()
                         }
                     } else {
@@ -56,12 +56,12 @@ module.exports =
                     if(!userData.money) userData.money = 20
                     else userData.money += 20
                     utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
-                    rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                    rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                     rClient.quit()
                 }
             } else { // If user has no user data
                 utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
-                rClient.set(msg.author.id, JSON.stringify({ 'rewardTime': msg.createdTimestamp, 'money': 20, 'streak': 1 }), err => { if(err) throw err })
+                rClient.set(msg.author.id, JSON.stringify({ 'rewardTime': msg.createdTimestamp, 'money': 20, 'streak': 1 }), err => { if(err) console.log(err) })
                 rClient.quit()
             }
         })

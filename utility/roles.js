@@ -5,7 +5,7 @@ const Discord = require('discord.js')
 module.exports.reapplyRoles = (member) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(member.id, async (err, res) => {
-        if(err) throw err
+        if(err) console.log(err)
         if(res) {
             var userData = JSON.parse(res)
 
@@ -55,13 +55,13 @@ const activityCalculator = (lastMessages, activityName, guild) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(activityName, (err, res) => {
         var mergedMap
-        if(err) throw err
+        if(err) console.log(err)
         if(res) { // If there is db info about activity type
             mergedMap = mergeMaps(lastMessages, new Map(JSON.parse(res)))
-            rClient.set(activityName, JSON.stringify([...mergedMap]), (err, res) => { if(err) throw err })
+            rClient.set(activityName, JSON.stringify([...mergedMap]), (err, res) => { if(err) console.log(err) })
         } else { // If there's nothing, save last messsages
             mergedMap = lastMessages
-            rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) throw err })
+            rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) console.log(err) })
         }
 
         var activies = [...mergedMap.entries()]  // Fitler for those who have 500+ messsages

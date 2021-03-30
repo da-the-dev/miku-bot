@@ -30,10 +30,10 @@ module.exports =
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
 
                 if(res == null) {
-                    rClient.set(mMember.user.id, JSON.stringify({ 'warns': [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] }), err => { if(err) throw err })
+                    rClient.set(mMember.user.id, JSON.stringify({ 'warns': [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] }), err => { if(err) console.log(err) })
                     // mMember.roles.add(roles.offender)
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#1** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
                     rClient.quit()
@@ -49,7 +49,7 @@ module.exports =
                         userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
                     }
 
-                    rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                    rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                     rClient.quit()
 
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#${userData.warns.length}** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)

@@ -18,7 +18,7 @@ module.exports =
 
         const rClient = redis.createClient(process.env.RURL)
         rClient.get('roles', (err, res) => {
-            if(err) throw err
+            if(err) console.log(err)
             if(res) {
                 var rolesData = JSON.parse(res)
                 var selectedRole = rolesData.find(r => r.pos == args[1])
@@ -66,7 +66,7 @@ module.exports =
                                             if(!userData.inv)
                                                 userData.inv = []
                                             userData.inv.push(selectedRole)
-                                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                                             rClient.quit()
 
                                             m.edit(utl.embed.build(msg, `Вы успешно приобрели роль <@&${selectedRole.id}>.\nПолный список команд магазина вы можете посмотреть в <#${constants.channels.commands}>`))

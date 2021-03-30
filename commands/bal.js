@@ -13,7 +13,7 @@ module.exports =
         if(!mMember) {
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(msg.author.id, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     if(!userData.money)
@@ -29,7 +29,7 @@ module.exports =
         } else {
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     if(!userData.money)

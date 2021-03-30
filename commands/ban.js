@@ -20,20 +20,20 @@ module.exports =
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, async (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     console.log(userData)
                     if(!userData.ban) {
                         userData.ban = true
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         mMember.roles.remove(mMember.roles.cache)
                             .then(() => { mMember.roles.add(constants.roles.localban) })
                         utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
                         rClient.quit()
                     }
                 } else {
-                    rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) throw err })
+                    rClient.set(mMember.user.id, JSON.stringify({ "ban": true }), err => { if(err) console.log(err) })
                     mMember.roles.remove(mMember.roles.cache)
                         .then(() => { mMember.roles.add(constants.roles.localban) })
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)

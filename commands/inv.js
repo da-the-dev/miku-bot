@@ -11,7 +11,7 @@ module.exports =
     (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
         rClient.get(msg.author.id, (err, res) => {
-            if(err) throw err
+            if(err) console.log(err)
             if(res) {
                 var userData = JSON.parse(res)
                 if(!userData.inv) {

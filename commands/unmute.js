@@ -22,7 +22,7 @@ module.exports =
             // Get and prematurely delete the shadow key
             const rClient = redis.createClient(process.env.RURL)
             rClient.get('muted-' + mMember.user.id, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     // Delete the shadow key
                     rClient.DEL('muted-' + mMember.user.id, err => {
@@ -41,7 +41,7 @@ module.exports =
                         console.log('unmute 1')
                         var userData = JSON.parse(res)
                         if(userData.mute) delete userData.mute
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
 
                         utl.embed(msg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)

@@ -19,7 +19,7 @@ module.exports =
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     if(!userData.warns) {
@@ -58,7 +58,7 @@ module.exports =
                                         if(userData.warns.length == 0)
                                             delete userData.warns
 
-                                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                                         rClient.quit()
                                         m.edit(utl.embed.build(msg, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
                                         m.reactions.removeAll()

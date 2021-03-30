@@ -12,18 +12,18 @@ module.exports =
         if(msg.author.id == process.env.MYID || msg.author.id == process.env.SERID) {
             const rClient = redis.createClient(process.env.RURL)
             rClient.get('defenses', (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
 
                 if(res) {
                     var set = (res == 'true')
                     rClient.set('defenses', String(!set), (err, res) => {
-                        if(err) throw err
+                        if(err) console.log(err)
                         msg.channel.send(utl.embed.def(msg, !set))
                         rClient.quit()
                     })
                 } else {
                     rClient.set('defenses', true, (err, res) => {
-                        if(err) throw err
+                        if(err) console.log(err)
                         msg.channel.send(utl.embed.def(msg, true))
                         rClient.quit()
                     })
