@@ -83,7 +83,7 @@ module.exports =
     * @description Usage: .pic
     */
     (args, msg, client) => {
-        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}\n<${constants.emojies.escape}> — Отмена\n`)
+        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}>\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}>\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}>\n<${constants.emojies.escape}> — Отмена\n`)
         msg.channel.send(emb)
             .then(async m => {
                 await m.react(constants.emojies.one)
