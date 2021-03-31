@@ -99,7 +99,7 @@ module.exports =
         switch(args[0]) {
             // buildMessage reactions
             case 'angry':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.angry, `разозлился(-ась)`)
+                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.angry, `разозлился(-ась) на`)
                 break
             case 'hit':
                 reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.hit, `ударил(-а)`)
