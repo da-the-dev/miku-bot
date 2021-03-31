@@ -7,7 +7,7 @@ const util = require('util')
  * @param {Discord.GuildMember} newMember 
  */
 module.exports = (oldMember, newMember) => {
-    if(newMember.premiumSinceTimestamp != 0) {
+    if(newMember.premiumSinceTimestamp != 0 && oldMember.premiumSinceTimestamp != newMember.premiumSinceTimestamp) {
         const rClient = require('redis').createClient(process.env.RURL)
 
         const get = util.promisify(rClient.get).bind(rClient)
