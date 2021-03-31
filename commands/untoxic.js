@@ -20,12 +20,12 @@ module.exports =
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     if(userData.toxic) {
                         delete userData.toxic
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         mMember.roles.remove(constants.roles.toxic)
                         utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
                         rClient.quit()

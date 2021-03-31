@@ -20,12 +20,12 @@ module.exports =
 
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(mMember.user.id, async (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     if(userData.ban) {
                         delete userData.ban
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         await mMember.roles.remove(constants.roles.localban)
                         utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`)
                         rClient.quit()

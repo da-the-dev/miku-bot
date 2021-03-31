@@ -34,10 +34,11 @@ commandNames.forEach(c => {
 client.login(process.env.BOTTOKEN)
 client.once('ready', () => {
     console.log("[BOT] BOT is online")
-    utl.privateRooms.createRoom(client)
+
     utl.redisUnmute(client)
     utl.moneyGet.voiceActivityInit(client)
     utl.elderlyRole(client.guilds.cache.first())
+    utl.scanServer(client)
 })
 
 // Role events
@@ -67,6 +68,9 @@ client.on('guildMemberRemove', member => {
 client.on('presenceUpdate', (oldPresence, newPresence) => {
     utl.gameRoles(oldPresence, newPresence)
 })
+client.on('guildMemberUpdate', (oldMember, newMember) => {
+    utl.boosterTracker(oldMember, newMember)
+})
 
 // Channel events
 client.on('channelDelete', channel => {
@@ -83,7 +87,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 client.on('messageReactionAdd', (reaction, user) => {
     utl.fetch.fetchReactions(reaction)
     utl.verify.verify(reaction, user, client)
-    if(reaction.message.channel.id != '810201527478124555')
+    if(reaction.message.channel.id != client.verifyMsg)
         utl.shop(reaction, user, client)
     utl.reportHandler.reportAssignmentHandler(reaction, user, client)
 })

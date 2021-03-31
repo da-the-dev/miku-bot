@@ -51,8 +51,8 @@ const buyRole = async (msg, member, duration, price) => {
                 set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, remaining + duration).then(() => {
                         rClient.quit()
-                    }).catch(err => { throw err }).then(() => { console.log('set key:', 'pics-' + member.id) })
-                }).catch(err => { throw err })
+                    }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
+                }).catch(err => { console.log(err) })
                 msg.edit(new Discord.MessageEmbed()
                     .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
                     .setColor('#2F3136')
@@ -63,8 +63,8 @@ const buyRole = async (msg, member, duration, price) => {
                 set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, duration).then(() => {
                         rClient.quit()
-                    }).catch(err => { throw err })
-                }).catch(err => { throw err }).then(() => { console.log('set key:', 'pics-' + member.id) })
+                    }).catch(err => { console.log(err) })
+                }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
                 member.roles.add(constants.roles.pics)
                 msg.edit(new Discord.MessageEmbed()
                     .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
@@ -83,7 +83,7 @@ module.exports =
     * @description Usage: .pic
     */
     (args, msg, client) => {
-        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}\n<${constants.emojies.escape}> — Отмена\n`)
+        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}>\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}>\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}>\n<${constants.emojies.escape}> — Отмена\n`)
         msg.channel.send(emb)
             .then(async m => {
                 await m.react(constants.emojies.one)

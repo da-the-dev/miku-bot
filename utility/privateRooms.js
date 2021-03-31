@@ -7,37 +7,30 @@ const utl = require('../utility')
  * @param {Discord.Client} client
  */
 module.exports.createRoom = (client) => {
-    // Create 'createRoom'
-    var guild = client.guilds.cache.first()
-    /**@type {Discord.CategoryChannel} */
-    // var privateRoomCategory = guild.channels.find(c => c.type == "category" && c.name.toLowerCase().includes("private rooms"))
-    var privateRoomCategory = guild.channels.cache.get(constants.categories.privateRooms)
-    /**@type {Discord.VoiceChannel} */
-    var privateCreator = privateRoomCategory.children.find(c => c.type == 'voice' && c.name == "．create 部屋")
-    if(!privateCreator)
-        privateCreator = guild.channels.create('．create 部屋',
-            {
-                type: "voice",
-                permissionOverwrites:
-                    [
-                        {
-                            id: constants.roles.muted,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
-                        },
-                        {
-                            id: constants.roles.localban,
-                            deny: ['VIEW_CHANNEL', "CONNECT"]
-                        },
-                        {
-                            id: guild.id,
-                            allow: ['VIEW_CHANNEL', "CONNECT"]
-                        }
-                    ],
-                parent: privateRoomCategory
-            }).then(c => client.creator = c.id)
-    else {
-        client.creator = privateCreator.id
-    }
+    guild.channels.create('．create 部屋',
+        {
+            type: "voice",
+            permissionOverwrites:
+                [
+                    {
+                        id: constants.roles.muted,
+                        deny: ['VIEW_CHANNEL', "CONNECT"]
+                    },
+                    {
+                        id: constants.roles.toxic,
+                        deny: ['VIEW_CHANNEL', "CONNECT"]
+                    },
+                    {
+                        id: constants.roles.localban,
+                        deny: ['VIEW_CHANNEL', "CONNECT"]
+                    },
+                    {
+                        id: guild.id,
+                        allow: ['VIEW_CHANNEL', "CONNECT"]
+                    }
+                ],
+            parent: privateRoomCategory
+        }).then(c => client.creator = c.id)
 }
 
 /**

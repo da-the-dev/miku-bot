@@ -12,11 +12,8 @@ const buildMessage = (msg, reactions, description) => {
     if(!msg.deleted) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
-    return new Discord.MessageEmbed()
-        .setDescription(`<@${msg.member.id}> ${description}`)
+    return utl.embed.build(msg, `<@${msg.member.id}> ${description}`)
         .setImage(reactions[rand])
-        .setColor('#2F3136')
-        .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 }
 
 /**
@@ -69,26 +66,18 @@ const permisson = (msg, member2, description, ...args) => {
             m.awaitReactions(filter, { time: 60000, max: 1 })
                 .then(reactions => {
                     if(reactions.array().length == 0) {
-                        m.edit(new Discord.MessageEmbed()
-                            .setDescription(`<@${member2.id}> тебя проигнорировал(-а)`)
-                            .setColor('#2F3136')
-                            .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)} `, msg.author.avatarURL())
-                        )
+                        m.edit(utl.embed.build(msg, `<@${member2.id}> тебя проигнорировал(-а)`))
                         m.reactions.removeAll()
                         return
                     }
                     if(reactions.first().emoji.name == '❌') {
-                        m.edit(new Discord.MessageEmbed()
-                            .setDescription(`<@${member2.id}> тебе отказал(-а)`)
-                            .setColor('#2F3136')
-                            .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)} `, msg.author.avatarURL())
-                        )
+                        m.edit(utl.embed.build(`<@${member2.id}> тебе отказал(-а)`))
                         m.reactions.removeAll()
                         return
                     }
                     if(reactions.first().emoji.name == '✅') {
                         var dIndex = args.findIndex(a => typeof a == 'string')
-                        args[dIndex] = args[dIndex] + ` <@${member2.id}>`
+                        args[dIndex] = args[dIndex] + ` <@${member2.id}> `
 
                         m.edit(buildMessage(...[msg, ...args]))
                         m.reactions.removeAll()
@@ -110,7 +99,7 @@ module.exports =
         switch(args[0]) {
             // buildMessage reactions
             case 'angry':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.angry, `разозлился(-ась)`)
+                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.angry, `разозлился(-ась) на`)
                 break
             case 'hit':
                 reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.hit, `ударил(-а)`)

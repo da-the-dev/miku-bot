@@ -15,3 +15,7 @@ module.exports.loveroomMonitor = require('./utility/loveroomMonitor')
 module.exports.reportHandler = require('./utility/reportHandler')
 module.exports.elderlyRole = require('./utility/elderlyRole')
 module.exports.welcomeReactionReward = require('./utility/welcomeReactionReward')
+module.exports.scanServer = require('./utility/scanServer')
+module.exports.boosterTracker = require('./utility/boosterTracker')
+module.exports.yesNoReactionMessage = require('./utility/yesNoReactionMessage')
+

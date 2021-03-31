@@ -13,7 +13,7 @@ module.exports = (oldPresence, newPresence) => {
         if(act) { // If newPresence includes games
             const rClient = redis.createClient(process.env.RURL)
             rClient.get(newPresence.userID, (err, res) => {
-                if(err) throw err
+                if(err) console.log(err)
                 if(res) {
                     var userData = JSON.parse(res)
                     if(userData.gameRoles || userData.gameRoles == undefined)

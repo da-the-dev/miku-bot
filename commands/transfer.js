@@ -31,27 +31,27 @@ module.exports =
 
         const rClient = redis.createClient(process.env.RURL)
         rClient.get(msg.author.id, (err, res) => {
-            if(err) throw err
+            if(err) console.log(err)
             if(res) {
                 var userData = JSON.parse(res)
                 if(amount > userData.money)  // If too much money is requested 
                     utl.embed(msg, 'У тебя недостаточно средств для перевода!')
                 else {
                     rClient.get(mMember.user.id, (err, rres) => {
-                        if(err) throw err
+                        if(err) console.log(err)
                         if(rres) { // If receiver HAS data
                             var receiverData = JSON.parse(rres)
                             userData.money -= amount
                             receiverData.money += amount
 
-                            rClient.set(mMember.user.id, JSON.stringify(receiverData), err => { if(err) throw err })
-                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) throw err })
+                            rClient.set(mMember.user.id, JSON.stringify(receiverData), err => { if(err) console.log(err) })
+                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                             rClient.quit()
 
                             utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
                         } else { // If receiver DOES NOT have user data
-                            rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => { if(err) throw err })
-                            rClient.set(msg.author.id, JSON.stringify({ 'money': userData.money - amount }), err => { if(err) throw err })
+                            rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => { if(err) console.log(err) })
+                            rClient.set(msg.author.id, JSON.stringify({ 'money': userData.money - amount }), err => { if(err) console.log(err) })
                             rClient.quit()
 
                             utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)

@@ -8,7 +8,7 @@ const utl = require('../utility')
 const getDef = (func) => {
     const rClient = redis.createClient(process.env.RURL)
     rClient.get('defenses', (err, res) => {
-        if(err) throw err
+        if(err) console.log(err)
         if(res)
             if(res == 'true') {
                 func()

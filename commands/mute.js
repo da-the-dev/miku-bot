@@ -122,16 +122,16 @@ module.exports =
 
                 // Update user data accordingly 
                 rClient.get(mMember.user.id, (err, res) => {
-                    if(err) throw err
+                    if(err) console.log(err)
                     if(res) { // If user data exists already 
                         var userData = JSON.parse(res)
                         userData.mute = [msg.channel.id, reason]
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) throw err })
+                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
                     }
                     // If no user data
                     else {
-                        rClient.set(mMember.user.id, JSON.stringify({ 'mute': [msg.channel.id, reason] }), err => { if(err) throw err })
+                        rClient.set(mMember.user.id, JSON.stringify({ 'mute': [msg.channel.id, reason] }), err => { if(err) console.log(err) })
                         rClient.quit()
                     }
                 })
