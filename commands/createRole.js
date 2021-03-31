@@ -1,9 +1,14 @@
 const Discord = require('discord.js')
-const redis = require('redis')
-const constants = require('../constants.json')
 const utl = require('../utility')
 const util = require('util')
 
+/**
+ * Create a custom role
+ * @param {Discord.Message} msg - OG message
+ * @param {string} name - Role's name
+ * @param {string} hex - Role's hex color
+ * @param {Function} success - Success function tp run at the end
+ */
 const createRole = (msg, name, hex, success) => {
     const fetch = require('node-fetch');
     fetch(`https://www.thecolorapi.com/id?hex=${hex.slice(1)}`)
@@ -27,6 +32,16 @@ const createRole = (msg, name, hex, success) => {
                                             m.edit(utl.embed.build(msg, `Вы успешно создали роль <@&${r.id}>!`))
                                             m.reactions.removeAll()
                                             success()
+
+                                            const rClient = require('redis').createClient(process.env.RURL)
+                                            const get = util.promisify(rClient.get).bind(rClient)
+                                            const set = util.promisify(rClient.set).bind(rClient)
+                                            get(msg.member.id)
+                                                .then(res => {
+                                                    var userData = JSON.parse(res)
+                                                    userData.customRoles ? userData.customRoles.push(r.id) : userData.customRoles = [r.id]
+                                                    set(msg.member.id, JSON.stringify(userData)).then(() => rClient.quit())
+                                                })
                                         })
                                 })
                             }, () => {
@@ -99,6 +114,8 @@ module.exports =
                                     }
                                     set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                                     createRole(msg, name, hex, () => {
+                                        const rClient = require('redis').createClient(process.env.RURL)
+                                        const set = util.promisify(rClient.set).bind(rClient)
                                         userData.money -= 10000
                                         set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                                     })
@@ -115,6 +132,8 @@ module.exports =
                         }
                         createRole(msg, name, hex, () => {
                             userData.money -= 10000
+                            const rClient = require('redis').createClient(process.env.RURL)
+                            const set = util.promisify(rClient.set).bind(rClient)
                             set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                         })
                     }
