@@ -85,15 +85,15 @@ module.exports =
                         return
                     }
                     if(userData.boosts && userData.boosts > 2)
-                        utl.embed(msg, `У Вас есть **${userData.boosts}** бустов, хотите потратить 2 буста для создания роли?`)
+                        utl.embed(msg, `У Вас есть **${userData.boosts}** буста(-ов), хотите потратить **2** буста для создания роли?`)
                             .then(m => {
                                 utl.yesNoReactionMessage(m, () => {
                                     userData.boosts -= 2
                                     set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                                     createRole(msg, name, hex, null)
                                 }, () => {
+                                    m.delete()
                                     if(userData.money < 10000) {
-                                        m.delete()
                                         utl.embed(msg, 'У Вас недостаточно конфет!')
                                         return
                                     }
@@ -103,8 +103,8 @@ module.exports =
                                         set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                                     })
                                 }, () => {
-                                    rClient.quit()
                                     m.delete()
+                                    rClient.quit()
                                 })
                             })
                     else {
