@@ -47,12 +47,12 @@ var client
  * @param {Discord.VoiceState} newState
  */
 module.exports.voiceActivity = (oldState, newState) => {
+    client = oldState.client
     if(newState.channelID == oldState.channelID)
         return
 
     // User joined a voicechannel
     if(newState.channelID) {
-        client = oldState.client
         // console.log(`[MG] '${newState.member.user.username}' joined`)
         if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
             // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
