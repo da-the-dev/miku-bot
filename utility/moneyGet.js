@@ -31,32 +31,32 @@ const interval = 60000
  * @param {Discord.VoiceState} newState
  */
 module.exports.voiceActivity = (oldState, newState) => {
-    if(newState.channelID == oldState.channelID)
-        return
+    // if(newState.channelID == oldState.channelID)
+    //     return
 
-    // User joined a voicechannel
-    if(newState.channelID) {
-        // console.log(`[MG] '${newState.member.user.username}' joined`)
-        if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-            // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
-            var inter = setInterval(voiceAct, interval, newState.member.id)
-            if(!voiceActIntervals.get(newState.member.id))
-                voiceActIntervals.set(newState.member.id, inter)
-        }
-        if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
-            var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
-            // console.log(`[MG] give '${oldMember.user.username}' money`)
-            var inter = setInterval(voiceAct, interval, newState.member.id)
-            if(!voiceActIntervals.get(oldMember.user.id))
-                voiceActIntervals.set(oldMember.user.id, inter)
-        }
-    } else { // User left a voicechannel
-        // console.log(`[MG] '${newState.member.user.username}' left`)
-        clearInterval(voiceActIntervals.get(newState.member.id))
-        if(oldState.channel.members.size == 1) {
-            clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
-        }
-    }
+    // // User joined a voicechannel
+    // if(newState.channelID) {
+    //     // console.log(`[MG] '${newState.member.user.username}' joined`)
+    //     if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
+    //         // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
+    //         var inter = setInterval(voiceAct, interval, newState.member.id)
+    //         if(!voiceActIntervals.get(newState.member.id))
+    //             voiceActIntervals.set(newState.member.id, inter)
+    //     }
+    //     if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
+    //         var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
+    //         // console.log(`[MG] give '${oldMember.user.username}' money`)
+    //         var inter = setInterval(voiceAct, interval, newState.member.id)
+    //         if(!voiceActIntervals.get(oldMember.user.id))
+    //             voiceActIntervals.set(oldMember.user.id, inter)
+    //     }
+    // } else { // User left a voicechannel
+    //     // console.log(`[MG] '${newState.member.user.username}' left`)
+    //     clearInterval(voiceActIntervals.get(newState.member.id))
+    //     if(oldState.channel.members.size == 1) {
+    //         clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
+    //     }
+    // }
 }
 
 /**
