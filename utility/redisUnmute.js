@@ -33,7 +33,12 @@ module.exports = (client) => {
                         rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
 
-                        channel.send(utl.embed.build(msg, `<@${member.user.id}> был(-а) размьючен(-а)`))
+                        var embed = new Discord.MessageEmbed()
+                            .setDescription(`<@${member.user.id}> был(-а) размьючен(-а)`)
+                            .setColor('#2F3136')
+                            .setFooter(`${member.displayName} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
+
+                        channel.send(embed)
                     })
                     member.roles.remove(constants.roles.muted)
                     console.log('redisUn 1')
