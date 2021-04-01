@@ -15,6 +15,20 @@ var voiceAct = (id) => {
             var userData = JSON.parse(res)
             userData.money ? userData.money += 1 : userData.money = 1
             userData.voiceTime ? userData.voiceTime += 1 : userData.voiceTime = 1
+
+            var now = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+            if(now.getHours() >= 9 && now.getHours() <= 16)
+                userData.dayVoiceTime ? userData.dayVoiceTime += 1 : userData.dayVoiceTime = 1
+            if(now.getHours() >= 0 && now.getHours() <= 6)
+                userData.nightVoiceTime ? userData.nightVoiceTime += 1 : userData.nightVoiceTime = 1
+
+            var member = client.guilds.cache.first().members.fetch(id)
+
+            if(userData.dayVoiceTime >= 500)
+                member.roles.add(constants.roles.daylyActive)
+            if(userData.nightVoiceTime >= 500)
+                member.roles.add(constants.roles.nightActive)
+
             rClient.set(id, JSON.stringify(userData), err => { if(err) console.log(err) })
             rClient.quit()
         } else {
@@ -25,6 +39,8 @@ var voiceAct = (id) => {
 }
 
 const interval = 60000
+/**@type {Discord.Client} */
+var client
 /**
  * @desctiption Give user points every 1 minute in voicechat
  * @param {Discord.VoiceState} oldState
@@ -36,6 +52,7 @@ module.exports.voiceActivity = (oldState, newState) => {
 
     // User joined a voicechannel
     if(newState.channelID) {
+        client = oldState.client
         // console.log(`[MG] '${newState.member.user.username}' joined`)
         if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
             // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
