@@ -48,6 +48,8 @@ var client
  */
 module.exports.voiceActivity = (oldState, newState) => {
     client = oldState.client
+    if(!client)
+        client = newState.client
     if(newState.channelID == oldState.channelID)
         return
 
