@@ -24,9 +24,9 @@ var voiceAct = (id) => {
 
             var member = client.guilds.cache.first().members.fetch(id)
 
-            if(userData.dayVoiceTime >= 500)
+            if(userData.dayVoiceTime >= 300)
                 member.roles.add(constants.roles.daylyActive)
-            if(userData.nightVoiceTime >= 500)
+            if(userData.nightVoiceTime >= 300)
                 member.roles.add(constants.roles.nightActive)
 
             rClient.set(id, JSON.stringify(userData), err => { if(err) console.log(err) })
