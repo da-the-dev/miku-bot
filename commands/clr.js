@@ -110,7 +110,7 @@ module.exports =
                                             msg.member.roles.add(constants.roles.loveroom)
 
                                             userData.money -= 10000
-                                            userData.loveroom = { 'id': c.id, 'partner': mMember.id }
+                                            userData.loveroom = { 'id': c.id, 'partner': mMember.id, 'creationDate': Date.now() }
                                             console.log(userData.loveroom)
                                             rClient.set(msg.author.id, JSON.stringify(userData), err => {
                                                 if(err) console.log(err)
@@ -122,7 +122,7 @@ module.exports =
                                                         userData.loveroom = { 'id': c.id, 'partner': msg.author.id }
                                                         rClient.set(mMember.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                                                     } else
-                                                        rClient.set(mMember.id, JSON.stringify({ 'loveroom': { 'id': c.id, 'partner': msg.author.id } }), err => { if(err) console.log(err) })
+                                                        rClient.set(mMember.id, JSON.stringify({ 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() } }), err => { if(err) console.log(err) })
 
                                                     rClient.quit()
                                                 })
