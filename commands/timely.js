@@ -53,6 +53,7 @@ module.exports =
                     }
                 } else { // If user never used .timely, but has some data
                     userData.rewardTime = msg.createdTimestamp
+                    userData.streak = 1
                     if(!userData.money) userData.money = 20
                     else userData.money += 20
                     utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
