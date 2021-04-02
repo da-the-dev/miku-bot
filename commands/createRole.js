@@ -17,7 +17,7 @@ const createRole = (msg, name, hex, success) => {
                 .then(res => {
                     utl.embed(msg, `Вы уверены что хотите создать роль \`${name}\` с цветом \`${hex}\` *(${JSON.parse(res).name.value})*?`)
                         .then(async m => {
-                            utl.yesNoReactionMessage(m, () => {
+                            utl.yesNoReactionMessage(m, msg.member.id, () => {
                                 msg.guild.roles.create({
                                     data: {
                                         name: name,
