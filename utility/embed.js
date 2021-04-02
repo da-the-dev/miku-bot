@@ -29,19 +29,31 @@ module.exports =
  * @param {(Discord.Message|number)} source
  */
 module.exports.calculateTime = (source) => {
+    // var time = 'Сегодня, в '
+    // if(typeof source == 'number') {
+    //     var date = new Date(source)
+    //     var offset = date.getTimezoneOffset() + 180
+    //     var hours = (date.getHours() + offset / 60).toString().padStart(2, '0')
+    //     var minutes = date.getMinutes().toString().padStart(2, '0')
+    //     time += `${hours}:${minutes}`
+    // } else {
+    //     var offset = source.createdAt.getTimezoneOffset() + 180
+    //     var hours = (source.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
+    //     var minutes = source.createdAt.getMinutes().toString().padStart(2, '0')
+    //     time += `${hours}:${minutes}`
+    // }
+    // return time
+
     var time = 'Сегодня, в '
-    if(typeof source == 'number') {
-        var date = new Date(source)
-        var offset = date.getTimezoneOffset() + 180
-        var hours = (date.getHours() + offset / 60).toString().padStart(2, '0')
-        var minutes = date.getMinutes().toString().padStart(2, '0')
-        time += `${hours}:${minutes}`
-    } else {
-        var offset = source.createdAt.getTimezoneOffset() + 180
-        var hours = (source.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
-        var minutes = source.createdAt.getMinutes().toString().padStart(2, '0')
-        time += `${hours}:${minutes}`
-    }
+    var date
+    if(typeof source == 'number')
+        date = new Date(new Date(source).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    else
+        date = new Date(new Date(source.createdAt).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+
+    var hours = date.getHours().toString().padStart(2, '0')
+    var minutes = date.getMinutes().toString().padStart(2, '0')
+    time += `${hours}:${minutes}`
     return time
 }
 
