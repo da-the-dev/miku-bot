@@ -23,9 +23,8 @@ module.exports = (args, msg, client) => {
 
                 var date = new Date(userData.loveroom.creationDate)
                 var embed = utl.embed.build(msg, 't')
-                    .setDescription('```Профиль пары```')
-                    .addField('Партнер:', `<@${userData.loveroom.partner}>`)
-                    .addField('Дата регистрации пары', date.toLocaleDateString('ru-RU'))
+                    .setDescription(`\`\`\`カップル Профиль пары\`\`\`\n\`💞\` **Партнёр:**\n<@${userData.loveroom.partner}>\n\`📅\` **Дата регистрации пары:**\n${date.toLocaleDateString('ru-RU')}`)
+                    .setImage("https://media.discordapp.net/attachments/736038639791767594/743986900179615763/unknown.png")
                 msg.channel.send(embed)
                 rClient.quit()
             } else {
