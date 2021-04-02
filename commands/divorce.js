@@ -33,16 +33,17 @@ module.exports =
                 var partnerID = userData.loveroom.partner
                 delete userData.loveroom
                 msg.member.roles.remove(constants.roles.loveroom)
+                msg.guild.members.cache.get(partnerID).roles.remove(constants.roles.loveroom)
                 set(msg.author.id, JSON.stringify(userData))
 
                 get(partnerID)
                     .then(ress => {
                         var partnerData = JSON.parse(ress)
                         delete partnerData.loveroom
-                        set(partnerID, JSON.stringify(partnerID)).then(() => rClient.quit())
+                        set(partnerID, JSON.stringify(partnerData)).then(() => rClient.quit())
                         const embed = utl.embed.build(msg, 't')
-                            .setDescription("`💞`" + ` <@${msg.member.id}> и <@${partnerID}> больше не пара`)
-                            .setImage('https://cdn.discordapp.com/attachments/743052713784508436/827476935231799327/tenor.gif')
+                            .setDescription(`\`💔\` <@${msg.member.id}> и <@${partnerID}> больше не пара :(`)
+                            .setImage('https://cdn.discordapp.com/attachments/819932384375734292/827578839168581633/1506858016_tenor.gif')
                         msg.channel.send(embed)
                     })
             })
