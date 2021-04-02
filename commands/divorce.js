@@ -29,9 +29,12 @@ module.exports =
                     return
                 }
 
-                msg.guild.channels.cache.get(userData.loveroom.id).delete()
+                c = msg.guild.channels.cache.get(userData.loveroom.id)
+                c ? c.delete() : null
+
                 var partnerID = userData.loveroom.partner
                 delete userData.loveroom
+                console.log(userData)
                 msg.member.roles.remove(constants.roles.loveroom)
                 msg.guild.members.cache.get(partnerID).roles.remove(constants.roles.loveroom)
                 set(msg.author.id, JSON.stringify(userData))
@@ -40,6 +43,7 @@ module.exports =
                     .then(ress => {
                         var partnerData = JSON.parse(ress)
                         delete partnerData.loveroom
+                        console.log(JSON.stringify(partnerData))
                         set(partnerID, JSON.stringify(partnerData)).then(() => rClient.quit())
                         const embed = utl.embed.build(msg, 't')
                             .setDescription(`\`💔\` <@${msg.member.id}> и <@${partnerID}> больше не пара :(`)
