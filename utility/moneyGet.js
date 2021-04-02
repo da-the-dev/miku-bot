@@ -5,11 +5,10 @@ const constants = require('../constants.json')
 
 /** 
  * Here is the fuctionality that handles people getting money for being active on a server
- * @param {string} id
+ * @param {Discord.GuildMember} member
  */
-var voiceAct = (id) => {
-    // console.log(typeof id)
-    // return
+var voiceAct = (member) => {
+    var id = member.id
     const rClient = redis.createClient(process.env.RURL)
     rClient.get(id, (err, res) => {
         if(err) console.log(err)
@@ -18,18 +17,16 @@ var voiceAct = (id) => {
             userData.money ? userData.money += 1 : userData.money = 1
             userData.voiceTime ? userData.voiceTime += 1 : userData.voiceTime = 1
 
-            // var now = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-            // if(now.getHours() >= 9 && now.getHours() <= 16)
-            //     userData.dayVoiceTime ? userData.dayVoiceTime += 1 : userData.dayVoiceTime = 1
-            // if(now.getHours() >= 0 && now.getHours() <= 6)
-            //     userData.nightVoiceTime ? userData.nightVoiceTime += 1 : userData.nightVoiceTime = 1
+            var now = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+            if(now.getHours() >= 9 && now.getHours() <= 16)
+                userData.dayVoiceTime ? userData.dayVoiceTime += 1 : userData.dayVoiceTime = 1
+            if(now.getHours() >= 0 && now.getHours() <= 6)
+                userData.nightVoiceTime ? userData.nightVoiceTime += 1 : userData.nightVoiceTime = 1
 
-            // var member = client.guilds.cache.first().members.fetch(id)
-
-            // if(userData.dayVoiceTime >= 300)
-            //     member.roles.add(constants.roles.daylyActive)
-            // if(userData.nightVoiceTime >= 300)
-            //     member.roles.add(constants.roles.nightActive)
+            if(userData.dayVoiceTime >= 300)
+                member.roles.add(constants.roles.daylyActive)
+            if(userData.nightVoiceTime >= 300)
+                member.roles.add(constants.roles.nightActive)
 
             rClient.set(id, JSON.stringify(userData), err => { if(err) console.log(err) })
             rClient.quit()
@@ -49,32 +46,32 @@ var client
  * @param {Discord.VoiceState} newState
  */
 module.exports.voiceActivity = (oldState, newState) => {
-    // if(newState.channelID == oldState.channelID)
-    //     return
+    if(newState.channelID == oldState.channelID)
+        return
 
-    // // User joined a voicechannel
-    // if(newState.channelID) {
-    //     // console.log(`[MG] '${newState.member.user.username}' joined`)
-    //     if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-    //         // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
-    //         var inter = setInterval(voiceAct, interval, newState.member.id)
-    //         if(!voiceActIntervals.get(newState.member.id))
-    //             voiceActIntervals.set(newState.member.id, inter)
-    //     }
-    //     if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
-    //         var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
-    //         // console.log(`[MG] give '${oldMember.user.username}' money`)
-    //         var inter = setInterval(voiceAct, interval, newState.member.id)
-    //         if(!voiceActIntervals.get(oldMember.user.id))
-    //             voiceActIntervals.set(oldMember.user.id, inter)
-    //     }
-    // } else { // User left a voicechannel
-    //     // console.log(`[MG] '${newState.member.user.username}' left`)
-    //     clearInterval(voiceActIntervals.get(newState.member.id))
-    //     if(oldState.channel.members.size == 1) {
-    //         clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
-    //     }
-    // }
+    // User joined a voicechannel
+    if(newState.channelID) {
+        // console.log(`[MG] '${newState.member.user.username}' joined`)
+        if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
+            // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
+            var inter = setInterval(voiceAct, interval, newState.member)
+            if(!voiceActIntervals.get(newState.member.id))
+                voiceActIntervals.set(newState.member.id, inter)
+        }
+        if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
+            var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
+            // console.log(`[MG] give '${oldMember.user.username}' money`)
+            var inter = setInterval(voiceAct, interval, newState.member)
+            if(!voiceActIntervals.get(oldMember.user.id))
+                voiceActIntervals.set(oldMember.user.id, inter)
+        }
+    } else { // User left a voicechannel
+        // console.log(`[MG] '${newState.member.user.username}' left`)
+        clearInterval(voiceActIntervals.get(newState.member.id))
+        if(oldState.channel.members.size == 1) {
+            clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
+        }
+    }
 }
 
 /**
@@ -87,7 +84,7 @@ module.exports.voiceActivityInit = (client) => {
     voiceChannels.forEach(v => {
         if(v.members.array().length > 1) {
             v.members.forEach(m => {
-                var inter = setInterval(voiceAct, interval, m.id)
+                var inter = setInterval(voiceAct, interval, m)
                 if(!voiceActIntervals.get(m.id))
                     voiceActIntervals.set(m.id, inter)
             })
