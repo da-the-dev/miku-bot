@@ -125,6 +125,11 @@ module.exports =
                                                         rClient.set(mMember.id, JSON.stringify({ 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() } }), err => { if(err) console.log(err) })
 
                                                     rClient.quit()
+
+                                                    const embed = utl.embed.build(msg, 't')
+                                                        .setDescription("💞`" + `<@${msg.member.id}> и <@${mMember.id}> теперь пара`)
+                                                        .setImage('https://i.pinimg.com/originals/56/3a/04/563a04f99fea51b9b49c8d2f9e633066.gif')
+                                                    msg.channel.send(embed)
                                                 })
                                             })
                                         })
