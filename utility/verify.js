@@ -12,7 +12,7 @@ module.exports.verify = async (reaction, user, client) => {
     if(reaction.message.id == client.verifyMsg) {
         console.log(`[VR] Verified user '${user.tag}'`)
         await reaction.message.guild.members.fetch({ cache: true })
-        var member = await reaction.message.guild.members.cache.find(m => m.user.id == user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
+        var member = await reaction.message.guild.members.cache.get(user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
         const calculateTime = () => {
             var time = 'Сегодня, в '
             var offset = member.joinedAt.getTimezoneOffset() + 180
@@ -52,6 +52,5 @@ module.exports.mark = async (member) => {
     member.roles.add(constants.roles.verify)
         .then(m => {
             console.log(`[VR] Marked user '${m.user.username}'`)
-            m.roles.cache.array().forEach(r => console.log(r.name))
         })
 }
