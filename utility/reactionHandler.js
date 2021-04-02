@@ -71,7 +71,7 @@ const permisson = (msg, member2, description, ...args) => {
                         return
                     }
                     if(reactions.first().emoji.name == '❌') {
-                        m.edit(utl.embed.build(`<@${member2.id}> тебе отказал(-а)`))
+                        m.edit(utl.embed.build(msg, `<@${member2.id}> тебе отказал(-а)`))
                         m.reactions.removeAll()
                         return
                     }
