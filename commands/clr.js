@@ -119,7 +119,7 @@ module.exports =
                                                     if(err) console.log(err)
                                                     if(res) {
                                                         var userData = JSON.parse(res)
-                                                        userData.loveroom = { 'id': c.id, 'partner': msg.author.id }
+                                                        userData.loveroom = { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() }
                                                         rClient.set(mMember.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                                                     } else
                                                         rClient.set(mMember.id, JSON.stringify({ 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() } }), err => { if(err) console.log(err) })
