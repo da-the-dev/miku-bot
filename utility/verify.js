@@ -48,7 +48,7 @@ module.exports.verify = async (reaction, user, client) => {
  * Marks new users for verification
  * @param {Discord.GuildMember} member
  */
-module.exports.mark = async (member) => {
+module.exports.mark = member => {
     member.roles.add(constants.roles.verify)
         .then(m => {
             console.log(`[VR] Marked user '${m.user.username}'`)

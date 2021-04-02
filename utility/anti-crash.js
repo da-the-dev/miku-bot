@@ -201,7 +201,7 @@ module.exports.monitorChannelDelete = channel => {
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
                 .then(audit => {
                     var executor = audit.entries.first().executor
-                    if(executor.id == process.env.MYID)
+                    if(executor.id == process.env.MYID || executor.id == executor.client.user.id)
                         return
 
                     // Executor Role Delete Entries
