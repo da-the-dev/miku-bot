@@ -10,9 +10,9 @@ var timeout = null
  */
 module.exports.verify = async (reaction, user, client) => {
     if(reaction.message.id == client.verifyMsg) {
-        console.log(`[VR] Verified user '${user.tag}'`)
-        await reaction.message.guild.members.fetch({ cache: true })
-        var member = await reaction.message.guild.members.cache.get(user.id).roles.remove(reaction.message.guild.roles.cache.get(constants.roles.verify))
+        var member = client.guilds.cache.first().members.cache.get(user.id)
+        member.roles.remove(constants.roles.verify).then(console.log(`[VR] Verified user '${user.tag}'`))
+
         const calculateTime = () => {
             var time = 'Сегодня, в '
             var offset = member.joinedAt.getTimezoneOffset() + 180
