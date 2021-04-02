@@ -9,7 +9,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .mtop
+     * @description Usage: .top
      */
     async (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
@@ -25,7 +25,7 @@ module.exports =
                 mget(keys)
                     .then(async data => {
                         for(i = 0; i < keys.length; i++) {
-                            if(JSON.parse(data[i]).money)
+                            if(data[i].length > 0 && JSON.parse(data[i]).money)
                                 bigData.set(keys[i], JSON.parse(data[i]).money)
                         }
 

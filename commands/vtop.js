@@ -10,7 +10,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .ttop
+     * @description Usage: .vtop
      */
     async (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
@@ -26,7 +26,7 @@ module.exports =
                 mget(keys)
                     .then(async data => {
                         for(i = 0; i < keys.length; i++) {
-                            if(JSON.parse(data[i]).voiceTime)
+                            if(data[i].length > 0 && JSON.parse(data[i]).voiceTime)
                                 bigData.set(keys[i], JSON.parse(data[i]).voiceTime)
                         }
                         bigData = new Map([...bigData.entries()].sort((a, b) => {

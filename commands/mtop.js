@@ -60,7 +60,7 @@ module.exports =
                     }
                 }
 
-                msg.reply(embed)
+                msg.channel.send(embed)
                 rClient.quit()
             })
     }
