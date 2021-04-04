@@ -86,7 +86,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 // Message events
 client.on('messageReactionAdd', (reaction, user) => {
     utl.fetch.fetchReactions(reaction)
-    utl.verify.verify(reaction, user, client)
+    utl.verify(reaction, user, client)
     if(reaction.message.channel.id != client.verifyMsg)
         utl.shop(reaction, user, client)
     utl.reportHandler.reportAssignmentHandler(reaction, user, client)
@@ -99,7 +99,7 @@ client.on('message', msg => {
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)
-        utl.welcomeReactionReward(msg, client)
+        utl.verify.welcomeReward(msg, client)
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
 
