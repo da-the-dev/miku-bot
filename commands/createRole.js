@@ -22,7 +22,7 @@ const createRole = (msg, name, hex, success) => {
                                     data: {
                                         name: name,
                                         color: hex,
-                                        position: 28
+                                        position: 47
                                     },
                                     reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
                                 }).then(r => {
@@ -36,11 +36,11 @@ const createRole = (msg, name, hex, success) => {
                                             const rClient = require('redis').createClient(process.env.RURL)
                                             const get = util.promisify(rClient.get).bind(rClient)
                                             const set = util.promisify(rClient.set).bind(rClient)
-                                            get(msg.member.id)
+                                            get('customRoles')
                                                 .then(res => {
-                                                    var userData = JSON.parse(res)
-                                                    userData.customRoles ? userData.customRoles.push(r.id) : userData.customRoles = [r.id]
-                                                    set(msg.member.id, JSON.stringify(userData)).then(() => rClient.quit())
+                                                    var customRolesData = JSON.parse(res)
+                                                    customRolesData[msg.member.id][r.id] = { users: 1 }
+                                                    set('customRoles', JSON.stringify(customRolesData)).then(() => rClient.quit())
                                                 })
                                         })
                                 })
@@ -61,7 +61,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .createRole <hex> <name>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var hex = args[1]
         if(!hex) {
             utl.embed(msg, 'Не указан цвет роли!')
@@ -90,6 +90,14 @@ module.exports =
         const get = util.promisify(rClient.get).bind(rClient)
         const set = util.promisify(rClient.set).bind(rClient)
 
+        // Check if user already has 2 roles created
+        var customRoles = JSON.parse(await get('customRoles'))
+        if(customRoles[msg.author.id] && Object.entries(customRoles[msg.author.id]) >= 2) {
+            utl.embed(msg, 'У Вас уже достигнут по кастомным ролям ***(2)***!')
+            rClient.quit()
+            return
+        }
+
         get(msg.author.id)
             .then(res => {
                 if(res) {
@@ -102,20 +110,19 @@ module.exports =
                     if(userData.boosts && userData.boosts > 2)
                         utl.embed(msg, `У Вас есть **${userData.boosts}** буста(-ов), хотите потратить **2** буста для создания роли?`)
                             .then(m => {
-                                utl.yesNoReactionMessage(m, () => {
-                                    userData.boosts -= 2
-                                    set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
-                                    createRole(msg, name, hex, null)
+                                utl.yesNoReactionMessage(m, msg.author.id, () => {
+                                    createRole(msg, name, hex, () => {
+                                        userData.boosts -= 2
+                                        set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
+                                    })
                                 }, () => {
                                     m.delete()
                                     if(userData.money < 10000) {
                                         utl.embed(msg, 'У Вас недостаточно конфет!')
                                         return
                                     }
-                                    set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
+                                    set(msg.author.id, JSON.stringify(userData))
                                     createRole(msg, name, hex, () => {
-                                        const rClient = require('redis').createClient(process.env.RURL)
-                                        const set = util.promisify(rClient.set).bind(rClient)
                                         userData.money -= 10000
                                         set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                                     })
@@ -128,12 +135,11 @@ module.exports =
                         if(userData.money < 10000) {
                             m.delete()
                             utl.embed(msg, 'У Вас недостаточно конфет!')
+                            rClient.quit()
                             return
                         }
                         createRole(msg, name, hex, () => {
                             userData.money -= 10000
-                            const rClient = require('redis').createClient(process.env.RURL)
-                            const set = util.promisify(rClient.set).bind(rClient)
                             set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
                         })
                     }

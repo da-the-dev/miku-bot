@@ -38,6 +38,53 @@ module.exports = async (reaction, user, client) => {
 }
 
 /**
+ * Return an array with text and message object with CAPTCHA
+ */
+module.exports.formCaptcha = async () => {
+    const { createCanvas, loadImage } = require('canvas')
+    const path = require('path')
+    const canvas = createCanvas(1920, 1080)
+    const ctx = canvas.getContext('2d')
+
+    const img = await loadImage(path.join(__dirname.slice(0, __dirname.lastIndexOf('\\')), 'imgs', 'captcha.png'), 'imgs', 'captcha.png')
+    ctx.drawImage(img, 0, 0, img.width, img.height)
+
+    function makeid(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for(var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    const text = makeid(6)
+    const font = 'bold 150px "Sans"'
+    const args = [text, img.width / 5 + 10, img.height / 2]
+
+    ctx.fillStyle = '#e5b6de'
+    ctx.font = font
+    ctx.textAlign = 'center'
+    ctx.fillText(...args)
+
+    ctx.fillStyle = 'black'
+    ctx.font = font
+    ctx.textAlign = 'center'
+    ctx.lineWidth = 2
+    ctx.strokeText(...args)
+
+    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'image-name-here.png');
+    const emb = new Discord.MessageEmbed()
+        .setColor('#2F3136')
+        .setDescription("<a:__:825834909146415135> Напишите указанный код на картинке")
+        .setImage(attachment)
+    return {
+        text: text,
+        obj: { embed: emb }
+    }
+}
+
+/**
  * Leaves reaction on users' welcome messages
  * @param {Discord.Message} msg - Message to react to
  * @param {Discord.Client} client - Client to check for perms to react
@@ -59,5 +106,6 @@ module.exports.welcomeReward = (msg, client) => {
 module.exports.mark = async member => {
     await member.roles.add(constants.roles.verify)
     console.log(`[VR] Marked user '${member.user.username}'`)
+    const captcha = formCaptcha()
 
 }
