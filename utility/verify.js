@@ -12,8 +12,9 @@ var currentTimeout = null
 module.exports = async (reaction, user, client) => {
     if(reaction.message.id == client.verifyMsg) {
 
-        var member = await client.guilds.cache.first().members.fetch(user.id)
+        var member = await reaction.message.guild.members.fetch(user.id)
         await member.roles.remove(constants.roles.verify)
+            .catch(err => console.log(err))
 
         console.log(`[VR] Verified user '${user.tag}'`)
         reward = true
