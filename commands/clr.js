@@ -64,19 +64,19 @@ module.exports =
                                         [
                                             {
                                                 id: msg.guild.id,
-                                                deny: ["CONNECT"]
+                                                deny: ["VIEW_CHANNEL", "CONNECT"]
                                             },
                                             {
                                                 id: constants.roles.verify,
-                                                deny: ["CONNECT"]
+                                                deny: ["VIEW_CHANNEL", "CONNECT"]
                                             },
                                             {
                                                 id: constants.roles.muted,
-                                                deny: ["CONNECT"]
+                                                deny: ["VIEW_CHANNEL", "CONNECT"]
                                             },
                                             {
                                                 id: constants.roles.toxic,
-                                                deny: ["CONNECT"]
+                                                deny: ["VIEW_CHANNEL", "CONNECT"]
                                             },
                                             {
                                                 id: constants.roles.localban,
@@ -84,11 +84,11 @@ module.exports =
                                             },
                                             {
                                                 id: msg.author.id,
-                                                allow: ['CONNECT']
+                                                allow: ["VIEW_CHANNEL", 'CONNECT']
                                             },
                                             {
                                                 id: mMember.id,
-                                                allow: ['CONNECT']
+                                                allow: ["VIEW_CHANNEL", 'CONNECT']
                                             }
                                         ],
                                     parent: constants.categories.loverooms,
