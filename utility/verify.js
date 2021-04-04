@@ -20,8 +20,8 @@ module.exports = async (reaction, user, client) => {
         reward = true
 
         const emb = new Discord.MessageEmbed()
-            .setDescription('Мы очень рады тебя видеть в нашей гостинице. Обязательно прочти [правила](https://discord.com/channels/718537792195657798/810202155079696414/821444057971556402) и заходи болтать, тебя уже заждались e-girls & e-boys.')
-            .setImage('https://cdn.discordapp.com/attachments/810255515854569472/822563512634966056/welcome01.png')
+            .setDescription(`**Тепло приветствуем** ${user.username} <:__:827851416886312970>\nНадеемся, что тебе понравится у нас и ты останешься.\nЧтобы легче было ориентироваться, прочитай <#810202155079696414> <a:__:827590350083194930>`)
+            .setImage("https://cdn.discordapp.com/attachments/826131659333042256/827862202488848394/00.gif")
             .setColor('#2F3136')
             .setFooter(`${user.username} • ${utl.embed.calculateTime(member)}`, user.avatarURL())
 
