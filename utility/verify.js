@@ -22,7 +22,7 @@ module.exports = async (reaction, user, client) => {
             .setDescription('Мы очень рады тебя видеть в нашей гостинице. Обязательно прочти [правила](https://discord.com/channels/718537792195657798/810202155079696414/821444057971556402) и заходи болтать, тебя уже заждались e-girls & e-boys.')
             .setImage('https://cdn.discordapp.com/attachments/810255515854569472/822563512634966056/welcome01.png')
             .setColor('#2F3136')
-            .setFooter(`${user.tag} • ${utl.embed.calculateTime(member)}`, user.avatarURL())
+            .setFooter(`${user.username} • ${utl.embed.calculateTime(member)}`, user.avatarURL())
 
         reaction.message.guild.channels.cache.get(constants.channels.general).send(`<@${user.id}>`, { embed: emb })
             .then(m => {
