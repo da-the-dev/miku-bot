@@ -113,7 +113,7 @@ const formCaptcha = async () => {
 
     return {
         text: text,
-        obj: { content: '<a:__:825834909146415135> Напишите указанный код на картинке', files: [canvas.toBuffer()] }
+        obj: { content: '<a:__:825834909146415135> **Напишите указанный код на картинке**', files: [canvas.toBuffer()] }
     }
 }
 
