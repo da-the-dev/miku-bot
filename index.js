@@ -39,6 +39,7 @@ client.once('ready', () => {
     utl.moneyGet.voiceActivityInit(client)
     utl.elderlyRole(client.guilds.cache.first())
     utl.scanServer(client)
+    utl.bannerUpdate(client.guilds.cache.first())
 })
 
 // Role events
