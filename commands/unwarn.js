@@ -11,8 +11,8 @@ module.exports =
     * @description Usage: .unwarn <member>
     */
     (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
-        if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
+        var chatControlRole = msg.guild.roles.cache.get(constants.roles.chatControl)
+        if(msg.member.roles.cache.find(r => r.position >= chatControlRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed(msg, 'Не указан пользователь!')
