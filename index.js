@@ -52,7 +52,7 @@ client.on('roleDelete', role => {
 // Member events
 client.on('guildMemberAdd', (member) => {
     console.log('+1 member')
-    utl.verify.mark(member)
+    utl.verify.mark(member, client)
     utl.roles.reapplyRoles(member)
     if(member.user.bot)
         utl.anticrash.monitorBotInvites(member)
@@ -95,7 +95,7 @@ client.on('message', msg => {
     // Activity
     utl.roles.daylyTextActivity(msg)
     utl.roles.nightTextActivity(msg)
-    utl.verify(msg, client)
+    // utl.verify(msg, client)
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)

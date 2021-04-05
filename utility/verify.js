@@ -39,7 +39,7 @@ module.exports = async (msg, client) => {
 const takeRole = async (client, id) => {
     var member = await client.guilds.cache.first().members.fetch(id)
     console.log(member.user.username)
-    await member.roles.remove(constants.roles.verify)
+    await member.roles.remove(client.verify)
         .catch(err => console.log(err))
 
     console.log(`[VR] Verified user '${member.user.tag}'`)
@@ -126,13 +126,23 @@ module.exports.welcomeReward = (msg, client) => {
  * Marks new users for verification
  * @param {Discord.GuildMember} member
  */
-module.exports.mark = async member => {
-    await member.roles.add(constants.roles.verify)
-    console.log(`[VR] Marked user '${member.user.username}'`)
-    const captcha = await utl.verify.formCaptcha()
-    member.send(captcha.obj)
+module.exports.mark = async (member, client) => {
+    // await member.roles.add(constants.roles.verify)
+    // console.log(`[VR] Marked user '${member.user.username}'`)
+    // const captcha = await utl.verify.formCaptcha()
+    // member.send(captcha.obj)
 
-    const rClient = require('redis').createClient(process.env.RURL)
-    const set = promisify(rClient.set).bind(rClient)
-    set('verify-' + member.id, captcha.text).then(() => rClient.quit())
+    // const rClient = require('redis').createClient(process.env.RURL)
+    // const set = promisify(rClient.set).bind(rClient)
+    // set('verify-' + member.id, captcha.text).then(() => rClient.quit())
+    reward = true
+    client.guilds.cache.first().channels.cache.get(constants.channels.general).send(`<@${member.user.id}>`, { embed: emb })
+        .then(m => {
+            currentTimeout ? clearTimeout(currentTimeout) : null
+            setTimeout(() => {
+                reward = false
+                m.delete()
+                    .catch(e => { })
+            }, 60000, m)
+        })
 }
