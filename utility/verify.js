@@ -135,6 +135,11 @@ module.exports.mark = async (member, client) => {
     // const rClient = require('redis').createClient(process.env.RURL)
     // const set = promisify(rClient.set).bind(rClient)
     // set('verify-' + member.id, captcha.text).then(() => rClient.quit())
+    const emb = new Discord.MessageEmbed()
+        .setDescription(`**Тепло приветствуем** ${member.user.username} <:__:827851416886312970>\nНадеемся, что тебе понравится у нас и ты останешься.\nЧтобы легче было ориентироваться, прочитай <#810202155079696414> <a:__:827590350083194930>`)
+        .setImage("https://cdn.discordapp.com/attachments/826131659333042256/827862202488848394/00.gif")
+        .setColor('#2F3136')
+        .setFooter(`${member.user.username} • ${utl.embed.calculateTime(member)}`, member.user.avatarURL())
     reward = true
     client.guilds.cache.first().channels.cache.get(constants.channels.general).send(`<@${member.user.id}>`, { embed: emb })
         .then(m => {

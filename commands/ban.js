@@ -31,11 +31,12 @@ module.exports =
                             set(mMember.user.id, JSON.stringify(userData)).then(() => rClient.quit())
                         }
                     } else
-                        rClient.set(mMember.user.id, JSON.stringify({ "ban": true })).then(() => rClient.quit())
+                        set(mMember.user.id, JSON.stringify({ "ban": true })).then(() => rClient.quit())
 
                     mMember.roles.remove(mMember.roles.cache)
                         .then(() => { mMember.roles.add(constants.roles.localban) })
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
+                    console.log('test')
                 })
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')
