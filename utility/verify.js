@@ -11,7 +11,6 @@ var currentTimeout = null
  */
 module.exports = async (msg, client) => {
     if(msg.channel.type == 'dm') {
-        console.log('good')
         if(msg.content.length < 6) {
 
         }
@@ -24,10 +23,9 @@ module.exports = async (msg, client) => {
                 if(res) {
                     if(msg.content == res) {
                         takeRole(client, msg.author.id)
-                        del(msg.author.id)
+                        del('verify-' + msg.author.id).then(() => rClient.quit())
                     }
                 }
-                rClient.quit()
             })
     }
 }
@@ -66,7 +64,7 @@ const takeRole = async (client, id) => {
  * Return an array with text and message object with CAPTCHA
  */
 module.exports.formCaptcha = async () => {
-    const { createCanvas, loadImage } = require('canvas')
+    const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
     const canvas = createCanvas(1920, 1080)
     const ctx = canvas.getContext('2d')
@@ -98,12 +96,9 @@ module.exports.formCaptcha = async () => {
     ctx.lineWidth = 2
     ctx.strokeText(...args)
 
-    const emb = new Discord.MessageEmbed()
-        .setColor('#2F3136')
-        .setDescription("<a:__:825834909146415135> Напишите указанный код на картинке")
     return {
         text: text,
-        obj: { embed: emb, files: [canvas.toBuffer()] }
+        obj: { content: '<a:__:825834909146415135> Напишите указанный код на картинке', files: [canvas.toBuffer()] }
     }
 }
 
