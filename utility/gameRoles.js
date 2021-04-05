@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const gameNames = ["Dota 2", "Counter-Strike: Global Offensive", "PLAYERUNKNOWN'SBATTLEGORUNDS", "PUBG LITE", "оsu!", "League of Legends", "VALORANT", "Among Us", "Minecraft", "Brawlhalla", "Apex Legends", "Rainbow Six Siege", "Genshin Impact", "Fortnite"]
 const redis = require('redis')
 const constants = require('../constants.json')
 /**
@@ -8,19 +7,8 @@ const constants = require('../constants.json')
  * @param {Discord.Presence} newPresence
  */
 module.exports = (oldPresence, newPresence) => {
-    var act = newPresence.activities.find(a => gameNames.includes(a.name))
     if(!newPresence.user.bot) {
-        if(act) { // If newPresence includes games
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get(newPresence.userID, (err, res) => {
-                if(err) console.log(err)
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(userData.gameRoles || userData.gameRoles == undefined)
-                        newPresence.member.roles.add(constants.gameRoles[act.name])
-                    rClient.quit()
-                }
-            })
-        }
+        var pres = newPresence.activities.find(a => a.type == 'PLAYING')
+        pres ? constants.gameRoles[pres.name] ? !newPresence.member.roles.cache.has(constants.gameRoles[pres.name]) ? newPresence.member.roles.add(constants.gameRoles[pres.name]) : null : null : null
     }
 }
