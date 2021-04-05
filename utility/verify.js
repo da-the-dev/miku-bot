@@ -16,16 +16,31 @@ module.exports = async (msg, client) => {
         }
         const rClient = require('redis').createClient(process.env.RURL)
         const get = promisify(rClient.get).bind(rClient)
+        const set = promisify(rClient.set).bind(rClient)
         const del = promisify(rClient.del).bind(rClient)
         get('verify-' + msg.author.id)
-            .then(res => {
+            .then(async res => {
                 console.log(res)
                 if(res) {
                     if(msg.content == res) {
                         takeRole(client, msg.author.id)
                         del('verify-' + msg.author.id).then(() => rClient.quit())
+                        msg.channel.messages.fetch()
+                            .then(msgs => {
+                                msgs.forEach(m => {
+                                    if(m.author.id == client.user.id)
+                                        m.delete()
+                                })
+                            })
+                    }
+                    else {
+                        const captcha = await formCaptcha()
+                        set('verify-' + msg.author.id, captcha.text).then(() => rClient.quit())
+                        msg.channel.send(new Discord.MessageEmbed().setDescription('Неверно введена капча, генерирую новую...').setColor('#2F3136'))
+                        msg.channel.send(captcha.obj)
                     }
                 }
+                rClient.quit()
             })
     }
 }
@@ -63,7 +78,7 @@ const takeRole = async (client, id) => {
 /**
  * Return an array with text and message object with CAPTCHA
  */
-module.exports.formCaptcha = async () => {
+const formCaptcha = async () => {
     const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
     const canvas = createCanvas(1920, 1080)
@@ -74,14 +89,14 @@ module.exports.formCaptcha = async () => {
 
     function makeid(length) {
         var result = '';
-        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var characters = '0123456789';
         var charactersLength = characters.length;
         for(var i = 0; i < length; i++) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
     }
-    const text = makeid(6)
+    const text = makeid(4)
     const font = 'bold 150px "Sans"'
     const args = [text, img.width / 5 + 10, img.height / 2]
 
@@ -124,7 +139,7 @@ module.exports.welcomeReward = (msg, client) => {
 module.exports.mark = async (member, client) => {
     await member.roles.add(constants.roles.verify)
     console.log(`[VR] Marked user '${member.user.username}'`)
-    const captcha = await utl.verify.formCaptcha()
+    const captcha = await formCaptcha()
     member.send(captcha.obj)
 
     const rClient = require('redis').createClient(process.env.RURL)
