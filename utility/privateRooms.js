@@ -7,7 +7,8 @@ const utl = require('../utility')
  * @param {Discord.Client} client
  */
 module.exports.createRoom = (client) => {
-    guild.channels.create('．create 部屋',
+    var privateRoomCategory = client.guilds.cache.first().channels.cache.get(constants.categories.privateRooms)
+    client.guilds.cache.first().channels.create('．create 部屋',
         {
             type: "voice",
             permissionOverwrites:
@@ -25,8 +26,12 @@ module.exports.createRoom = (client) => {
                         deny: ['VIEW_CHANNEL', "CONNECT"]
                     },
                     {
-                        id: guild.id,
+                        id: client.guilds.cache.first().id,
                         allow: ['VIEW_CHANNEL', "CONNECT"]
+                    },
+                    {
+                        id: constants.roles.verify,
+                        deny: ['VIEW_CHANNEL', "CONNECT"]
                     }
                 ],
             parent: privateRoomCategory
