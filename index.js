@@ -95,7 +95,7 @@ client.on('message', msg => {
     // Activity
     utl.roles.daylyTextActivity(msg)
     utl.roles.nightTextActivity(msg)
-    // utl.verify(msg, client)
+    utl.verify(msg, client)
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)
