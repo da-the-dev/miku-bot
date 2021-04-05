@@ -70,7 +70,7 @@ const activityCalculator = (lastMessages, activityName, guild) => {
 
         activies.forEach(async a => { // Give users their respective roles
             var member = guild.members.cache.get(a)
-            member ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
+            member && !member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
         })
         lastMessages.clear()
         rClient.quit()
