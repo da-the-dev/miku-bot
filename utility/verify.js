@@ -36,7 +36,7 @@ module.exports = async (msg, client) => {
                     else {
                         const captcha = await formCaptcha()
                         set('verify-' + msg.author.id, captcha.text).then(() => rClient.quit())
-                        msg.channel.send(new Discord.MessageEmbed().setDescription('Неверно введена капча, генерирую новую...').setColor('#2F3136'))
+                        msg.channel.send(new Discord.MessageEmbed().setDescription('<:__:827599506928959519> **Неверно введена капча, генерирую новую** . . . ').setColor('#2F3136'))
                         msg.channel.send(captcha.obj)
                     }
                 }
