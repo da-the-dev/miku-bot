@@ -86,7 +86,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 // Message events
 client.on('messageReactionAdd', (reaction, user) => {
     utl.fetch.fetchReactions(reaction)
-    utl.verify(reaction, user, client)
+
     if(reaction.message.channel.id != client.verifyMsg)
         utl.shop(reaction, user, client)
     utl.reportHandler.reportAssignmentHandler(reaction, user, client)
@@ -95,7 +95,7 @@ client.on('message', msg => {
     // Activity
     utl.roles.daylyTextActivity(msg)
     utl.roles.nightTextActivity(msg)
-
+    utl.verify(msg, client)
     // Bot commands
     if(!msg.author.bot) {
         utl.moneyGet.chatActivity(msg)
