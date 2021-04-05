@@ -11,8 +11,8 @@ module.exports =
     * @description Usage: .warn <member> <reason>
     */
     (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
-        if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
+        var cControlRole = msg.guild.roles.cache.get(constants.roles.chatControl)
+        if(msg.member.roles.cache.find(r => r.position >= cControlRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed(msg, 'Вы не указали пользователя для варна!')

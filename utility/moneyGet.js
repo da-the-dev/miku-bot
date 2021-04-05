@@ -24,9 +24,9 @@ var voiceAct = (member) => {
                 userData.nightVoiceTime ? userData.nightVoiceTime += 1 : userData.nightVoiceTime = 1
 
             if(userData.dayVoiceTime >= 300)
-                member.roles.add(constants.roles.daylyActive)
+                !member.roles.cache.has(constants.roles.daylyActive) ? (member.roles.add(constants.roles.daylyActive), console.log("role")) : null
             if(userData.nightVoiceTime >= 300)
-                member.roles.add(constants.roles.nightActive)
+                !member.roles.cache.has(constants.roles.nightActive) ? member.roles.add(constants.roles.nightActive) : null
 
             rClient.set(id, JSON.stringify(userData), err => { if(err) console.log(err) })
             rClient.quit()
