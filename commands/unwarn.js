@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const utl = require('../utility')
+const constants = require('../constants.json')
 const emojies = ['1️⃣', '2️⃣', '3️⃣']
 module.exports =
     /**
