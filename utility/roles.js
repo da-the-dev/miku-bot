@@ -70,23 +70,24 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             .filter(({ 1: v }) => v >= 500)
             .map(([k]) => k)
 
+        var membersIDs = []
+        /**@type {Array<Discord.GuildMember>} */
+        var members = []
         activies.forEach(async a => { // Give users their respective roles
-            var member = guild.members.cache.get(a)
+            var member = guild.members.cache.get()
             if(!member) {
                 return
             }
-            const rClientt = redis.createClient(process.env.RURL)
-            rClientt.get(member.id, (err, res) => {
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(userData.activity !== false)
-                        !member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
-                    rClientt.quit()
-                }
-                rClientt.quit()
-            })
+            membersIDs.push(member.id)
+            members.push(member)
         })
         lastMessages.clear()
+
+        rClient.mget(membersIDs, (err, res) => {
+            for(i = 0; members.length; i++)
+                if(res[i].length > 0 && JSON.parse(res[i]).activity)
+                    !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
+        })
         // console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
     })
 }
