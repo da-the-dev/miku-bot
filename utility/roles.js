@@ -72,10 +72,21 @@ const activityCalculator = (lastMessages, activityName, guild) => {
 
         activies.forEach(async a => { // Give users their respective roles
             var member = guild.members.cache.get(a)
-            member && !member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
+            if(!member) {
+                return
+            }
+            const rClientt = redis.createClient(process.env.RURL)
+            rClientt.get(member.id, (err, res) => {
+                if(res) {
+                    var userData = JSON.parse(res)
+                    if(userData.activity !== false)
+                        !member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
+                    rClientt.quit()
+                }
+                rClientt.quit()
+            })
         })
         lastMessages.clear()
-        rClient.quit()
         // console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
     })
 }
