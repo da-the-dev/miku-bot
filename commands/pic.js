@@ -50,18 +50,11 @@ const buyRole = async (msg, member, duration, price) => {
                 console.log(remaining)
                 set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, remaining + duration).then(() => {
-                        get(member.id)
-                            .then(res => {
-                                if(res) {
-                                    var userData = JSON.parse(res)
-                                    userData.pic = true
-                                    set(member.id, JSON.stringify(userData)).then(() => { rClient.quit() })
-                                } else
-                                    set(member.id, JSON.stringify({ pic: true })).then(() => { rClient.quit() })
-                            })
                         rClient.quit()
                     }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
                 }).catch(err => { console.log(err) })
+
+
                 msg.edit(new Discord.MessageEmbed()
                     .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
                     .setColor('#2F3136')
@@ -71,9 +64,23 @@ const buyRole = async (msg, member, duration, price) => {
                 console.log('buys')
                 set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, duration).then(() => {
-                        rClient.quit()
+                        console.log('db upd')
+                        get(member.id)
+                            .then(res => {
+                                if(res) {
+                                    var userData = JSON.parse(res)
+                                    userData.pic = true
+                                    console.log(userData)
+                                    set(member.id, JSON.stringify(userData)).then(() => { rClient.quit() })
+                                } else
+                                    set(member.id, JSON.stringify({ pic: true })).then(() => { rClient.quit() })
+                            })
                     }).catch(err => { console.log(err) })
                 }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
+
+                console.log('test')
+
+
                 member.roles.add(constants.roles.pics)
                 msg.edit(new Discord.MessageEmbed()
                     .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
