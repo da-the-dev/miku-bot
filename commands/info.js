@@ -39,7 +39,7 @@ module.exports =
         var info =
             new Discord.MessageEmbed()
                 .setColor('#2F3136')
-                .setImage("https://cdn.discordapp.com/attachments/814883788369690714/822537373891166248/shirobot_.png")
+                .setImage("https://cdn.discordapp.com/attachments/826131659333042256/828705514237198346/00.gif")
                 .addField('Author', `\`\`\`${client.users.cache.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
                 .addField('Prefix', '```.```', true)
                 .addField('RAM usage', `\`\`\`${memoryUsed.toFixed(2)} MB\`\`\``, true)
