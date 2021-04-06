@@ -32,3 +32,4 @@ module.exports =
         } else
             util.embed(msg, 'У Вас нет прав на эту команду!')
     }
+module.exports.allowedInGeneral = true
