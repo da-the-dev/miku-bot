@@ -25,11 +25,11 @@ module.exports =
                 rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                 rClient.quit()
                 utl.embed(msg, `Игровые роли ${userData.gameRoles ? '**включены**' : '**выключены**'}`)
+                !userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
             } else {
                 rClient.set(msg.author.id, JSON.stringify({ gameRoles: false }), err => { if(err) console.log(err) })
                 rClient.quit()
                 msg.member.roles.remove(constants.gameRolesArray)
-                console.log('ugrole 1')
                 utl.embed(msg, `Игровые роли **выключены**`)
             }
         })
