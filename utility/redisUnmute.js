@@ -42,8 +42,20 @@ module.exports = (client) => {
                     })
                     member.roles.remove(constants.roles.muted)
                     console.log('redisUn 1')
-                } else if(msg.startsWith('pics'))
-                    client.guilds.cache.first().members.cache.get(msg.split('-').pop()).roles.remove(constants.roles.pics)
+                } else if(msg.startsWith('pics')) {
+                    var id = msg.split('-').pop()
+                    client.guilds.cache.first().members.cache.get(id).roles.remove(constants.roles.pics)
+                    const rClient = require('redis').createClient(process.env.RURL)
+                    rClient.get(id, (err, res) => {
+                        if(res) {
+                            var userData = JSON.parse(res)
+                            delete userData.pic
+                            rClient.set(member.id, JSON.stringify(userData), (err, res) => {
+                                rClient.quit()
+                            })
+                        }
+                    })
+                }
             })
         })
     }

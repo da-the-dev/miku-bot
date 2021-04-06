@@ -50,6 +50,15 @@ const buyRole = async (msg, member, duration, price) => {
                 console.log(remaining)
                 set('pics-' + member.id, '').then(() => {
                     expire('pics-' + member.id, remaining + duration).then(() => {
+                        get(member.id)
+                            .then(res => {
+                                if(res) {
+                                    var userData = JSON.parse(res)
+                                    userData.pic = true
+                                    set(member.id, JSON.stringify(userData)).then(() => { rClient.quit() })
+                                } else
+                                    set(member.id, JSON.stringify({ pic: true })).then(() => { rClient.quit() })
+                            })
                         rClient.quit()
                     }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
                 }).catch(err => { console.log(err) })
