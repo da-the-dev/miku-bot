@@ -85,7 +85,7 @@ const activityCalculator = (lastMessages, activityName, guild) => {
 
         rClient.mget(membersIDs, (err, res) => {
             for(i = 0; members.length; i++)
-                if(res[i].length > 0 && JSON.parse(res[i]).activity)
+                if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
                     !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
         })
         // console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
