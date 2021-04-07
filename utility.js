@@ -17,7 +17,7 @@ module.exports.elderlyRole = require('./utility/elderlyRole')
 module.exports.welcomeReactionReward = require('./utility/welcomeReactionReward')
 module.exports.scanServer = require('./utility/scanServer')
 module.exports.boosterTracker = require('./utility/boosterTracker')
-module.exports.yesNoReactionMessage = require('./utility/yesNoReactionMessage')
+module.exports.reactionSelector = require('./utility/reactionSelector')
 module.exports.bannerUpdate = require('./utility/bannerUpdate')
 module.exports.db = require('./utility/db')
 
