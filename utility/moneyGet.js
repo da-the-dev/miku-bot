@@ -48,33 +48,33 @@ var client
  * @param {Discord.VoiceState} newState
  */
 module.exports.voiceActivity = (oldState, newState) => {
-    if(newState.channelID == oldState.channelID)
-        return
+    // if(newState.channelID == oldState.channelID)
+    //     return
 
-    // User joined a voicechannel
-    if(newState.channel) {
-        // console.log(`[MG] '${newState.member.user.username}' joined`)
-        if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
-            // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
-            var inter = setInterval(voiceAct, interval, newState.member)
-            if(!voiceActIntervals.get(newState.member.id))
-                voiceActIntervals.set(newState.member.id, inter)
-        }
-        if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
-            var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
-            // console.log(`[MG] give '${oldMember.user.username}' money`)
-            var inter = setInterval(voiceAct, interval, newState.member)
-            if(!voiceActIntervals.get(oldMember.user.id))
-                voiceActIntervals.set(oldMember.user.id, inter)
-        }
-    } else { // User left a voicechannel
-        // console.log(`[MG] '${newState.member.user.username}' left`)
-        clearInterval(voiceActIntervals.get(newState.member.id))
-        if(oldState.channel)
-            if(oldState.channel.members.size == 1) {
-                clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
-            }
-    }
+    // // User joined a voicechannel
+    // if(newState.channel) {
+    //     // console.log(`[MG] '${newState.member.user.username}' joined`)
+    //     if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
+    //         // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
+    //         var inter = setInterval(voiceAct, interval, newState.member)
+    //         if(!voiceActIntervals.get(newState.member.id))
+    //             voiceActIntervals.set(newState.member.id, inter)
+    //     }
+    //     if(newState.channel.members.size == 2) { // If there's 2 members in a voice channel, give the old member act money as well
+    //         var oldMember = newState.channel.members.find(m => m.user.id != newState.member.user.id)
+    //         // console.log(`[MG] give '${oldMember.user.username}' money`)
+    //         var inter = setInterval(voiceAct, interval, newState.member)
+    //         if(!voiceActIntervals.get(oldMember.user.id))
+    //             voiceActIntervals.set(oldMember.user.id, inter)
+    //     }
+    // } else { // User left a voicechannel
+    //     // console.log(`[MG] '${newState.member.user.username}' left`)
+    //     clearInterval(voiceActIntervals.get(newState.member.id))
+    //     if(oldState.channel)
+    //         if(oldState.channel.members.size == 1) {
+    //             clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
+    //         }
+    // }
 }
 
 /**
@@ -82,17 +82,17 @@ module.exports.voiceActivity = (oldState, newState) => {
  * @param {Discord.Client} client
  */
 module.exports.voiceActivityInit = (client) => {
-    var guild = client.guilds.cache.first()
-    var voiceChannels = guild.channels.cache.filter(c => c.type == 'voice')
-    voiceChannels.forEach(v => {
-        if(v.members.array().length > 1) {
-            v.members.forEach(m => {
-                var inter = setInterval(voiceAct, interval, m)
-                if(!voiceActIntervals.get(m.id))
-                    voiceActIntervals.set(m.id, inter)
-            })
-        }
-    })
+    // var guild = client.guilds.cache.first()
+    // var voiceChannels = guild.channels.cache.filter(c => c.type == 'voice')
+    // voiceChannels.forEach(v => {
+    //     if(v.members.array().length > 1) {
+    //         v.members.forEach(m => {
+    //             var inter = setInterval(voiceAct, interval, m)
+    //             if(!voiceActIntervals.get(m.id))
+    //                 voiceActIntervals.set(m.id, inter)
+    //         })
+    //     }
+    // })
 }
 
 var chatActMessages = new Map()
@@ -101,30 +101,30 @@ var chatActMessages = new Map()
  * @param {Discord.Message} msg
  */
 module.exports.chatActivity = (msg) => {
-    if(msg.channel.id == constants.channels.general && !msg.author.bot) { // Register only if in general
-        var msgCount = chatActMessages.get(msg.author.id)
-        if(msgCount) { // If user sent messages
-            if(++msgCount >= 10) {
-                chatActMessages.delete(msg.author.id)
-                const rClient = redis.createClient(process.env.RURL)
-                rClient.get(msg.author.id, (err, res) => {
-                    if(err) console.log(err)
-                    if(res) { // If there was user data
-                        var userData = JSON.parse(res)
-                        userData.money ? userData.money += 1 : userData.money = 1
+    // if(msg.channel.id == constants.channels.general && !msg.author.bot) { // Register only if in general
+    //     var msgCount = chatActMessages.get(msg.author.id)
+    //     if(msgCount) { // If user sent messages
+    //         if(++msgCount >= 10) {
+    //             chatActMessages.delete(msg.author.id)
+    //             const rClient = redis.createClient(process.env.RURL)
+    //             rClient.get(msg.author.id, (err, res) => {
+    //                 if(err) console.log(err)
+    //                 if(res) { // If there was user data
+    //                     var userData = JSON.parse(res)
+    //                     userData.money ? userData.money += 1 : userData.money = 1
 
-                        rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                        rClient.quit()
-                    } else {
-                        rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) console.log(err) })
-                        rClient.quit()
-                    }
-                })
-                chatActMessages.delete(msg.author.id)
-                return
-            }
-            chatActMessages.set(msg.author.id, msgCount)
-        } else  // If user didn't send messages
-            chatActMessages.set(msg.author.id, 1)
-    }
+    //                     rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
+    //                     rClient.quit()
+    //                 } else {
+    //                     rClient.set(msg.author.id, JSON.stringify({ 'money': 1 }), err => { if(err) console.log(err) })
+    //                     rClient.quit()
+    //                 }
+    //             })
+    //             chatActMessages.delete(msg.author.id)
+    //             return
+    //         }
+    //         chatActMessages.set(msg.author.id, msgCount)
+    //     } else  // If user didn't send messages
+    //         chatActMessages.set(msg.author.id, 1)
+    // }
 }
