@@ -83,12 +83,12 @@ const activityCalculator = (lastMessages, activityName, guild) => {
         })
         lastMessages.clear()
 
-        rClient.mget(membersIDs, (err, res) => {
-            for(i = 0; members.length; i++)
-                if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
-                    !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
-            rClient.quit()
-        })
+        // rClient.mget(membersIDs, (err, res) => {
+        for(i = 0; members.length; i++)
+            //         if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
+            //         rClient.quit()
+            !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
+        // })
         // console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
     })
 }

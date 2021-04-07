@@ -52,7 +52,7 @@ module.exports.voiceActivity = (oldState, newState) => {
         return
 
     // User joined a voicechannel
-    if(newState.channelID) {
+    if(newState.channel) {
         // console.log(`[MG] '${newState.member.user.username}' joined`)
         if(newState.channel.members.size > 1) { // If there's more than member in a voice channel, give act money
             // console.log(`[MG] '${newState.member.user.username}' joined in a populated channel`)
@@ -70,9 +70,10 @@ module.exports.voiceActivity = (oldState, newState) => {
     } else { // User left a voicechannel
         // console.log(`[MG] '${newState.member.user.username}' left`)
         clearInterval(voiceActIntervals.get(newState.member.id))
-        if(oldState.channel.members.size == 1) {
-            clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
-        }
+        if(oldState.channel)
+            if(oldState.channel.members.size == 1) {
+                clearInterval(voiceActIntervals.get(oldState.channel.members.first().user.id))
+            }
     }
 }
 

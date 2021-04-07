@@ -27,7 +27,7 @@ module.exports =
                     else if(!userData.activity)
                         userData.activity = true
                     set(msg.author.id, JSON.stringify(userData)).then(() => { rClient.quit() })
-                    utl.embed(msg, `Игровые роли ${userData.activity ? '**включены**' : '**выключены**'}`)
+                    utl.embed(msg, `Роли за активность ${userData.activity ? '**включены**' : '**выключены**'}`)
                 } else {
                     utl.embed(msg, 'У Вас нет ролей активностей!')
                     rClient.quit()
