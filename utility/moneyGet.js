@@ -10,7 +10,6 @@ setInterval(() => {
     rClient.mget(voiceActs, (err, res) => {
         if(err) console.log(err)
         if(res) { // If there was user data before
-            console.log(res)
             for(i = 0; i < res.length; i++)
                 if(res[i]) {
                     var parsedM = JSON.parse(res[i])
@@ -31,14 +30,11 @@ setInterval(() => {
                     // console.log(parsedM)
                     res[i] = JSON.stringify(parsedM)
                 }
-            console.log(res)
-            console.log()
             var bigData = []
             for(i = 0; i < voiceActs.length; i++) {
                 bigData.push(voiceActs[i])
                 bigData.push(res[i] ? res[i] : JSON.stringify({}))
             }
-            console.log(bigData)
             rClient.mset(bigData, err => { if(err) console.log(err); console.log('money given') })
             rClient.quit()
         }
