@@ -70,30 +70,24 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             .filter(({ 1: v }) => v >= 500)
             .map(([k]) => k)
 
-        var membersIDs = []
-        /**@type {Array<Discord.GuildMember>} */
-        var members = []
         activies.forEach(async a => { // Give users their respective roles
-            var member = guild.members.cache.get()
+            var member = await guild.members.fetch(a)
             if(!member) {
                 return
             }
-            membersIDs.push(member.id)
-            members.push(member)
         })
         lastMessages.clear()
 
-        // rClient.mget(membersIDs, (err, res) => {
-        for(i = 0; members.length; i++)
-            //         if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
-            //         rClient.quit()
-            !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
-        // })
-        // console.log(`[AC] ${activityName.toUpperCase()} activity calculation complete!`)
+        rClient.mget(membersIDs, (err, res) => {
+            for(i = 0; members.length; i++)
+                if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
+                    !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
+            rClient.quit()
+        })
     })
 }
 
-const n = 3 - 1
+const n = 10 - 1
 
 var lastDayMessages = new Map()
 var dayCounter = 0
