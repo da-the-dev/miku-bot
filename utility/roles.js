@@ -66,29 +66,30 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) console.log(err) })
         }
 
-        var membersIDs = []
-        /**@type {Array<Discord.GuildMember>} */
-        var members = []
-        var activies = [...mergedMap.entries()]  // Fitler for those who have 500+ messsages
-            .filter(({ 1: v }) => v >= 500)
-            .map(([k]) => k)
+        // var membersIDs = []
+        // /**@type {Array<Discord.GuildMember>} */
+        // var members = []
+        // var activies = [...mergedMap.entries()]  // Fitler for those who have 500+ messsages
+        //     .filter(({ 1: v }) => v >= 500)
+        //     .map(([k]) => k)
 
-        activies.forEach(async a => { // Give users their respective roles
-            var member = await guild.members.fetch(a)
-            if(!member) {
-                return
-            }
-            membersIDs.push(member.id)
-            members.push(member)
-        })
+        // activies.forEach(async a => { // Give users their respective roles
+        //     var member = await guild.members.fetch(a)
+        //     if(!member) {
+        //         return
+        //     }
+        //     membersIDs.push(member.id)
+        //     members.push(member)
+        // })
         lastMessages.clear()
 
-        rClient.mget(membersIDs, (err, res) => {
-            for(i = 0; members.length; i++)
-                if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
-                    !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
-            rClient.quit()
-        })
+        // rClient.mget(membersIDs, (err, res) => {
+        //     console.log(res)
+        //     for(i = 0; members.length; i++)
+        //         if(res[i].length > 0 && JSON.parse(res[i]).activity !== false)
+        //             !members[i].roles.cache.has(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) ? members[i].roles.add(activityName == "day" ? constants.roles.daylyActive : constants.roles.nightActive) : null
+        rClient.quit()
+        // })
     })
 }
 
