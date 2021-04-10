@@ -66,6 +66,9 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             rClient.set(activityName, JSON.stringify([...lastMessages]), (err, res) => { if(err) console.log(err) })
         }
 
+        var membersIDs = []
+        /**@type {Array<Discord.GuildMember>} */
+        var members = []
         var activies = [...mergedMap.entries()]  // Fitler for those who have 500+ messsages
             .filter(({ 1: v }) => v >= 500)
             .map(([k]) => k)
@@ -75,6 +78,8 @@ const activityCalculator = (lastMessages, activityName, guild) => {
             if(!member) {
                 return
             }
+            membersIDs.push(member.id)
+            members.push(member)
         })
         lastMessages.clear()
 
