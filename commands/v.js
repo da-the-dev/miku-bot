@@ -87,10 +87,16 @@ module.exports =
                         var oldOwner = msg.member
                         var mMember = msg.mentions.members.first()
 
-                        await oldOwner.roles.remove(constants.roles.owner)
-                        console.log('v 1')
-                        await mMember.roles.add(constants.roles.owner)
-                        utl.embed(msg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
+                        if(room.permissionOverwrites.find(o => o.id == msg.member.id && o.allow.has('CREATE_INSTANT_INVITE'))) {// If creator
+                            room.permissionOverwrites.delete(msg.author.id)
+                            room.overwritePermissions(
+                                room.permissionOverwrites.set(mMember.id, {
+                                    id: mMember.id,
+                                    allow: 'CREATE_INSTANT_INVITE'
+                                })).then(() => {
+                                    utl.embed(msg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
+                                })
+                        }
                     } else {
                         utl.embed(msg, 'Пользователь не находится в Вашей комнате!')
                         break
