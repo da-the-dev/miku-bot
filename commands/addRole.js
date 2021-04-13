@@ -35,16 +35,15 @@ module.exports =
                 db.get(msg.guild.id, 'serverSettings').then(serverData => {
                     if(serverData) {
                         if(!serverData.roles)
-                            serverData.roles = [{ id: mRole.id, price: price, pos: pos }]
+                            serverData.roles = [{ id: mRole.id, price: price }]
                         else {
-                            serverData.roles.f
-                            serverData.roles.splice(pos - 1, 0, { id: mRole.id, price: price, pos: pos })
+                            serverData.roles.splice(pos - 1, 0, { id: mRole.id, price: price })
                         }
 
                         db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
                     }
                     else
-                        db.set(msg.guild.id, 'serverSettings', { roles: [{ id: mRole.id, price: price, pos: pos }] }).then(() => db.close())
+                        db.set(msg.guild.id, 'serverSettings', { roles: [{ id: mRole.id, price: price }] }).then(() => db.close())
                 })
             })
         }

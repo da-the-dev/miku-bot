@@ -17,7 +17,7 @@ module.exports =
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, 'serverSettings').then(serverData => {
                 if(serverData) {
-                    var selectedRole = serverData.roles.find(r => r.pos == args[1])
+                    var selectedRole = serverData.roles[args[1] - 1]
                     db.get(msg.guild.id, msg.author.id).then(userData => {
                         if(userData) {
                             console.log(userData.money, selectedRole.price, userData.money < selectedRole.price)
@@ -39,7 +39,7 @@ module.exports =
                                             userData.money -= selectedRole.price
                                             if(!userData.inv)
                                                 userData.inv = []
-                                            userData.inv.push(selectedRole)
+                                            userData.inv.push(selectedRole.id)
                                             db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
 
                                             m.edit(utl.embed.build(msg, `Вы успешно приобрели роль <@&${selectedRole.id}>.\nПолный список команд магазина вы можете посмотреть в <#${constants.channels.commands}>`))

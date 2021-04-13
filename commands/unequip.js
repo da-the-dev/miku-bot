@@ -18,19 +18,19 @@ module.exports =
                 if(userData) {
                     db.get(msg.guild.id, 'serverSettings').then(serverData => {
                         if(serverData) {
-                            if(!serverData.roles.find(r => r.pos == pos)) {
+                            var selectedRole = serverData.roles[args[1] - 1]
+                            if(!selectedRole) {
                                 utl.embed(msg, 'Этой роли не существует!')
                                 db.close()
                                 return
                             }
-                            if(!userData.inv.find(r => r.pos == pos)) {
+                            if(!userData.inv.find(r => r == selectedRole.id)) {
                                 utl.embed(msg, 'Эта роль у Вас не куплена!')
                                 db.close()
                                 return
                             }
-                            var roleID = serverData.roles.find(r => r.pos == pos).id
-                            msg.member.roles.remove(roleID)
-                            utl.embed(msg, `Роль <@&${roleID}> успешно снята`)
+                            msg.member.roles.remove(selectedRole.id)
+                            utl.embed(msg, `Роль <@&${selectedRole.id}> успешно снята`)
                             db.close()
                         } else
                             db.close()
