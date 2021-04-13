@@ -10,35 +10,34 @@ module.exports =
     (args, msg, client) => {
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, msg.author.id).then(userData => {
-                if(userData) {
-                    if(!userData.inv) {
+                db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                    if(userData) {
+                        if(!userData.inv) {
+                            utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
+                            db.close()
+                            return
+                        }
+                        var roles = ''
+
+                        console.log(serverData)
+                        console.log(userData.inv)
+
+                        for(i = 0; i < serverData.roles.length; i++) {
+                            console.log(serverData.roles[i].id)
+                            if(userData.inv.includes(serverData.roles[i].id))
+                                if(msg.member.roles.cache.has(serverData.roles[i].id))
+                                    roles += `\`⌗\` **${i + 1}**︰<@&${serverData.roles[i].id}> — Надета\n`
+                                else
+                                    roles += `\`⌗\` **${i + 1}**︰<@&${serverData.roles[i].id}> — Не надета\n`
+                        }
+
+                        utl.embed(msg, roles)
+                        db.close()
+                    } else {
                         utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
                         db.close()
-                        return
                     }
-                    var roles = ''
-
-                    /**@type {Array<object>} */
-                    var userRoles = userData.inv
-                    userRoles.sort((a, b) => {
-                        if(a.pos > b.pos) return 1
-                        if(a.pos < b.pos) return -1
-                        return 0
-                    })
-
-                    for(i = 0; i < userRoles.length; i++)
-                        if(msg.member.roles.cache.has(userRoles[i].id))
-                            roles += `\`⌗\` **${userRoles[i].pos}**︰<@&${userRoles[i].id}> — Надета\n`
-                        else
-                            roles += `\`⌗\` **${userRoles[i].pos}**︰<@&${userRoles[i].id}> — Не надета\n`
-
-
-                    utl.embed(msg, roles)
-                    db.close()
-                } else {
-                    utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
-                    db.close()
-                }
+                })
             })
         })
     }
