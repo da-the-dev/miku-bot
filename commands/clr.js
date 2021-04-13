@@ -98,7 +98,7 @@ module.exports =
                                             userData.loveroom = { 'id': c.id, 'partner': mMember.id, 'creationDate': Date.now() }
 
                                             db.set(msg.guild.id, msg.author.id, userData).then(() => {
-                                                db.update(msg.guild.id, mMember.id, 'loveroom', { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() }).then(() => {
+                                                db.update(msg.guild.id, mMember.id, { $set: { 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() } } }).then(() => {
                                                     db.close()
                                                     const embed = utl.embed.build(msg, 't')
                                                         .setDescription("`💞`" + `<@${msg.member.id}> и <@${mMember.id}> теперь пара!`)

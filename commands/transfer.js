@@ -35,8 +35,8 @@ module.exports =
                         utl.embed(msg, 'У тебя недостаточно средств для перевода!')
                         db.close()
                     } else {
-                        db.update(msg.guild.id, msg.author.id, 'money', -amount).then(() => {
-                            db.update(msg.guild.id, mMember.id, 'money', amount).then(() => {
+                        db.update(msg.guild.id, msg.author.id, { $inc: { money: -amount } }).then(() => {
+                            db.update(msg.guild.id, mMember.id, { $inc: { money: amount } }).then(() => {
                                 utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
                                 db.close()
                             })

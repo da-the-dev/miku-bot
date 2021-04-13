@@ -26,7 +26,7 @@ module.exports =
             }
 
             utl.db.createClient(process.env.MURL).then(db => {
-                db.update(msg.guild.id, mMember.user.id, 'money', amount).then(() => {
+                db.update(msg.guild.id, mMember.user.id, { $inc: { money: amount } }).then(() => {
                     utl.embed(msg, `Обновлен баланс пользователя на <@${mMember.user.id}> **${amount}**<:__:813854413579354143>`)
                     db.close()
                 })

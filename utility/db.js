@@ -72,39 +72,21 @@ class DB {
      * Update data about a key from a guild
      * @param {string} guildID - Guild ID
      * @param {string} uniqueID - Unique ID
-     * @param {string} field - Field to update
-     * @param {any} data - Data to update
+     * @param {object} query - Queries to update
      * @returns {Promise<string>} Returns 'OK' if update succesfully
      */
-    update(guildID, uniqueID, field, data) {
+    update(guildID, uniqueID, query) {
         return new Promise((resolve, reject) => {
             if(!guildID) reject('No guild ID [update]!')
             if(!uniqueID) reject('No unique ID [update]!')
-            if(!field) reject('No field to update [update]!')
-            if(!data) reject('No data to update [update]!')
+            if(!query) reject('No query to update [update]!')
 
-            this.get(guildID, uniqueID).then(info => {
-                if(info) {
-                    if(info[field]) {
-                        if(Number.isInteger(info[field])) {
-                            info = { ...{ id: uniqueID }, ...info }
-                            info[field] += data
-                        }
-                    } else {
-                        info = { ...{ id: uniqueID }, ...info }
-                        info[field] = data
-                    }
-                    console.log(info)
-                    this.__connection.db('hoteru').collection(guildID).findOneAndReplace({ id: uniqueID }, info).then(() => {
-                        resolve('OK')
-                    })
-                } else {
-                    var info = { id: uniqueID, [field]: data }
-                    this.__connection.db('hoteru').collection(guildID).insertOne(info).then(() => {
-                        resolve('OK')
-                    })
-                }
-            })
+            this.__connection.db('hoteru').collection(guildID).updateOne({ id: uniqueID }, query, { upsert: true })
+                .then(res => {
+                    console.log(res.result)
+                    resolve('OK')
+                })
+                .catch(err => reject(err))
         })
     }
 

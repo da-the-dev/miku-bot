@@ -18,12 +18,11 @@ module.exports =
             }
 
             utl.db.createClient(process.env.MURL).then(db => {
-                db.update(msg.member.id, mMember.user.id, 'toxic', true)
-                    .then(() => {
-                        mMember.roles.add(constants.roles.toxic)
-                        utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
-                        db.close()
-                    })
+                db.update(msg.guild.id, mMember.user.id, { $set: { toxic: true } }).then(() => {
+                    mMember.roles.add(constants.roles.toxic)
+                    utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
+                    db.close()
+                })
             })
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')

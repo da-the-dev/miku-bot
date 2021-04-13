@@ -18,7 +18,7 @@ module.exports =
             }
 
             utl.db.createClient(process.env.MURL).then(db => {
-                db.update(msg.guild.id, mMember.user.id, 'ban', true).then(() => {
+                db.update(msg.guild.id, mMember.user.id, { $set: { ban: true } }).then(() => {
                     mMember.roles.remove(mMember.roles.cache)
                         .then(() => { mMember.roles.add(constants.roles.localban) })
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
