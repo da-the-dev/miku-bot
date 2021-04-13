@@ -8,7 +8,7 @@ module.exports =
     * @description Usage: .inv
     */
     (args, msg, client) => {
-        utl.db.createClient(process.env.RURL).then(db => {
+        utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 if(userData) {
                     if(!userData.inv) {
@@ -17,8 +17,6 @@ module.exports =
                         return
                     }
                     var roles = ''
-                    var embed = new Discord.MessageEmbed()
-                        .setColor('#2F3136')
 
                     /**@type {Array<object>} */
                     var userRoles = userData.inv

@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 module.exports =
     /**
@@ -15,37 +14,38 @@ module.exports =
                 utl.embed(msg, 'Не указана роль!')
                 return
             }
+
             var pos = Number(args[2])
             if(!pos || !Number.isInteger(pos)) {
                 utl.embed(msg, 'Не указана позиция роли!')
                 return
             }
+            if(pos == 0 || pos > 18) {
+                utl.embed(msg, 'Позиция роли ограничена диапозоном 1-18!')
+                return
+            }
+
             var price = Number(args[3])
             if(!price || !Number.isInteger(price)) {
                 utl.embed(msg, 'Не указана цена роли!')
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get('roles', (err, res) => {
-                if(err) console.log(err)
-                if(res) {
-                    /**@type {Array<object>} */
-                    var rolesData = JSON.parse(res)
-                    var index = rolesData.findIndex(r => r.pos == pos)
-                    if(index == -1)
-                        rolesData.push({ 'id': mRole.id, 'pos': pos, 'price': price })
-                    else {
-                        rolesData.splice(index, 1)
-                        rolesData.push({ 'id': mRole.id, 'pos': pos, 'price': price })
-                    }
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                    if(serverData) {
+                        if(!serverData.roles)
+                            serverData.roles = [{ id: mRole.id, price: price, pos: pos }]
+                        else {
+                            serverData.roles.f
+                            serverData.roles.splice(pos - 1, 0, { id: mRole.id, price: price, pos: pos })
+                        }
 
-                    rClient.set('roles', JSON.stringify(rolesData), err => { if(err) console.log(err) })
-                    rClient.quit()
-                } else {
-                    rClient.set('roles', JSON.stringify([{ 'id': mRole.id, 'pos': pos, 'price': price }]), err => { if(err) console.log(err) })
-                    rClient.quit()
-                }
+                        db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
+                    }
+                    else
+                        db.set(msg.guild.id, 'serverSettings', { roles: [{ id: mRole.id, price: price, pos: pos }] }).then(() => db.close())
+                })
             })
         }
     }

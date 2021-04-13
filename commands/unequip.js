@@ -1,43 +1,44 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .unequip <role>
+    * @description Usage: .unequip <rolePos>
     */
     (args, msg, client) => {
         var pos = args[1]
         if(!pos) {
-            utl.embed(msg, 'Не указан индекс роли для одевания!')
+            utl.embed(msg, 'Не указан индекс роли!')
             return
         }
-        const rClient = redis.createClient(process.env.RURL)
-        rClient.get(msg.author.id, (err, res) => {
-            if(err) console.log(err)
-            if(res) {
-                rClient.get('roles', (eerr, rres) => {
-                    if(eerr) throw eerr
-                    if(rres) {
-                        /**@type {Array} */
-                        var rolesData = JSON.parse(rres)
-                        if(!rolesData.find(r => r.pos == pos)) {
-                            utl.embed(msg, 'Этой роли не существует!')
-                            rClient.quit()
-                            return
-                        }
-                        var role = rolesData.find(r => r.pos == pos)
-                        msg.member.roles.remove(role.id)
-                        console.log('uneqip 1')
-                        utl.embed(msg, `Роль <@&${role.id}> успешно снята`)
-                        rClient.quit()
-                    }
-                })
-            } else {
-                utl.embed(msg, 'У Вас нет ролей для снятия!')
-                rClient.quit()
-            }
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, msg.author.id).then(userData => {
+                if(userData) {
+                    db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                        if(serverData) {
+                            if(!serverData.roles.find(r => r.pos == pos)) {
+                                utl.embed(msg, 'Этой роли не существует!')
+                                db.close()
+                                return
+                            }
+                            if(!userData.inv.find(r => r.pos == pos)) {
+                                utl.embed(msg, 'Эта роль у Вас не куплена!')
+                                db.close()
+                                return
+                            }
+                            var roleID = serverData.roles.find(r => r.pos == pos).id
+                            msg.member.roles.remove(roleID)
+                            utl.embed(msg, `Роль <@&${roleID}> успешно снята`)
+                            db.close()
+                        } else
+                            db.close()
+                    })
+                } else {
+                    utl.embed(msg, 'У Вас нет ролей!')
+                    db.close()
+                }
+            })
         })
     }
