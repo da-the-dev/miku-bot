@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 module.exports =
     /**
@@ -29,36 +28,24 @@ module.exports =
             return
         }
 
-        const rClient = redis.createClient(process.env.RURL)
-        rClient.get(msg.author.id, (err, res) => {
-            if(err) console.log(err)
-            if(res) {
-                var userData = JSON.parse(res)
-                if(amount > userData.money)  // If too much money is requested 
-                    utl.embed(msg, 'У тебя недостаточно средств для перевода!')
-                else {
-                    rClient.get(mMember.user.id, (err, rres) => {
-                        if(err) console.log(err)
-                        if(rres) { // If receiver HAS data
-                            var receiverData = JSON.parse(rres)
-                            userData.money -= amount
-                            receiverData.money += amount
-
-                            rClient.set(mMember.user.id, JSON.stringify(receiverData), err => { if(err) console.log(err) })
-                            rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                            rClient.quit()
-
-                            utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
-                        } else { // If receiver DOES NOT have user data
-                            rClient.set(mMember.user.id, JSON.stringify({ 'money': amount }), err => { if(err) console.log(err) })
-                            rClient.set(msg.author.id, JSON.stringify({ 'money': userData.money - amount }), err => { if(err) console.log(err) })
-                            rClient.quit()
-
-                            utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
-                        }
-                    })
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, msg.author.id).then(userData => {
+                if(userData) {
+                    if(amount > userData.money) { // If too much money is requested 
+                        utl.embed(msg, 'У тебя недостаточно средств для перевода!')
+                        db.close()
+                    } else {
+                        db.update(msg.guild.id, msg.author.id, 'money', -amount).then(() => {
+                            db.update(msg.guild.id, mMember.id, 'money', amount).then(() => {
+                                utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
+                                db.close()
+                            })
+                        })
+                    }
+                } else {
+                    utl.embed(msg, 'У тебя нет средств для перевода!')
+                    db.close()
                 }
-            } else
-                msg.channel.send(embeds.error(msg.member, 'У тебя нет средств для перевода!'))
+            })
         })
     }

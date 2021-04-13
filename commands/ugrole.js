@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 const constants = require('../constants.json')
 module.exports =
@@ -10,27 +9,23 @@ module.exports =
     * @description Usage: .ugrole
     */
     (args, msg, client) => {
-        const rClient = redis.createClient(process.env.RURL)
-        rClient.get(msg.author.id, (err, res) => {
-            if(err) console.log(err)
-            if(res) {
-                var userData = JSON.parse(res)
-                if(userData.gameRoles == undefined)
-                    userData.gameRoles = false
-                else if(userData.gameRoles == false)
-                    userData.gameRoles = true
-                else if(userData.gameRoles == true)
-                    userData.gameRoles = false
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, msg.author.id).then(userData => {
+                if(userData) {
+                    var userData = JSON.parse(res)
+                    if(userData.gameRoles == undefined || userData.gameRoles == true)
+                        userData.gameRoles = false
+                    else if(userData.gameRoles == false)
+                        userData.gameRoles = true
 
-                rClient.set(msg.author.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                rClient.quit()
-                utl.embed(msg, `Игровые роли ${userData.gameRoles ? '**включены**' : '**выключены**'}`)
-                !userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
-            } else {
-                rClient.set(msg.author.id, JSON.stringify({ gameRoles: false }), err => { if(err) console.log(err) })
-                rClient.quit()
-                msg.member.roles.remove(constants.gameRolesArray)
-                utl.embed(msg, `Игровые роли **выключены**`)
-            }
+                    db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
+                    utl.embed(msg, `Игровые роли ${userData.gameRoles ? '**включены**' : '**выключены**'}`)
+                    !userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
+                } else {
+                    db.set(msg.guild.id, msg.author.id, { gameRoles: false }).then(() => db.close())
+                    msg.member.roles.remove(constants.gameRolesArray)
+                    utl.embed(msg, `Игровые роли **выключены**`)
+                }
+            })
         })
     }

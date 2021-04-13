@@ -1,98 +1,144 @@
-const MongoClient = require('mongodb').MongoClient;
-
-class db {
+const MongoClient = require('mongodb').MongoClient
+class DB {
     /**@type {MongoClient} */
-    static __connection
+    __connection
     /**
      * Connect to DB
      * @param {string} url - URL to DB
      * @returns Return 'OK' if connected
      */
-    static connect = async (url) => {
-        db.__connection = await new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
-        return 'OK'
-    }
-
-    static close = async () => {
-        await db.__connection.close()
+    connect = async (url) => {
+        this.__connection = await new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
         return 'OK'
     }
     /**
-     * Gets data about a user from a guild
-     * @param {string} guildID - Guild ID
-     * @param {string} userID - User ID
+     * Closes connection to current DB
+     * @returns Returns 'OK' once disconnected
      */
-    static get = async (guildID, userID) => {
-        if(!guildID) throw new Error('No guild ID!')
-        if(!userID) throw new Error('No user ID!')
-
-        var res = await db.__connection.db('hoteru').collection(guildID).findOne({ id: userID })
-        res ? (
-            res._id ? delete res._id : null,
-            res.id ? delete res.id : null
-        ) : null
-        return res
+    close = async () => {
+        await this.__connection.close()
+        return 'OK'
     }
     /**
-     * Set data about a user from a guild
+     * Gets data about a key from a guild
      * @param {string} guildID - Guild ID
-     * @param {string} userID - User ID
+     * @param {string} uniqueID - Unique ID
+     * @return {Promise<any>} Info about the key
+     */
+    get = (guildID, uniqueID) => {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [get]!')
+            if(!uniqueID) reject('No unique ID [get]!')
+
+            var res = this.__connection.db('hoteru').collection(guildID).findOne({ id: uniqueID })
+                .then(res => {
+                    res ? (
+                        res._id ? delete res._id : null,
+                        res.id ? delete res.id : null
+                    ) : null
+                    resolve(res)
+                })
+        })
+    }
+    /**
+     * Set data about a key from a guild
+     * @param {string} guildID - Guild ID
+     * @param {string} uniqueID - Unique ID
      * @param {object} data - Data to set
+     * @returns {Promise<string>} Returns 'OK' if set succesfully
      */
-    static set = async (guildID, userID, data) => {
-        if(!guildID) throw new Error('No guild ID!')
-        if(!userID) throw new Error('No user ID!')
-        if(!data) throw new Error('No data to set!')
+    set = async (guildID, uniqueID, data) => {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [set]!')
+            if(!uniqueID) reject('No unique ID [set]!')
+            if(!data) reject('No data to set [set]!')
 
-        const res = await db.get(guildID, userID)
-        const newData = { ...{ id: userID }, ...data }
-        if(res) {
-            await db.__connection.db('hoteru').collection(guildID).findOneAndReplace({ id: userID }, newData)
-        } else {
-            await db.__connection.db('hoteru').collection(guildID).insertOne({ id: userID }, newData)
-        }
-
-        return 'OK'
+            this.get(guildID, uniqueID).then(res => {
+                const newData = { ...{ id: uniqueID }, ...data }
+                if(res) {
+                    this.__connection.db('hoteru').collection(guildID).findOneAndReplace({ id: uniqueID }, newData).then(() => {
+                        resolve('OK')
+                    })
+                } else {
+                    this.__connection.db('hoteru').collection(guildID).insertOne(newData).then(() => {
+                        resolve('OK')
+                    })
+                }
+            })
+        })
     }
 
     /**
-     * Set data about a user from a guild
+     * Update data about a key from a guild
      * @param {string} guildID - Guild ID
-     * @param {string} userID - User ID
-     * @param {object} data - Data to set
+     * @param {string} uniqueID - Unique ID
+     * @param {string} field - Field to update
+     * @param {any} data - Data to update
+     * @returns {Promise<string>} Returns 'OK' if update succesfully
      */
-    static insertMany = async (guildID, userID, data) => {
-        if(!guildID) throw new Error('No guild ID!')
-        if(!userID) throw new Error('No user ID!')
-        if(!data) throw new Error('No data to set!')
+    update(guildID, uniqueID, field, data) {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [update]!')
+            if(!uniqueID) reject('No unique ID [update]!')
+            if(!field) reject('No field to update [update]!')
+            if(!data) reject('No data to update [update]!')
 
-        const res = await db.get(guildID, userID)
-        const newData = { ...{ id: userID }, ...data }
-        if(res) {
-            await db.__connection.db('hoteru').collection(guildID).findOneAndReplace({ id: userID }, newData)
-        } else {
-            await db.__connection.db('hoteru').collection(guildID).insertOne({ id: userID }, newData)
-        }
-
-        return 'OK'
+            this.get(guildID, uniqueID).then(info => {
+                if(info) {
+                    if(info[field]) {
+                        if(Number.isInteger(info[field])) {
+                            info = { ...{ id: uniqueID }, ...info }
+                            info[field] += data
+                        }
+                    } else {
+                        info = { ...{ id: uniqueID }, ...info }
+                        info[field] = data
+                    }
+                    console.log(info)
+                    this.__connection.db('hoteru').collection(guildID).findOneAndReplace({ id: uniqueID }, info).then(() => {
+                        resolve('OK')
+                    })
+                } else {
+                    var info = { id: uniqueID, [field]: data }
+                    this.__connection.db('hoteru').collection(guildID).insertOne(info).then(() => {
+                        resolve('OK')
+                    })
+                }
+            })
+        })
     }
 
-    static update = async (guildID, userID, field, data) => {
-        if(!guildID) throw new Error('No guild ID!')
-        if(!userID) throw new Error('No user ID!')
-        if(!field) throw new Error('No filed to update!')
-        if(!data) throw new Error('No data to set!')
-
-        const res = await db.get(guildID, userID)
-
-        if(res) {
-            res[field] = data
-        } else {
-            throw new Error('No data found')
-        }
-        await db.set(guildID, userID, res)
-        return 'OK'
+    /**
+      * Gets data about a guild
+      * @param {string} guildID - Guild ID
+      * @returns {Promise<any[]>}
+      */
+    getGuild = (guildID) => {
+        return new Promise(async (resolve, reject) => {
+            if(!guildID) reject('No guild ID! [getGuild]')
+            var cursor = this.__connection.db('hoteru').collection(guildID).find({})
+            var data = []
+            cursor.forEach(r => {
+                let newR = r
+                newR._id ? delete newR._id : null
+                data.push(newR)
+            }).then(() => {
+                resolve(data)
+            })
+        })
     }
 }
 
-module.exports = db
+/**
+ * Creates a connection to DB
+ * @param {string} url - URL to DB
+ * @returns {Promise<DB>}
+ */
+module.exports.createClient = (url) => {
+    return new Promise((resolve, reject) => {
+        var db = new DB()
+        db.connect(url).then(() => resolve(db))
+    })
+}
+
+module.exports.DB = DB

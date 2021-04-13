@@ -1,8 +1,6 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const { promisify } = require('util')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -19,25 +17,14 @@ module.exports =
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            const get = promisify(rClient.get).bind(rClient)
-            const set = promisify(rClient.set).bind(rClient)
-            get(mMember.user.id)
-                .then(res => {
-                    if(res) {
-                        var userData = JSON.parse(res)
-                        if(!userData.ban) {
-                            userData.ban = true
-                            set(mMember.user.id, JSON.stringify(userData)).then(() => rClient.quit())
-                        }
-                    } else
-                        set(mMember.user.id, JSON.stringify({ "ban": true })).then(() => rClient.quit())
-
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.update(msg.guild.id, mMember.user.id, 'ban', true).then(() => {
                     mMember.roles.remove(mMember.roles.cache)
                         .then(() => { mMember.roles.add(constants.roles.localban) })
                     utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.localban}>`)
-                    console.log('test')
+                    db.close()
                 })
+            })
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')
     }

@@ -46,7 +46,7 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
             takenReport.setDescription(description)
             takenReport.setFooter(`Report-System • ${calculateTime(Date.now())}`, client.user.avatarURL())
             takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀Жалоба на⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.guilty}\`\`\``, true)
-            takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀Содержимое жалобы⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.description}\`\`\``, true)
+            takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀Содержимое жалобы⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.description}\`\`\``, true)
 
             reaction.message.edit(takenReport)
                 .then(m => {
