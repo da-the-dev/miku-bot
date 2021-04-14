@@ -51,6 +51,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
     // Create private room
     if(newState.channel && newState.member.voice.channel.id == client.creator) {
         var guild = newState.member.guild
+        /**@type {Discord.CategoryChannel} */
         var category = guild.channels.cache.get(constants.categories.privateRooms)
         console.log(newState.channel.position)
         guild.channels.create(newState.member.user.username,
@@ -87,7 +88,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
             })
             .then(c => {
                 newState.member.voice.setChannel(c, 'Перемещаю в приватную команату')
-                c.setPosition(1)
+                c.setPosition(category.children.size - 1)
             })
     }
 
