@@ -8,7 +8,7 @@ const utl = require('../utility')
  */
 module.exports.createRoom = (client) => {
     var privateRoomCategory = client.guilds.cache.first().channels.cache.get(constants.categories.privateRooms)
-    client.guilds.cache.first().channels.create('．create 部屋',
+    client.guilds.cache.first().channels.create('[﹢]．Создать',
         {
             type: "voice",
             permissionOverwrites:
@@ -34,7 +34,8 @@ module.exports.createRoom = (client) => {
                         deny: ['VIEW_CHANNEL', "CONNECT"]
                     }
                 ],
-            parent: privateRoomCategory
+            parent: privateRoomCategory,
+            userLimit: 1
         }).then(c => client.creator = c.id)
 }
 
