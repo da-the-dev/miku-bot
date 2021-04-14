@@ -15,7 +15,7 @@ module.exports.createRoom = (client) => {
                 [
                     {
                         id: constants.roles.muted,
-                        deny: ['VIEW_CHANNEL', "CONNECT"]
+                        deny: ["CONNECT"]
                     },
                     {
                         id: constants.roles.toxic,
@@ -68,7 +68,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                         },
                         {
                             id: constants.roles.muted,
-                            deny: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
+                            deny: ['CONNECT', 'CREATE_INSTANT_INVITE']
                         },
                         {
                             id: constants.roles.toxic,
