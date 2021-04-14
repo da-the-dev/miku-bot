@@ -14,29 +14,24 @@ const buildPage = (page, footerUser, footerURL, msg) => {
         .setColor('#2F3136')
         .setFooter(`${footerUser} • ${utl.embed.calculateTime(msg)} • стр ${page}/2`, footerURL)
 
-    const rClient = require('redis').createClient(process.env.RURL)
-    rClient.get('roles', (err, res) => {
-        if(err) console.log(err)
-        if(res) {
-            /**@type {Array<object>} */
-            var rolesData = JSON.parse(res)
-            rolesData.sort((a, b) => {
-                if(a.pos > b.pos) return 1
-                if(a.pos < b.pos) return -1
-                return 0
-            })
+    utl.db.createClient(process.env.MURL).then(db => {
 
-            var length = rolesData.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
-            for(i = (page - 1) * 9; i < length; i++)
-                embed.addField(`⌗ ${rolesData[i].pos} — ${rolesData[i].price}<:__:813854413579354143>`, ` <@&${rolesData[i].id}>`, true)
 
-            rClient.quit()
-            msg.edit(embed)
-                .then(async m => {
-                    await m.reactions.removeAll()
-                    await m.react(emojies[page - 1])
-                })
-        }
+        db.get(msg.guild.id, 'serverSettings').then(serverSettings => {
+            if(serverSettings) {
+                db.close()
+
+                var length = serverSettings.roles.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
+                for(i = (page - 1) * 9; i < length; i++)
+                    embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}<:__:813854413579354143>`, ` <@&${serverSettings.roles[i].id}>`, true)
+
+                msg.edit(embed)
+                    .then(async m => {
+                        await m.reactions.removeAll()
+                        await m.react(emojies[page - 1])
+                    })
+            }
+        })
     })
 }
 
