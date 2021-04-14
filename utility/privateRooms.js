@@ -19,7 +19,7 @@ module.exports.createRoom = (client) => {
                     },
                     {
                         id: constants.roles.toxic,
-                        deny: ['VIEW_CHANNEL', "CONNECT"]
+                        allow: ['VIEW_CHANNEL', "CONNECT"]
                     },
                     {
                         id: constants.roles.localban,
