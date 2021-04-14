@@ -40,6 +40,36 @@ class DB {
                 })
         })
     }
+
+    /**
+     * Gets data about many keys from a guild
+     * @param {string} guildID - Guild ID
+     * @param {object} query - Query to use as a filter
+     * @return {Promise<any>} Info about the keys
+     */
+    getMany(guildID, query) {
+        return new Promise((resolve, reject) => {
+            this.__connection.db('hoteru').collection(guildID).find(query).toArray()
+                .then(res => resolve(res))
+                .catch(err => reject(err))
+        })
+    }
+
+    /**
+     * Updates data about many keys from a guild
+     * @param {string} guildID - Guild ID
+     * @param {object} filter - Query to use as a filter
+     * @param {object} update - Query to update documents with
+     * @return {Promise<any>} Info about the keys
+     */
+    updateMany(guildID, filter, update) {
+        return new Promise((resolve, reject) => {
+            this.__connection.db('hoteru').collection(guildID).updateMany(filter, update, { upsert: true })
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
+
     /**
      * Set data about a key from a guild
      * @param {string} guildID - Guild ID

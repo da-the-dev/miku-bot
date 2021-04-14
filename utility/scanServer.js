@@ -17,33 +17,6 @@ module.exports = async (client) => {
     else
         client.creator = creator.id
 
-    // // Scan for verificaton message
-    // /**@type {Discord.TextChannel} */
-    // var verifyMsg = server.channels.cache.get(constants.channels.verify)
-    // verifyMsg.messages.fetch()
-    //     .then(msgs => {
-    //         if(!msgs.first()) {
-    //             verifyMsg.send(
-    //                 new Discord.MessageEmbed()
-    //                     .setColor('#2F3136')
-    //                     .setDescription('`ハイ` Чтобы открыть основной контент сервера, прожмите реакцию под этим сообщением.')
-    //             ).then(m => {
-    //                 m.react(`<${constants.emojies.sweet}>`)
-    //                 client.verifyMsg = m.id
-    //             })
-    //         }
-    //         else if(msgs.first().reactions.cache.array().length <= 0) {
-    //             msgs.first().react(`<${constants.emojies.sweet}>`)
-    //                 .then(m => {
-    //                     client.verifyMsg = m.id
-    //                 })
-    //         } else {
-    //             client.verifyMsg = msgs.first().id
-    //         }
-
-    //         console.log(client.verifyMsg)
-    //     })
-
     // Get verify 
     client.verify = await client.guilds.cache.first().roles.fetch(constants.roles.verify, true, true)
 }
