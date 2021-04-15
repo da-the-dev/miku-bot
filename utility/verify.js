@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const { promisify } = require('util')
 const constants = require('../constants.json')
 const utl = require('../utility')
 var reward = false
@@ -11,37 +10,36 @@ var currentTimeout = null
  */
 module.exports = async (msg, client) => {
     if(msg.channel.type == 'dm') {
-        if(msg.content.length < 6) {
-
-        }
-        const rClient = require('redis').createClient(process.env.RURL)
-        const get = promisify(rClient.get).bind(rClient)
-        const set = promisify(rClient.set).bind(rClient)
-        const del = promisify(rClient.del).bind(rClient)
-        get('verify-' + msg.author.id)
-            .then(async res => {
-                console.log(res)
-                if(res) {
-                    if(msg.content == res) {
-                        takeRole(client, msg.author.id)
-                        del('verify-' + msg.author.id).then(() => rClient.quit())
-                        msg.channel.messages.fetch()
-                            .then(msgs => {
-                                msgs.forEach(m => {
-                                    if(m.author.id == client.user.id)
-                                        m.delete()
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get('718537792195657798', 'verify-' + msg.author.id)
+                .then(captchaData => {
+                    if(captchaData) {
+                        if(msg.content == captchaData.captcha) {
+                            takeRole(client, msg.author.id)
+                            db.delete('718537792195657798', 'verify-' + msg.author.id).then(() => { console.log(`deleted verify-${msg.author.id}`); db.close() })
+                            msg.channel.messages.fetch()
+                                .then(msgs => {
+                                    msgs.forEach(m => {
+                                        if(m.author.id == client.user.id)
+                                            m.delete()
+                                    })
+                                })
+                        }
+                        else {
+                            msg.channel.send(new Discord.MessageEmbed().setDescription('<:__:827599506928959519> **Неверно введена капча, генерирую новую** . . . ').setColor('#2F3136'))
+                            formCaptcha().then(captcha => {
+                                utl.db.createClient(process.env.MURL).then(db => {
+                                    db.set('718537792195657798', 'verify-' + member.id, { captcha: captcha.text }).then(() => {
+                                        db.close(); msg.channel.send(captcha.obj)
+                                    })
                                 })
                             })
+                        }
+                    } else {
+                        db.close()
                     }
-                    else {
-                        const captcha = await formCaptcha()
-                        set('verify-' + msg.author.id, captcha.text).then(() => rClient.quit())
-                        msg.channel.send(new Discord.MessageEmbed().setDescription('<:__:827599506928959519> **Неверно введена капча, генерирую новую** . . . ').setColor('#2F3136'))
-                        msg.channel.send(captcha.obj)
-                    }
-                }
-                rClient.quit()
-            })
+                })
+        })
     }
 }
 
@@ -75,46 +73,57 @@ const takeRole = async (client, id) => {
         })
 }
 
+
+/**
+ * @typedef captcha
+ * @property {string} text - Text of captcha
+ * @property {Object} obj - Object containing info for the message
+ */
+
 /**
  * Return an array with text and message object with CAPTCHA
+ * @returns {Promise<captcha>}
  */
-const formCaptcha = async () => {
-    const { createCanvas, loadImage, registerFont } = require('canvas')
-    const path = require('path')
-    const canvas = createCanvas(1920, 1080)
-    const ctx = canvas.getContext('2d')
+const formCaptcha = () => {
+    return new Promise(async (resolve, reject) => {
 
-    const img = await loadImage(path.resolve(path.join('./', 'imgs', 'captcha.png')))
-    ctx.drawImage(img, 0, 0, img.width, img.height)
+        const { createCanvas, loadImage, registerFont } = require('canvas')
+        const path = require('path')
+        const canvas = createCanvas(1920, 1080)
+        const ctx = canvas.getContext('2d')
 
-    function makeid(length) {
-        var result = '';
-        var characters = '0123456789';
-        var charactersLength = characters.length;
-        for(var i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        const img = await loadImage(path.resolve(path.join('./', 'imgs', 'captcha.png')))
+        ctx.drawImage(img, 0, 0, img.width, img.height)
+
+        function makeid(length) {
+            var result = '';
+            var characters = '0123456789';
+            var charactersLength = characters.length;
+            for(var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
         }
-        return result;
-    }
-    const text = makeid(4)
-    const font = 'bold 150px "Sans"'
-    const args = [text, img.width / 5 + 10, img.height / 2]
+        const text = makeid(4)
+        const font = 'bold 150px "Sans"'
+        const args = [text, img.width / 5 + 10, img.height / 2]
 
-    ctx.fillStyle = '#e5b6de'
-    ctx.font = font
-    ctx.textAlign = 'center'
-    ctx.fillText(...args)
+        ctx.fillStyle = '#e5b6de'
+        ctx.font = font
+        ctx.textAlign = 'center'
+        ctx.fillText(...args)
 
-    ctx.fillStyle = 'black'
-    ctx.font = font
-    ctx.textAlign = 'center'
-    ctx.lineWidth = 2
-    ctx.strokeText(...args)
+        ctx.fillStyle = 'black'
+        ctx.font = font
+        ctx.textAlign = 'center'
+        ctx.lineWidth = 2
+        ctx.strokeText(...args)
 
-    return {
-        text: text,
-        obj: { content: '<a:__:825834909146415135> **Напишите указанный код на картинке**', files: [canvas.toBuffer()] }
-    }
+        resolve({
+            text: text,
+            obj: { content: '<a:__:825834909146415135> **Напишите указанный код на картинке**', files: [canvas.toBuffer()] }
+        })
+    })
 }
 
 /**
@@ -137,13 +146,14 @@ module.exports.welcomeReward = (msg, client) => {
  * @param {Discord.GuildMember} member
  */
 module.exports.mark = async (member, client) => {
-    await member.roles.add(constants.roles.verify)
-    console.log(`[VR] Marked user '${member.user.username}'`)
-    const captcha = await formCaptcha()
-    member.send(captcha.obj)
-
-    const rClient = require('redis').createClient(process.env.RURL)
-    const set = promisify(rClient.set).bind(rClient)
-    set('verify-' + member.id, captcha.text).then(() => rClient.quit())
-
+    member.roles.add(constants.roles.verify).then(() => {
+        console.log(`[VR] Marked user '${member.user.username}'`)
+        formCaptcha().then(captcha => {
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.set('718537792195657798', 'verify-' + member.id, { captcha: captcha.text }).then(() => {
+                    db.close(); member.send(captcha.obj)
+                })
+            })
+        })
+    })
 }

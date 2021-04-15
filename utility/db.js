@@ -136,6 +136,23 @@ class DB {
             })
         })
     }
+
+    /**
+     * Deletes a document
+     * * @param {string} guildID - Guild ID
+     * @param {string} uniqueID - Unique ID
+     * @return {Promise<string>} 'OK' if deleted succesfully 
+     */
+    delete = (guildID, uniqueID) => {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [delete]!')
+            if(!uniqueID) reject('No unique ID [delete]!')
+
+            this.__connection.db('hoteru').collection(guildID).deleteOne({ id: uniqueID })
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
 }
 
 /**
