@@ -11,7 +11,7 @@ module.exports = async (client) => {
     // Scan for private room creator channel
     /**@type {Discord.CategoryChannel} */
     var caterory = server.channels.cache.get(constants.categories.privateRooms)
-    var creator = caterory.children.find(c => c.name.includes('create'))
+    var creator = caterory.children.find(c => c.name.includes('Создать'))
     if(!creator)
         utl.privateRooms.createRoom(client)
     else

@@ -49,7 +49,7 @@ module.exports.voiceActivity = (oldState, newState) => {
 
     } else if(newState.channel === null) { // User left a voicechannel
         console.log(`[MG] '${newState.member.user.username}' left`)
-        clearInterval(voiceActIntervals.get(newState.member.id))
+        voiceActs.splice(voiceActs.indexOf(newState.member.id), 1)
         if(oldState.channel)
             if(oldState.channel.members.size == 1)
                 voiceActs.splice(voiceActs.indexOf(oldState.channel.members.first().id), 1)
