@@ -112,7 +112,7 @@ class DB {
             if(!query) reject('No query to update [update]!')
 
             this.__connection.db('hoteru').collection(guildID).updateOne({ id: uniqueID }, query, { upsert: true })
-                .then(res => { resolve('OK') })
+                .then(() => resolve('OK'))
                 .catch(err => reject(err))
         })
     }

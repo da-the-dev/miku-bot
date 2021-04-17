@@ -28,7 +28,7 @@ module.exports =
 
                     var length = rolesData.slice(0, 9).length
                     for(i = 0; i < length; i++)
-                        embed.addField(`⌗ ${rolesData[i].pos} — ${rolesData[i].price}<:__:813854413579354143>`, ` <@&${rolesData[i].id}>`, true)
+                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}<:__:813854413579354143>`, ` <@&${serverData.roles[i].id}>`, true)
 
                     msg.channel.send(embed)
                         .then(async m => {

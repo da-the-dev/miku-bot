@@ -44,7 +44,7 @@ module.exports =
                             if(mmS) muteMsg += `**${mmS.toString()}**сек `
 
                             utl.embed(msg, `Вы пришли слишком рано! Приходите через ${muteMsg}`)
-                            rClient.quit()
+                            db.close()
                         }
                     } else { // If user never used .timely, but has some data
                         userData.rewardTime = msg.createdTimestamp

@@ -8,26 +8,25 @@ const constants = require('../constants.json')
  */
 module.exports.roomDeletion = async (member) => {
     if(member.roles.cache.has(constants.roles.loveroom)) {
-
+        console.log('valid loveroom deletion')
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(member.guild.id, member.id).then(userData => {
                 if(userData) {
-                    var userData = JSON.parse(res)
                     var partner = userData.loveroom.partner
                     var id = userData.loveroom.id
                     member.guild.channels.cache.get(id).delete()
                     delete userData.loveroom
-                    db.set(member.guild.id, member.id, userData)
+                    db.set(member.guild.id, member.id, userData).then(() => {
+                        member.guild.members.cache.get(partner).roles.remove(constants.roles.loveroom)
 
-                    member.guild.members.cache.get(partner).roles.remove(constants.roles.loveroom)
-
-                    db.get(member.guild.id, partner).then(partnerData => {
-                        if(partnerData) {
-                            delete partner.loveroom
-                            db.set(member.guild.id, partner, partnerData).then(() => {
-                                db.close()
-                            })
-                        }
+                        db.get(member.guild.id, partner).then(partnerData => {
+                            if(partnerData) {
+                                delete partner.loveroom
+                                db.set(member.guild.id, partner, partnerData).then(() => {
+                                    db.close()
+                                })
+                            }
+                        })
                     })
                 }
             })

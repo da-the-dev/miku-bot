@@ -13,7 +13,7 @@ module.exports = (args, msg, client) => {
             if(userData) {
                 if(!userData.loveroom) {
                     utl.embed(msg, 'У Вас нет пары!')
-                    rClient.quit()
+                    db.close()
                     return
                 }
 

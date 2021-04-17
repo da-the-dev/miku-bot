@@ -36,7 +36,7 @@ module.exports.yesNo = async (msg, id, yes, no, fail) => {
 }
 
 /**
- * Reacts to a message with reactions and executes provided functions accordingly
+ * Reacts to a message with multiple reactions and executes provided functions accordingly
  * @param {Discord.Message} msg - Messsage to react to
  * @param {string} id - ID of the only user who can react
  * @param {Function} cancel - "No" function
@@ -50,6 +50,8 @@ module.exports.multiselector = async (msg, id, cancel, fail, ...funcs) => {
     await msg.react(constants.emojies.escape)
     const filter = (reaction, user) => {
         console.log(user.username, user.id, reaction.emoji.identifier)
+        console.log(reaction.emoji.identifier)
+        console.log(numbers.includes(reaction.emoji.identifier) && user.id == id)
         return numbers.includes(reaction.emoji.identifier) && user.id == id
     }
     msg.awaitReactions(filter, { max: 1, time: 60000, errors: 'time' })

@@ -60,23 +60,23 @@ const mergeMaps = (map1, map2) => {
  * @param {Discord.Guild} guild - Guild where to look for members
  */
 const activityCalculator = (lastMessages, activityName, guild) => {
-    utl.db.createClient(process.env.MURL).then(db => {
-        db.get(guild.id, activityName).then(d => {
-            var data = new Map(d.data)
+    // utl.db.createClient(process.env.MURL).then(db => {
+    //     db.get(guild.id, activityName).then(d => {
+    //         var data = new Map(d.data)
 
-            var newMap = mergeMaps(lastMessages, data)
-            db.set(guild.id, activityName, [...newMap]).then(() => db.close())
+    //         var newMap = mergeMaps(lastMessages, data)
+    //         db.set(guild.id, activityName, [...newMap]).then(() => db.close())
 
-            var filteredMap = new Map(([...newMap.entries()]).filter(([k, v]) => v >= 500))
+    //         var filteredMap = new Map(([...newMap.entries()]).filter(([k, v]) => v >= 500))
 
-            filteredMap.forEach(async f => {
-                console.log(f, f[0])
-                var member = await guild.members.fetch(f[0])
-                if(member)
-                    member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive)
-            })
-        })
-    })
+    //         filteredMap.forEach(async f => {
+    //             console.log(f, f[0])
+    //             var member = await guild.members.fetch(f[0])
+    //             if(member)
+    //                 member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive)
+    //         })
+    //     })
+    // })
 }
 
 const n = 3 - 1

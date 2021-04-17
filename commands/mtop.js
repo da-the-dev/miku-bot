@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
 
+const topAmount = 10
+
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -10,51 +12,53 @@ module.exports =
      * @description Usage: .top
      */
     async (args, msg, client) => {
-        utl.db.createClient(process.env.MURL).then(db => {
-            db.get('718537792195657798', 'day').then(dayData => {
-                db.get('718537792195657798', 'night').then(async nightData => {
-                    db.close()
+        // utl.db.createClient(process.env.MURL).then(db => {
+        //     db.getGuild('718537792195657798').then(async data => {
+        //         db.close()
 
-                    data = data.filter(d => d.voiceTime)
-                    data.sort((a, b) => {
-                        if(a.voiceTime > b.voiceTime) return -1
-                        if(a.voiceTime < b.voiceTime) return 1
-                        return 0
-                    })
+        //         data = data.filter(d => d.dayMsgs || d.nightMsgs)
+        //         var idsNMessages = data.map(d => { return { id: d.id, msgs: d.dayMsgs || 0 + d.nightMsgs || 0 } })
+        //         idsNMessages.sort((a, b) => {
+        //             if(a.msgs > b.msgs) return -1
+        //             if(a.msgs < b.msgs) return 1
+        //             return 0
+        //         })
+        //         idsNMessages.filter
+        //         idsNMessages = idsNMessages.slice(0, topAmount)
 
-                    var embed = new Discord.MessageEmbed()
-                        .setTitle('<a:__:825834909146415135> Топ 10 пользователей по голосовому онлайну')
-                        .setColor('#2F3136')
-                        .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+        //         console.log(idsNMessages)
 
-                    var description = ''
+        //         var embed = new Discord.MessageEmbed()
+        //             .setTitle('<a:__:825834909146415135> Топ 10 пользователей по голосовому онлайну')
+        //             .setColor('#2F3136')
+        //             .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
-                    var members = data.map(d => msg.guild.member(d.id)).slice(0, 10)
+        //         var description = ''
 
-                    for(i = 0; i < members.length; i++) {
-                        switch(i) {
-                            case 0:
-                                console.log('🥇')
-                                description += `\`🥇\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
-                                break
-                            case 1:
-                                console.log('🥈')
-                                description += `\`🥈\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
-                                break
-                            case 2:
-                                console.log('🥉')
-                                description += `\`🥉\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
-                                break
-                            default:
-                                console.log('🕓')
-                                description += `\`🕓\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
-                                break
-                        }
-                    }
+        //         for(i = 0; i < topAmount; i++) {
+        //             var member = await msg.guild.members.fetch(idsNMessages[i].id)
+        //             switch(i) {
+        //                 case 0:
+        //                     console.log('🥇')
+        //                     description += `\`🥇\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //                 case 1:
+        //                     console.log('🥈')
+        //                     description += `\`🥈\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //                 case 2:
+        //                     console.log('🥉')
+        //                     description += `\`🥉\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //                 default:
+        //                     console.log('🕓')
+        //                     description += `\`🕓\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //             }
+        //         }
 
-                    embed.setDescription(description)
-                    msg.reply(embed)
-                })
-            })
-        })
+        //         embed.setDescription(description)
+        //         msg.reply(embed)
+        //     })
+        // })
     }

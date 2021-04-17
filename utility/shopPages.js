@@ -15,15 +15,14 @@ const buildPage = (page, footerUser, footerURL, msg) => {
         .setFooter(`${footerUser} • ${utl.embed.calculateTime(msg)} • стр ${page}/2`, footerURL)
 
     utl.db.createClient(process.env.MURL).then(db => {
-
-
         db.get(msg.guild.id, 'serverSettings').then(serverSettings => {
             if(serverSettings) {
                 db.close()
-
                 var length = serverSettings.roles.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
-                for(i = (page - 1) * 9; i < length; i++)
+                for(i = (page - 1) * 9; i < length; i++) {
+                    console.log(i)
                     embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}<:__:813854413579354143>`, ` <@&${serverSettings.roles[i].id}>`, true)
+                }
 
                 msg.edit(embed)
                     .then(async m => {
