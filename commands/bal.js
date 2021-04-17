@@ -1,6 +1,23 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
+
+/**
+ * Gets balance of the member
+ * @param {Discord.GuildMember} member
+ */
+const getBal = async (member) => {
+    var db = await utl.db.createClient(process.env.MURL)
+    var userData = await db.get(member.guild.id, member.id)
+    await db.close()
+    if(userData)
+        if(!userData.money)
+            return 0
+        else
+            return userData.money
+    else
+        return 0
+}
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -8,39 +25,15 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .bal
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember) {
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get(msg.author.id, (err, res) => {
-                if(err) console.log(err)
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(!userData.money)
-                        utl.embed(msg, `У тебя на счету **0** <:__:813854413579354143>`)
-                    else
-                        utl.embed(msg, `У тебя на счету **${userData.money}** <:__:813854413579354143>`)
-                    rClient.quit()
-                } else {
-                    utl.embed(msg, `У тебя на счету **0** <:__:813854413579354143>`)
-                    rClient.quit()
-                }
+            getBal(msg.member).then(bal => {
+                utl.embed(msg, `У тебя на счету **${bal}** <:__:813854413579354143>`)
             })
         } else {
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get(mMember.user.id, (err, res) => {
-                if(err) console.log(err)
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(!userData.money)
-                        utl.embed(msg, `У <@${mMember.id}> на счету **0** <:__:813854413579354143>`)
-                    else
-                        utl.embed(msg, `У <@${mMember.id}> на счету **${userData.money}** <:__:813854413579354143>`)
-                    rClient.quit()
-                } else {
-                    utl.embed(msg, `У <@${mMember.id}> на счету **0** <:__:813854413579354143>`)
-                    rClient.quit()
-                }
+            getBal(mMember).then(bal => {
+                utl.embed(msg, `У тебя на счету **${bal}** <:__:813854413579354143>`)
             })
         }
     }

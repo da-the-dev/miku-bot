@@ -14,28 +14,27 @@ module.exports =
             .setColor('#2F3136')
             .setFooter(`${msg.author.username} • ${utl.embed.calculateTime(msg)} • стр 1/2`, msg.author.avatarURL())
 
-        const rClient = require('redis').createClient(process.env.RURL)
-        rClient.get('roles', (err, res) => {
-            if(err) console.log(err)
-            if(res) {
-                /**@type {Array<object>} */
-                var rolesData = JSON.parse(res)
-                rolesData.sort((a, b) => {
-                    if(a.pos > b.pos) return 1
-                    if(a.pos < b.pos) return -1
-                    return 0
-                })
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                if(serverData) {
+                    db.close()
 
-                var length = rolesData.slice(0, 9).length
-                for(i = 0; i < length; i++)
-                    embed.addField(`⌗ ${rolesData[i].pos} — ${rolesData[i].price}<:__:813854413579354143>`, ` <@&${rolesData[i].id}>`, true)
-
-                rClient.quit()
-                msg.channel.send(embed)
-                    .then(async m => {
-                        await m.react(emojies[1])
+                    var rolesData = serverData.roles
+                    rolesData.sort((a, b) => {
+                        if(a.pos > b.pos) return 1
+                        if(a.pos < b.pos) return -1
+                        return 0
                     })
-            }
-        })
 
+                    var length = rolesData.slice(0, 9).length
+                    for(i = 0; i < length; i++)
+                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}<:__:813854413579354143>`, ` <@&${serverData.roles[i].id}>`, true)
+
+                    msg.channel.send(embed)
+                        .then(async m => {
+                            await m.react(emojies[1])
+                        })
+                }
+            })
+        })
     }

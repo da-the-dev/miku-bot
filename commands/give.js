@@ -1,7 +1,5 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
-const util = require('util')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -27,33 +25,13 @@ module.exports =
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            const get = util.promisify(rClient.get).bind(rClient)
-            const set = util.promisify(rClient.set).bind(rClient)
-            get(mMember.user.id)
-                .then(res => {
-                    console.log(res)
-                    if(res) {
-                        var userData = JSON.parse(res)
-
-                        if(!userData.money)
-                            userData.money = amount
-                        else
-                            userData.money += amount
-
-                        set(mMember.user.id, JSON.stringify(userData))
-                            .then(res => {
-                                utl.embed(msg, `Обновлен баланс пользователя <@${mMember.user.id}> **${userData.money}**<:__:813854413579354143>`)
-                                rClient.quit()
-                            })
-                    } else {
-                        set(mMember.user.id, JSON.stringify({ 'money': amount }))
-                            .then(res => {
-                                utl.embed(msg, `Обновлен баланс пользователя <@${mMember.user.id}> **${amount}**<:__:813854413579354143>`)
-                                rClient.quit()
-                            })
-                    }
+            utl.db.createClient(process.env.MURL).then(db => {
+                console.log(amount)
+                db.update(msg.guild.id, mMember.user.id, { $inc: { money: amount } }).then(() => {
+                    utl.embed(msg, `Обновлен баланс пользователя на <@${mMember.user.id}> **${amount}**<:__:813854413579354143>`)
+                    db.close()
                 })
+            })
         } else
             utl.embed(msg, 'У Вас нет прав для этой команды!')
     }

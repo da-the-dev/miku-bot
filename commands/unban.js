@@ -1,8 +1,6 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const { promisify } = require('util')
 
 module.exports =
     /**
@@ -20,21 +18,22 @@ module.exports =
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            const get = promisify(rClient.get).bind(rClient)
-            const set = promisify(rClient.set).bind(rClient)
-            get(mMember.user.id)
-                .then(res => {
-                    if(res) {
-                        var userData = JSON.parse(res)
-                        if(userData.ban) {
-                            delete userData.ban
-                            set(mMember.user.id, JSON.stringify(userData)).then(() => rClient.quit())
-                            mMember.roles.remove(constants.roles.localban)
-                                .then(() => utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`))
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.get(msg.guild.id, mMember.user.id)
+                    .then(userData => {
+                        if(userData) {
+                            if(userData.ban) {
+                                delete userData.ban
+                                db.set(msg.guild.id, mMember.user.id, userData).then(() => db.close())
+                                mMember.roles.remove(constants.roles.localban)
+                                    .then(() => utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`))
+                            }
+                        } else {
+                            utl.embed(msg, 'Пользователь изначально не был забанен')
+                            db.close()
                         }
-                    }
-                })
+                    })
+            })
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')
     }

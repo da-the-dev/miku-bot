@@ -1,8 +1,6 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const util = require('util')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -19,27 +17,13 @@ module.exports =
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            const get = util.promisify(rClient.get).bind(rClient)
-            const set = util.promisify(rClient.set).bind(rClient)
-            get(mMember.user.id)
-                .then(res => {
-                    if(res) {
-                        var userData = JSON.parse(res)
-                        if(!userData.toxic) {
-                            userData.toxic = true
-                            set(mMember.user.id, JSON.stringify(userData))
-                            mMember.roles.add(constants.roles.toxic)
-                            utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
-                            rClient.quit()
-                        }
-                    } else {
-                        set(mMember.user.id, JSON.stringify({ "toxic": true }))
-                        mMember.roles.add(constants.roles.toxic)
-                        utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
-                        rClient.quit()
-                    }
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.update(msg.guild.id, mMember.user.id, { $set: { toxic: true } }).then(() => {
+                    mMember.roles.add(constants.roles.toxic)
+                    utl.embed(msg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
+                    db.close()
                 })
+            })
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')
     }

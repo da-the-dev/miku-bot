@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 const constants = require('../constants.json')
 
@@ -28,32 +27,11 @@ module.exports =
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get(mMember.user.id, (err, res) => {
-                if(err) console.log(err)
-
-                if(res == null) {
-                    rClient.set(mMember.user.id, JSON.stringify({ 'warns': [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] }), err => { if(err) console.log(err) })
-                    // mMember.roles.add(roles.offender)
-                    utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#1** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
-                    rClient.quit()
-                } else {
-                    var userData = JSON.parse(res)
-                    if(!userData.warns) // Never have been warned before
-                        userData.warns = []
-
-                    userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
-
-                    if(userData.warns.length == 4) {// Alert when maxed out on number of warns
-                        userData.warns = []
-                        userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
-                    }
-
-                    rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                    rClient.quit()
-
-                    utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение **#${userData.warns.length}** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
-                }
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.update(msg.guild.id, mMember.user.id, { $addToSet: { 'warns': { 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp } } }).then(() => {
+                    utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                    db.close()
+                })
             })
         } else {
             utl.embed(msg, 'У Вас нет прав для этой команды!')

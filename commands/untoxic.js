@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
 module.exports =
@@ -18,19 +17,21 @@ module.exports =
                 return
             }
 
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get(mMember.user.id, (err, res) => {
-                if(err) console.log(err)
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(userData.toxic) {
-                        delete userData.toxic
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                        mMember.roles.remove(constants.roles.toxic)
-                        utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
-                        rClient.quit()
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.get(msg.guild.id, mMember.user.id).then(userData => {
+                    if(userData) {
+                        if(userData.toxic) {
+                            delete userData.toxic
+                            db.set(msg.guild.id, mMember.user.id, userData).then(() => db.close())
+                            mMember.roles.remove(constants.roles.toxic).then(() => {
+                                utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
+                            })
+                        }
+                    } else {
+                        utl.embed(msg, `У пользователя <@${mMember.user.id}> изначально не было роли <@&${constants.roles.toxic}>`)
+                        db.close()
                     }
-                }
+                })
             })
         } else
             utl.embed(msg, 'У Вас нет доступа к этой команде!')

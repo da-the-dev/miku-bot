@@ -1,66 +1,64 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
-const redisScan = require('node-redis-scan')
+const constants = require('../constants.json')
 
-const topAmount = 5
+const topAmount = 10
+
 module.exports =
     /**
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .mtop
+     * @description Usage: .top
      */
     async (args, msg, client) => {
-        const rClient = redis.createClient(process.env.RURL)
-        const util = require('util')
-        const scaner = new redisScan(rClient)
-        const scan = util.promisify(scaner.scan).bind(scaner)
-        const mget = util.promisify(rClient.mget).bind(rClient)
-        const get = util.promisify(rClient.get).bind(rClient)
+        // utl.db.createClient(process.env.MURL).then(db => {
+        //     db.getGuild('718537792195657798').then(async data => {
+        //         db.close()
 
-        var bigData = new Map()
-        /**@type {Array<string>} */
+        //         data = data.filter(d => d.dayMsgs || d.nightMsgs)
+        //         var idsNMessages = data.map(d => { return { id: d.id, msgs: d.dayMsgs || 0 + d.nightMsgs || 0 } })
+        //         idsNMessages.sort((a, b) => {
+        //             if(a.msgs > b.msgs) return -1
+        //             if(a.msgs < b.msgs) return 1
+        //             return 0
+        //         })
+        //         idsNMessages.filter
+        //         idsNMessages = idsNMessages.slice(0, topAmount)
 
-        get('day')
-            .then(async res => {
-                bigData = new Map(JSON.parse(res))
+        //         console.log(idsNMessages)
 
-                bigData = new Map([...bigData.entries()].sort((a, b) => {
-                    if(a[1] > b[1]) return -1
-                    if(a[1] < b[1]) return 1
-                    return 0
-                }))
+        //         var embed = new Discord.MessageEmbed()
+        //             .setTitle('<a:__:825834909146415135> Топ 10 пользователей по голосовому онлайну')
+        //             .setColor('#2F3136')
+        //             .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
-                var embed = new Discord.MessageEmbed()
-                    .setAuthor('Топ пользователей по текстовому активу', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
-                    .setColor('#2F3136')
-                    .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+        //         var description = ''
 
+        //         for(i = 0; i < topAmount; i++) {
+        //             var member = await msg.guild.members.fetch(idsNMessages[i].id)
+        //             switch(i) {
+        //                 case 0:
+        //                     console.log('🥇')
+        //                     description += `\`🥇\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //                 case 1:
+        //                     console.log('🥈')
+        //                     description += `\`🥈\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //                 case 2:
+        //                     console.log('🥉')
+        //                     description += `\`🥉\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //                 default:
+        //                     console.log('🕓')
+        //                     description += `\`🕓\` ${member.displayName} — **${idsNMessages[i].msgs}** <${constants.emojies.speaker}>\n`
+        //                     break
+        //             }
+        //         }
 
-                var bKeys = Array.from(bigData.keys())
-                var bValues = Array.from(bigData.values())
-
-                var counter = 0
-
-                for(i = 0; i < bKeys.length; i++) {
-                    if(counter < topAmount) {
-                        console.log(bKeys[counter])
-                        var member = await msg.guild.members.fetch(bKeys[counter])
-                            .catch(() => { console.log('no member') })
-
-                        if(member) {
-                            var name = member.nickname ? member.nickname : member.user.username
-
-                            embed.addField('\`#.⠀\`', `\`\`\`${counter + 1}.\`\`\``, true)
-                            embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
-                            embed.addField("`⠀⠀⠀⠀ Кол-во сообщений⠀⠀⠀⠀ `", `\`\`\`${bValues[counter]}\`\`\``, true)
-                        }
-                        counter++
-                    }
-                }
-
-                msg.channel.send(embed)
-                rClient.quit()
-            })
+        //         embed.setDescription(description)
+        //         msg.reply(embed)
+        //     })
+        // })
     }

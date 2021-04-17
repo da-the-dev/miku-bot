@@ -96,11 +96,6 @@ module.exports =
             mMember.roles.add(constants.roles.muted)
             const rClient = redis.createClient(process.env.RURL)
             if(time == -1) {
-                try {
-                    rClient.set('muted-' + mMember.user.id, true)
-                } finally {
-                    rClient.quit()
-                }
                 utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             } else {
                 var mmD = Math.floor(time / 60 / 60 / 24)

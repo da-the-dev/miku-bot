@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 module.exports =
     /**
@@ -10,24 +9,19 @@ module.exports =
     */
     (args, msg, client) => {
         if(msg.author.id == process.env.MYID || msg.author.id == process.env.SERID) {
-            const rClient = redis.createClient(process.env.RURL)
-            rClient.get('defenses', (err, res) => {
-                if(err) console.log(err)
-
-                if(res) {
-                    var set = (res == 'true')
-                    rClient.set('defenses', String(!set), (err, res) => {
-                        if(err) console.log(err)
-                        msg.channel.send(utl.embed.def(msg, !set))
-                        rClient.quit()
-                    })
-                } else {
-                    rClient.set('defenses', true, (err, res) => {
-                        if(err) console.log(err)
+            utl.db.createClient(process.env.MURL).then(db => {
+                db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                    console.log(serverData)
+                    if(serverData) {
+                        db.update(msg.guild.id, 'serverSettings', { $set: { def: !serverData.def } }).then(() => db.close())
+                        msg.channel.send(utl.embed.def(msg, !serverData.def))
+                    }
+                    else {
+                        db.update(msg.guild.id, 'serverSettings', { $set: { def: true } }).then(() => db.close())
                         msg.channel.send(utl.embed.def(msg, true))
-                        rClient.quit()
-                    })
-                }
+                        console.log('def')
+                    }
+                })
             })
         }
     }

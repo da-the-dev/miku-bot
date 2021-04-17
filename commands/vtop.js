@@ -1,10 +1,20 @@
 const Discord = require('discord.js')
-
-const redis = require('redis')
 const utl = require('../utility')
-const redisScan = require('node-redis-scan')
+const constants = require('../constants.json')
 
-const topAmount = 5
+const timeCalculator = (time) => {
+    var mmD = Math.floor(time / 24 / 60)
+    var mmH = Math.floor(time / 60) - (mmD * 24)
+    var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
+    var muteMsg = ''
+
+    if(mmD) muteMsg += mmD.toString() + "d "
+    if(mmH) muteMsg += mmH.toString() + "h "
+    if(mmM) muteMsg += mmM.toString() + "m "
+
+    return muteMsg
+}
+
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -13,67 +23,49 @@ module.exports =
      * @description Usage: .vtop
      */
     async (args, msg, client) => {
-        const rClient = redis.createClient(process.env.RURL)
-        const util = require('util')
-        const scaner = new redisScan(rClient)
-        const scan = util.promisify(scaner.scan).bind(scaner)
-        const mget = util.promisify(rClient.mget).bind(rClient)
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.getGuild('718537792195657798').then(async data => {
+                db.close()
 
-        var bigData = new Map()
-        /**@type {Array<string>} */
-        scan('*')
-            .then(keys => {
-                mget(keys)
-                    .then(async data => {
-                        for(i = 0; i < keys.length; i++) {
-                            if(data[i].length > 0 && JSON.parse(data[i]).voiceTime)
-                                bigData.set(keys[i], JSON.parse(data[i]).voiceTime)
-                        }
-                        bigData = new Map([...bigData.entries()].sort((a, b) => {
-                            if(a[1] > b[1]) return -1
-                            if(a[1] < b[1]) return 1
-                            return 0
-                        }))
+                data = data.filter(d => d.voiceTime)
+                data.sort((a, b) => {
+                    if(a.voiceTime > b.voiceTime) return -1
+                    if(a.voiceTime < b.voiceTime) return 1
+                    return 0
+                })
 
-                        var embed = new Discord.MessageEmbed()
-                            .setAuthor('Топ пользователей по голосовому онлайну', 'https://media.discordapp.net/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
-                            .setColor('#2F3136')
-                            .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+                var embed = new Discord.MessageEmbed()
+                    .setTitle('<a:__:825834909146415135> Топ 10 пользователей по голосовому онлайну')
+                    .setColor('#2F3136')
+                    .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
+                var description = ''
 
-                        var bKeys = Array.from(bigData.keys())
-                        var bValues = Array.from(bigData.values())
+                var members = data.map(d => msg.guild.member(d.id)).slice(0, 10)
 
-                        var counter = 0
+                for(i = 0; i < members.length; i++) {
+                    switch(i) {
+                        case 0:
+                            console.log('🥇')
+                            description += `\`🥇\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            break
+                        case 1:
+                            console.log('🥈')
+                            description += `\`🥈\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            break
+                        case 2:
+                            console.log('🥉')
+                            description += `\`🥉\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            break
+                        default:
+                            console.log('🕓')
+                            description += `\`🕓\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            break
+                    }
+                }
 
-                        for(i = 0; i < bKeys.length; i++) {
-                            if(counter < topAmount) {
-                                var member = await msg.guild.members.fetch(bKeys[counter])
-                                    .catch(() => { console.log('no member') })
-
-                                if(member) {
-                                    var name = member.nickname ? member.nickname : member.user.username
-
-                                    var time = bValues[counter] // Minutes
-                                    console.log(time)
-                                    var mmD = Math.floor(time / 24 / 60)
-                                    var mmH = Math.floor(time / 60) - (mmD * 24)
-                                    var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
-                                    var muteMsg = ''
-
-                                    if(mmD) muteMsg += mmD.toString() + "d "
-                                    if(mmH) muteMsg += mmH.toString() + "h "
-                                    if(mmM) muteMsg += mmM.toString() + "m "
-
-                                    embed.addField('\`#.⠀\`', `\`\`\`${counter + 1}.\`\`\``, true)
-                                    embed.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ник⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${name}\`\`\``, true)
-                                    embed.addField("`⠀⠀⠀⠀ Время⠀⠀⠀⠀ `", `\`\`\`${muteMsg}\`\`\``, true)
-                                }
-                                counter++
-                            }
-                        }
-                        msg.reply(embed)
-                        rClient.quit()
-                    })
+                embed.setDescription(description)
+                msg.reply(embed)
             })
+        })
     }
