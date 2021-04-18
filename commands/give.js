@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const constants = require('../constants.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -28,7 +29,7 @@ module.exports =
             utl.db.createClient(process.env.MURL).then(db => {
                 console.log(amount)
                 db.update(msg.guild.id, mMember.user.id, { $inc: { money: amount } }).then(() => {
-                    utl.embed(msg, `Обновлен баланс пользователя на <@${mMember.user.id}> **${amount}**<:__:813854413579354143>`)
+                    utl.embed(msg, `Обновлен баланс пользователя на <@${mMember.user.id}> **${amount}**<${constants.emojies.sweet}>`)
                     db.close()
                 })
             })

@@ -29,11 +29,11 @@ module.exports =
         var mMember = msg.mentions.members.first()
         if(!mMember) {
             getBal(msg.member).then(bal => {
-                utl.embed(msg, `У тебя на счету **${bal}** <:__:813854413579354143>`)
+                utl.embed(msg, `У тебя на счету **${bal}** <${constants.emojies.sweet}>`)
             })
         } else {
             getBal(mMember).then(bal => {
-                utl.embed(msg, `У ${mMember.displayName} на счету **${bal}** <:__:813854413579354143>`)
+                utl.embed(msg, `У ${mMember.displayName} на счету **${bal}** <${constants.emojies.sweet}>`)
             })
         }
     }

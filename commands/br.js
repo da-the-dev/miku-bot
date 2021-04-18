@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const constants = require('../constants.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -14,7 +15,7 @@ module.exports =
             return
         }
         if(bet < 50) {
-            utl.embed(msg, 'Ставка должна быть больше 50 <:__:813854413579354143>!')
+            utl.embed(msg, `Ставка должна быть больше 50 <${constants.emojies.sweet}>!`)
             return
         }
 
@@ -36,12 +37,12 @@ module.exports =
                         var rand = Math.floor(Math.random() * 99) + 1
                         if(rand >= 85) {
                             userData.money += bet * 2
-                            utl.embed(msg, `Вы выиграли! Ваш баланс: **${userData.money}** <:__:813854413579354143>`)
+                            utl.embed(msg, `Вы выиграли! Ваш баланс: **${userData.money}** <${constants.emojies.sweet}>`)
                         }
                         else {
                             userData.money -= bet
                             userData.money < 0 ? userData = 0 : null
-                            utl.embed(msg, `Вы проиграли! Ваш баланс: **${userData.money}** <:__:813854413579354143>`)
+                            utl.embed(msg, `Вы проиграли! Ваш баланс: **${userData.money}** <${constants.emojies.sweet}>`)
                         }
 
                         db.set(msg.guild.id, msg.author.id, userData)

@@ -21,17 +21,20 @@ module.exports =
             utl.db.createClient(process.env.MURL).then(db => {
                 db.get(msg.guild.id, mMember.user.id).then(userData => {
                     if(userData) {
-                        if(!userData.warns) {
+                        if(!userData.warns || userData.warns.length == 0) {
                             utl.embed(msg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
                             db.close()
                             return
                         }
-                        var embed = utl.embed.build(msg, `Предупреждения <@${mMember.user.id}>`)
+                        var embed = new Discord.MessageEmbed()
+                            .setAuthor(`${mMember.displayName} • Предупреждения`, mMember.user.avatarURL())
+                            .setColor('#2F3136')
+                            .setFooter(`${msg.member.displayName} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
                         for(i = 0; i < userData.warns.length; i++) {
                             var w = userData.warns[i]
                             var date = new Date(w.time)
-                            embed.addField('Дата', `\`⌗\`${i + 1} — ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(2)} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`, true)
+                            embed.addField('Дата', `\` ${i + 1} \` — ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(2)} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`, true)
                             embed.addField(`Исполнитель`, `<@${w.who}>`, true)
                             embed.addField(`Причина`, `${w.reason}`, true)
                         }

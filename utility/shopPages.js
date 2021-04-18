@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const emojies = ['➡️', '⬅️']
+const constants = require('../constants.json')
 const utl = require('../utility')
 
 /** 
@@ -20,7 +21,7 @@ const buildPage = (page, footerUser, footerURL, msg) => {
                 db.close()
                 var length = serverSettings.roles.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
                 for(i = (page - 1) * 9; i < length; i++) {
-                    embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}<:__:813854413579354143>`, ` <@&${serverSettings.roles[i].id}>`, true)
+                    embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}<${constants.emojies.sweet}>`, ` <@&${serverSettings.roles[i].id}>`, true)
                 }
 
                 msg.edit(embed)

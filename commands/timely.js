@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const redis = require('redis')
+const constats = require('../constants.json')
 const utl = require('../utility')
 module.exports =
     /**
@@ -22,13 +22,13 @@ module.exports =
                                     userData.streak = 1
                                 userData.rewardTime = msg.createdTimestamp
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
-                                utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<:__:813854413579354143> `)
+                                utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<${constants.emojies.sweet}> `)
                             } else {
                                 userData.money += 20
                                 userData.streak = 1
                                 userData.rewardTime = msg.createdTimestamp
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
-                                utl.embed(msg, 'Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<:__:813854413579354143>')
+                                utl.embed(msg, `Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<${constants.emojies.sweet}>`)
                             }
                         } else {
                             var time = (12 * 60 * 60 * 1000 - (msg.createdAt - userData.rewardTime)) / 1000
@@ -51,11 +51,11 @@ module.exports =
                         userData.streak = 1
                         if(!userData.money) userData.money = 20
                         else userData.money += 20
-                        utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
+                        utl.embed(msg, `Вы успешно получили свою награду в размере **20**<${constants.emojies.sweet}> `)
                         db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
                     }
                 } else { // If user has no user data
-                    utl.embed(msg, `Вы успешно получили свою награду в размере **20**<:__:813854413579354143> `)
+                    utl.embed(msg, `Вы успешно получили свою награду в размере **20**<${constants.emojies.sweet}> `)
                     db.set(msg.guild.id, msg.author.id, { 'rewardTime': msg.createdTimestamp, 'money': 20, 'streak': 1 }).then(() => db.close())
                 }
             })

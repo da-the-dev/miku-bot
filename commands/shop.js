@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const constants = require('../constants.json')
 const emojies = ['⬅️', '➡️']
 
 module.exports =
@@ -28,7 +29,7 @@ module.exports =
 
                     var length = rolesData.slice(0, 9).length
                     for(i = 0; i < length; i++)
-                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}<:__:813854413579354143>`, ` <@&${serverData.roles[i].id}>`, true)
+                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}<${constants.emojies.sweet}>`, ` <@&${serverData.roles[i].id}>`, true)
 
                     msg.channel.send(embed)
                         .then(async m => {

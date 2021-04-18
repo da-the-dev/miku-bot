@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const constants = require('../constants.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -37,7 +38,7 @@ module.exports =
                     } else {
                         db.update(msg.guild.id, msg.author.id, { $inc: { money: -amount } }).then(() => {
                             db.update(msg.guild.id, mMember.id, { $inc: { money: amount } }).then(() => {
-                                utl.embed(msg, `Вы передали **${amount}**<:__:813854413579354143> пользователю <@${mMember.user.id}>`)
+                                utl.embed(msg, `Вы передали **${amount}**<${constants.emojies.sweet}> пользователю <@${mMember.user.id}>`)
                                 db.close()
                             })
                         })
