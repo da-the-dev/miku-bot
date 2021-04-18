@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const constants = require('../constants.json')
 
 /**
  * Gets balance of the member
