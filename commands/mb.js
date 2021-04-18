@@ -41,7 +41,7 @@ module.exports =
                         "inline": true
                     },
                     {
-                        "name": "> <:__:829735646615568425> : • Rythm 2",
+                        "name": "> <:__:829735646615568425> • Rythm 2",
                         "value": `> Состояние: ${getStatus(msg, '252128902418268161')}\n> Префикс: \`>>\``,
                         "inline": true
                     },
