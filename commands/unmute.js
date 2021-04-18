@@ -11,7 +11,7 @@ module.exports =
      * @description Usage: .unmute <member>
      */
     (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(constants.roles.moder)
+        var moderatorRole = msg.guild.roles.cache.get(constants.roles.chatControl)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
