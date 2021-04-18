@@ -44,16 +44,10 @@ module.exports = (client) => {
                     console.log('redisUn 1')
                 } else if(msg.startsWith('pics')) {
                     var id = msg.split('-').pop()
-                    client.guilds.cache.first().members.cache.get(id).roles.remove(constants.roles.pics)
-                    const rClient = require('redis').createClient(process.env.RURL)
-                    rClient.get(id, (err, res) => {
-                        if(res) {
-                            var userData = JSON.parse(res)
-                            delete userData.pic
-                            rClient.set(member.id, JSON.stringify(userData), (err, res) => {
-                                rClient.quit()
-                            })
-                        }
+                    client.guilds.cache.first().member(id).roles.remove(constants.roles.pics)
+
+                    utl.db.createClient(process.env.MURL).then(db => {
+                        db.update(client.guilds.cache.first().id, id, { $unset: { pic: '' } }).then(db.close())
                     })
                 }
             })
