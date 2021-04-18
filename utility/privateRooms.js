@@ -83,6 +83,10 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                         {
                             id: newState.member.user.id,
                             allow: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
+                        },
+                        {
+                            id: constants.roles.bot,
+                            allow: ['MANAGE_CHANNELS', 'CONNECT', 'SPEAK', 'MOVE_MEMBERS']
                         }
                     ],
                 parent: category,
