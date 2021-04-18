@@ -20,7 +20,6 @@ const buildPage = (page, footerUser, footerURL, msg) => {
                 db.close()
                 var length = serverSettings.roles.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
                 for(i = (page - 1) * 9; i < length; i++) {
-                    console.log(i)
                     embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}<:__:813854413579354143>`, ` <@&${serverSettings.roles[i].id}>`, true)
                 }
 
@@ -51,7 +50,6 @@ module.exports = (reaction, user, client) => {
         var footerPage = msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('• стр'))
 
         var index1 = footerPage.indexOf('1')
-        console.log(footerPage, reaction.emoji.name, index1)
         if(reaction.emoji.name == '⬅️' && index1 == -1) { // 
             console.log('Second page, flip to first')
             buildPage(1, footerUser, footerURL, msg)

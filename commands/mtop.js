@@ -34,11 +34,8 @@ module.exports =
                     }
                 }
 
-                console.log(valids)
-                // return
-
                 var embed = new Discord.MessageEmbed()
-                    .setTitle('<a:__:825834909146415135> Топ 10 пользователей по текстовому онлайну')
+                    .setTitle('<a:__:825834909146415135> Топ 10 пользователей по сообщениям')
                     .setColor('#2F3136')
                     .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
@@ -47,16 +44,16 @@ module.exports =
                 for(i = 0; i < topAmount; i++) {
                     switch(i) {
                         case 0:
-                            description += `\`🥇\` ${valids[i].member.displayName} — **${valids[i].msgs}** <${constants.emojies.sweet}>\n`
+                            description += `\`🥇\` ${valids[i].member.displayName} — **${valids[i].msgs}** <:__:831618586338263071>\n`
                             break
                         case 1:
-                            description += `\`🥈\` ${valids[i].member.displayName} — **${valids[i].msgs}** <${constants.emojies.sweet}>\n`
+                            description += `\`🥈\` ${valids[i].member.displayName} — **${valids[i].msgs}** <:__:831618586338263071>\n`
                             break
                         case 2:
-                            description += `\`🥉\` ${valids[i].member.displayName} — **${valids[i].msgs}** <${constants.emojies.sweet}>\n`
+                            description += `\`🥉\` ${valids[i].member.displayName} — **${valids[i].msgs}** <:__:831618586338263071>\n`
                             break
                         default:
-                            description += `\`💭\` ${valids[i].member.displayName} — **${valids[i].msgs}** <${constants.emojies.sweet}>\n`
+                            description += `\`💭\` ${valids[i].member.displayName} — **${valids[i].msgs}** <:__:831618586338263071>\n`
                             break
                     }
                 }
