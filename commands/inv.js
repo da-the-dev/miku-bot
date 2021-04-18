@@ -19,17 +19,15 @@ module.exports =
                         }
                         var roles = ''
 
-                        console.log(serverData)
-                        console.log(userData.inv)
-
                         for(i = 0; i < serverData.roles.length; i++) {
-                            console.log(serverData.roles[i].id)
                             if(userData.inv.includes(serverData.roles[i].id))
                                 if(msg.member.roles.cache.has(serverData.roles[i].id))
-                                    roles += `\`⌗\` **${i + 1}**︰<@&${serverData.roles[i].id}> — Надета\n`
+                                    roles += `\` ${i + 1} \` <@&${serverData.roles[i].id}> — Надета\n`
                                 else
-                                    roles += `\`⌗\` **${i + 1}**︰<@&${serverData.roles[i].id}> — Не надета\n`
+                                    roles += `\` ${i + 1} \` <@&${serverData.roles[i].id}> — Не надета\n`
                         }
+
+                        roles += "\n**Спрятать роль**\n`.unequip номер роли из инвентаря`\n\n**Отобразить роль**\n`.equip номер роли из инвентаря`"
 
                         utl.embed(msg, roles)
                         db.close()
