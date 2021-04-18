@@ -15,6 +15,7 @@ const timeCalculator = (time) => {
     return muteMsg
 }
 
+const topAmount = 10
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -24,7 +25,7 @@ module.exports =
      */
     async (args, msg, client) => {
         utl.db.createClient(process.env.MURL).then(db => {
-            db.getGuild('718537792195657798').then(async data => {
+            db.getGuild('718537792195657798').then(data => {
                 db.close()
 
                 data = data.filter(d => d.voiceTime)
@@ -41,25 +42,28 @@ module.exports =
 
                 var description = ''
 
-                var members = data.map(d => msg.guild.member(d.id)).slice(0, 10)
+                var valids = []
+                for(i = 0; i < data.length; i++) {
+                    if(valids.length <= topAmount) {
+                        var member = msg.guild.member(data[i].id)
+                        if(member)
+                            valids.push({ member: member, voiceTime: data[i].voiceTime })
+                    }
+                }
 
-                for(i = 0; i < members.length; i++) {
+                for(i = 0; i < valids.length; i++) {
                     switch(i) {
                         case 0:
-                            console.log('🥇')
-                            description += `\`🥇\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥇\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                         case 1:
-                            console.log('🥈')
-                            description += `\`🥈\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥈\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                         case 2:
-                            console.log('🥉')
-                            description += `\`🥉\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥉\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                         default:
-                            console.log('🕓')
-                            description += `\`🕓\` ${members[i].displayName} — **${timeCalculator(data[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🕓\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                     }
                 }
