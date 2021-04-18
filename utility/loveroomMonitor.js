@@ -12,17 +12,17 @@ module.exports.roomDeletion = async (member) => {
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(member.guild.id, member.id).then(userData => {
                 if(userData) {
-                    var partner = userData.loveroom.partner
+                    var partnerID = userData.loveroom.partner
                     var id = userData.loveroom.id
                     member.guild.channels.cache.get(id).delete()
                     delete userData.loveroom
                     db.set(member.guild.id, member.id, userData).then(() => {
-                        member.guild.members.cache.get(partner).roles.remove(constants.roles.loveroom)
+                        member.guild.member(partnerID).roles.remove(constants.roles.loveroom)
 
-                        db.get(member.guild.id, partner).then(partnerData => {
+                        db.get(member.guild.id, partnerID).then(partnerData => {
                             if(partnerData) {
-                                delete partner.loveroom
-                                db.set(member.guild.id, partner, partnerData).then(() => {
+                                delete partnerData.loveroom
+                                db.set(member.guild.id, partnerID, partnerData).then(() => {
                                     db.close()
                                 })
                             }
