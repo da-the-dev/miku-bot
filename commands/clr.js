@@ -21,7 +21,6 @@ module.exports =
             return
         }
 
-
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, msg.author.id).then(async userData => {
                 if(userData) {
@@ -95,10 +94,10 @@ module.exports =
                                             msg.member.roles.add(constants.roles.loveroom)
 
                                             userData.money -= 10000
-                                            userData.loveroom = { 'id': c.id, 'partner': mMember.id, 'creationDate': Date.now() }
+                                            userData.loveroom = { 'id': c.id, 'partner': mMember.id, 'creationDate': Date.now(), 'bal': 6000 }
 
                                             db.set(msg.guild.id, msg.author.id, userData).then(() => {
-                                                db.update(msg.guild.id, mMember.id, { $set: { 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now() } } }).then(() => {
+                                                db.update(msg.guild.id, mMember.id, { $set: { 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now(), 'bal': 6000 } } }).then(() => {
                                                     db.close()
                                                     const embed = utl.embed.build(msg, 't')
                                                         .setDescription("`💞`" + `<@${msg.member.id}> и <@${mMember.id}> теперь пара!`)

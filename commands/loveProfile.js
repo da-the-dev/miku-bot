@@ -1,9 +1,9 @@
+const constants = require('../constants.json')
 const Discord = require('discord.js')
-const util = require('util')
 const utl = require('../utility')
 /**
- *  @param {Array<string>} args Command argument
- *  @param {Discord.Message} msg Discord message object
+ * @param {Array<string>} args Command argument
+ * @param {Discord.Message} msg Discord message object
  * @param {Discord.Client} client Discord client object
  * @description Usage: .loveProfile
  */
@@ -19,7 +19,7 @@ module.exports = (args, msg, client) => {
 
                 var date = new Date(userData.loveroom.creationDate)
                 var embed = utl.embed.build(msg, 't')
-                    .setDescription(`\`\`\`カップル Профиль пары\`\`\`\n\`💞\` **Партнёр:**\n<@${userData.loveroom.partner}>\n\`📅\` **Дата регистрации пары:**\n${date.toLocaleDateString('ru-RU')}`)
+                    .setDescription(`\`\`\`カップル Профиль пары\`\`\`\n\`💞\` **Партнёр:**\n<@${userData.loveroom.partner}>\n\`📅\` **Дата регистрации пары:**\n${date.toLocaleDateString('ru-RU')}\n**Баланс комнаты:** ${userData.loveroom.bal}<${constants.emojies.sweet}>`)
                     .setImage("https://media.discordapp.net/attachments/736038639791767594/743986900179615763/unknown.png")
                 msg.channel.send(embed)
                 db.close()
