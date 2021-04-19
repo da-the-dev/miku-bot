@@ -1,0 +1,42 @@
+const Discord = require('discord.js')
+const constants = require('../constants.json')
+const utl = require('../utility')
+
+module.exports =
+    /**
+    * @param {Array<string>} args Command argument
+    * @param {Discord.Message} msg Discord message object
+    * @param {Discord.Client} client Discord client object
+    * @description Usage: .v <setting> <value> 
+    */
+    async (args, msg, client) => {
+        if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
+            return
+
+        if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
+            utl.embed(msg, 'У Вас нет прав на эту команду!')
+            return
+        }
+
+        /**@type {Discord.VoiceChannel} */
+        var room = msg.member.voice.channel
+
+        if(!room) {
+            utl.embed(msg, 'У Вас нет приватной комнаты!')
+            return
+        }
+
+        var mMember = msg.mentions.members.first()
+
+        if(mMember) {
+            room.createOverwrite(mMember.id, {
+                'CONNECT': false
+            })
+            room.members.forEach(m => {
+                if(m.id == mMember.id)
+                    m.voice.setChannel(null)
+            })
+            utl.embed(msg, `Вы **закрыли доступ** в свою комнату для <@${mMember.user.id}>`)
+        } else
+            utl.embed(msg, 'Вы не указали пользователя!')
+    }
