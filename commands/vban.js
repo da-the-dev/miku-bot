@@ -36,7 +36,7 @@ module.exports =
                 if(m.id == mMember.id)
                     m.voice.setChannel(null)
             })
-            utl.embed(msg, `Вы **закрыли доступ** в свою комнату для <@${mMember.user.id}>`)
+            utl.embed(msg, `Закрыт доступ для <@${mMember.user.id}> в вашей комнате`)
         } else
             utl.embed(msg, 'Вы не указали пользователя!')
     }

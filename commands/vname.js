@@ -31,7 +31,7 @@ module.exports =
 
         if(newName && newName.length <= 31) {
             room.setName(newName)
-            utl.embed(msg, `Вы успешно **изменили название** своей комнаты на \`${newName}\``)
+            utl.embed(msg, `Название вашей комнаты изменено на \` ${newName} \``)
         } else if(newName && newName.length > 31)
             utl.embed(msg, 'Вы указали слишком длинное имя комнаты!')
         else

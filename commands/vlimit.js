@@ -34,10 +34,10 @@ module.exports =
 
         if(limit > 0 && limit < 100 && Number.isInteger(limit)) {
             room.setUserLimit(limit)
-            utl.embed(msg, `Вы успешно **поставили лимит** пользователей в своей комнате на \`${limit}\``)
+            utl.embed(msg, `Установлен лимит пользователей на \` ${limit} \` в вашей комнате`)
         } else if(limit == 0) {
             room.setUserLimit(null)
-            utl.embed(msg, `Вы успешно **убрали лимит** пользователей в своей комнате`)
+            utl.embed(msg, `Лимит пользователей снят с вашей комнаты`)
         } else if(limit >= 100)
             utl.embed(msg, 'Вы указали слишком большой лимит!')
         else
