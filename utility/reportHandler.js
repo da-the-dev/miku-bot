@@ -33,15 +33,15 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                             console.log(reportInfo)
                             db.delete(reaction.message.guild.id, `report-${reportID}`).then(() => db.close())
 
-                            var description = `\n:white_small_square: За жалобу взялся(-ась) <@${user.id}>\n`
-                            reportInfo.reportVoiceChannel ? description += `:white_small_square: [Канал пожаловавшегося](${reportInfo.reportVoiceChannel})\n` : null
-                            reportInfo.guiltyVoiceChannel ? description += `:white_small_square: [Канал виновника](${reportInfo.guiltyVoiceChannel})` : null
+                            var description = `\n— За жалобу взялся(-ась) <@${user.id}>\n`
+                            reportInfo.reportVoiceChannel ? description += `— [Канал пожаловавшегося](${reportInfo.reportVoiceChannel})\n` : null
+                            reportInfo.guiltyVoiceChannel ? description += `— [Канал виновника](${reportInfo.guiltyVoiceChannel})` : null
 
                             const takenReport = reaction.message.embeds[0]
                             takenReport.setDescription(description)
                             takenReport.setFooter(`Report-System • ${utl.embed.calculateTime(Date.now())}`, client.user.avatarURL())
-                            takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀⠀⠀Жалоба на⠀⠀⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.guilty}\`\`\``, true)
-                            takenReport.addField("`⠀⠀⠀⠀⠀⠀⠀Содержимое жалобы⠀⠀⠀⠀⠀⠀⠀`", `\`\`\`${reportInfo.description}\`\`\``, true)
+                            takenReport.addField("Жалоба на", `${reportInfo.guilty}`, true)
+                            takenReport.addField("Содержимое жалобы", `${reportInfo.description}`, true)
 
                             reaction.message.edit(takenReport)
                                 .then(m => {
