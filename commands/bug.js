@@ -16,16 +16,18 @@ module.exports =
             return
         }
 
-        var embed = new Discord.MessageEmbed()
-            .setTitle('Новый баг')
-            .setDescription(args.join(' '))
-            .setColor('#42cbf5')
+        msg.reply('Баг репорт отправлен, спасибо!').then(m => {
+            var embed = new Discord.MessageEmbed()
+                .setTitle(`Новый баг от: ${msg.member.displayName}`)
+                .setDescription(args.join(' ') + `\n[Ссылка на сообщение](${m.url})`)
+                .setColor('#42cbf5')
 
-        if(msg.attachments)
-            msg.guild.channels.cache.get(constants.channels.bugs).send('', {
-                embed: embed, files: msg.attachments.map(a => { return { attachment: a.attachment, name: a.name } })
-            })
-        else
-            msg.guild.channels.cache.get(constants.channels.bugs).send(embed)
-        msg.reply('Баг репорт отправлен, спасибо!')
+            if(msg.attachments)
+                msg.guild.channels.cache.get(constants.channels.bugs).send('', {
+                    embed: embed, files: msg.attachments.map(a => { return { attachment: a.attachment, name: a.name } })
+                })
+            else
+                msg.guild.channels.cache.get(constants.channels.bugs).send(embed)
+        })
+
     }
