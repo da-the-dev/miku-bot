@@ -29,6 +29,12 @@ module.exports =
                         return
                     }
 
+                    if(amount > userData.money) {
+                        utl.embed(msg, 'У Вас недостаточно средств для пополнения!')
+                        db.close()
+                        return
+                    }
+
                     userData.loveroom.bal += amount
                     userData.money -= amount
                     db.set(msg.guild.id, msg.author.id, userData).then(() => {
