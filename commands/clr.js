@@ -59,7 +59,7 @@ module.exports =
                                             [
                                                 {
                                                     id: msg.guild.id,
-                                                    deny: ["VIEW_CHANNEL", "CONNECT"]
+                                                    deny: ["CONNECT"]
                                                 },
                                                 {
                                                     id: constants.roles.verify,
