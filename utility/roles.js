@@ -74,7 +74,7 @@ var dayCounter = 0
  */
 module.exports.daylyTextActivity = (msg) => {
     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 23 && msg.channel.id == constants.channels.general && !msg.author.bot)
+    if(timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16 && msg.channel.id == constants.channels.general && !msg.author.bot)
         if(dayCounter < n) { // If not enough messages has been collected, keep collecting
             lastDayMessages.set(msg.author.id, (lastDayMessages.get(msg.author.id) || 0) + 1)
             dayCounter++
