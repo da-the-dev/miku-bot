@@ -45,7 +45,7 @@ class DB {
      * Gets data about many keys from a guild
      * @param {string} guildID - Guild ID
      * @param {object} query - Query to use as a filter
-     * @return {Promise<any>} Info about the keys
+     * @return {Promise<Array<any>>} Info about the keys
      */
     getMany(guildID, query) {
         return new Promise((resolve, reject) => {
@@ -139,7 +139,7 @@ class DB {
 
     /**
      * Deletes a document
-     * * @param {string} guildID - Guild ID
+     * @param {string} guildID - Guild ID
      * @param {string} uniqueID - Unique ID
      * @return {Promise<string>} 'OK' if deleted succesfully 
      */
