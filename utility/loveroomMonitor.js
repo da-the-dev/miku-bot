@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const schedule = require('node-schedule')
 
 /**
  * Monitors when a loveroom member left the server
@@ -32,4 +33,42 @@ module.exports.roomDeletion = async (member) => {
             })
         })
     }
+}
+
+/**
+ * 
+ * @param {Discord.Client} client 
+ */
+const payment = (client) => {
+    utl.db.createClient(process.env.MURL).then(db => {
+        db.updateMany('718537792195657798', { loveroom: { $exists: true } }, { $inc: { 'loveroom.bal': -3000 } })
+            .then(() => {
+                db.getMany('718537792195657798', { loveroom: { $exists: true } }).then(async data => {
+                    for(i = 0; i < data.length; i++) {
+                        if(data[i].loveroom.bal <= 0) {
+                            var channel = client.channels.cache.get(data[i].loveroom.id)
+                            channel ? channel.delete() : null
+                            await db.update('718537792195657798', data[i].id, { $unset: { 'loveroom': '' } })
+                        }
+                    }
+                    db.close()
+                })
+            })
+    })
+}
+
+/**
+ *
+ * @param {Discord.Client} client
+ */
+module.exports.initPayment = (client) => {
+    schedule.scheduleJob('0 0 1 * *', () => {
+        payment(client)
+    })
+    schedule.scheduleJob('0 0 12 * *', () => {
+        payment(client)
+    })
+    schedule.scheduleJob('0 0 24 * *', () => {
+        payment(client)
+    })
 }

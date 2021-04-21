@@ -40,6 +40,7 @@ client.once('ready', () => {
     utl.elderlyRole(client.guilds.cache.first())
     utl.scanServer(client)
     utl.bannerUpdate(client.guilds.cache.first())
+    utl.loveroomMonitor.initPayment(client)
 })
 
 // Role events
