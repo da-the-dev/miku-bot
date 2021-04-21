@@ -74,17 +74,18 @@ module.exports.voiceActivityInit = async (client) => {
 
 var chatActMessages = new Map()
 /**
- * @description Give user 1 point every 10 messages
+ * @description Give user 1 point every 5 messages
  * @param {Discord.Message} msg
  */
 module.exports.chatActivity = (msg) => {
     if(msg.channel.id == constants.channels.general && !msg.author.bot) { // Register only if in general
         var msgCount = chatActMessages.get(msg.author.id)
         if(msgCount) { // If user sent messages
-            if(++msgCount >= 10) {
+            if(++msgCount >= 5) {
                 chatActMessages.delete(msg.author.id)
                 utl.db.createClient(process.env.MURL).then(db => {
                     db.update(msg.guild.id, msg.author.id, { $inc: { money: 1 } }).then(() => db.close())
+                    console.log(msg.author.id)
                 })
                 return
             }
