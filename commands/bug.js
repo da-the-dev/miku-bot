@@ -23,11 +23,11 @@ module.exports =
                 .setColor('#42cbf5')
 
             if(msg.attachments)
-                msg.guild.channels.cache.get(constants.channels.bugs).send('', {
+                msg.guild.channels.cache.get(constants.channels.bugs).send(`<@${process.env.MYID}>`, {
                     embed: embed, files: msg.attachments.map(a => { return { attachment: a.attachment, name: a.name } })
                 })
             else
-                msg.guild.channels.cache.get(constants.channels.bugs).send(embed)
+                msg.guild.channels.cache.get(constants.channels.bugs).send(`<@${process.env.MYID}>`, { embed: embed })
         })
 
     }
