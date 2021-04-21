@@ -40,7 +40,8 @@ module.exports = (client) => {
 
                         channel.send(embed)
                     })
-                    member.roles.remove(constants.roles.muted)
+
+                    member ? member.roles.remove(constants.roles.muted) : null
                     console.log('redisUn 1')
                 } else if(msg.startsWith('pics')) {
                     var id = msg.split('-').pop()
