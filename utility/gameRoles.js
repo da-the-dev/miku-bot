@@ -12,7 +12,7 @@ module.exports = (oldPresence, newPresence) => {
         if(pres && constants.gameRoles[pres.name] && !newPresence.member.roles.cache.has(constants.gameRoles[pres.name])) {
             utl.db.createClient(process.env.MURL).then(db => {
                 db.get(newPresence.member.guild.id, newPresence.member.id).then(userData => {
-                    if(!userData.gameRoles)
+                    if(userData && !userData.gameRoles)
                         newPresence.member.roles.add(constants.gameRoles[pres.name]).catch(err => { })
                     db.close()
                 })
