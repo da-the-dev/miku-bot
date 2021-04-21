@@ -85,7 +85,6 @@ module.exports.chatActivity = (msg) => {
                 chatActMessages.delete(msg.author.id)
                 utl.db.createClient(process.env.MURL).then(db => {
                     db.update(msg.guild.id, msg.author.id, { $inc: { money: 1 } }).then(() => db.close())
-                    console.log(msg.author.id)
                 })
                 return
             }
