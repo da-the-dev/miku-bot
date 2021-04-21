@@ -104,6 +104,7 @@ client.on('message', msg => {
         utl.verify.welcomeReward(msg, client)
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
+            args.forEach(a => a.trim())
 
             // Say command
             if(args[0].includes('\n'))
