@@ -15,80 +15,75 @@ const buyRole = async (msg, member, duration, price) => {
     const get = require('util').promisify(rClient.get).bind(rClient)
     const set = require('util').promisify(rClient.set).bind(rClient)
     const expire = require('util').promisify(rClient.expire).bind(rClient)
-    const del = require('util').promisify(rClient.del).bind(rClient)
     const ttl = require('util').promisify(rClient.ttl).bind(rClient)
 
-    var res = await get(member.id)
-    if(res) {
-        var userData = JSON.parse(res)
-        if(res) {
-            var userData = JSON.parse(res)
-            if(!userData.money || userData.money < price) {
-                rClient.quit()
+    utl.db.createClient(process.env.MURL).then(db => {
+        db.get(msg.guild.id, member.id).then(userData => {
+            if(userData) {
+                if(!userData.money || userData.money < price) {
+                    db.close()
+                    utl.embed(msg, "У Вас недостаточно конфет!")
+                    return false
+                }
+                else
+                    db.update(msg.guild.id, member.id, { $inc: { money: -price } })
+                        .then(() => db.close())
+            } else {
+                db.close()
                 utl.embed(msg, "У Вас недостаточно конфет!")
                 return false
             }
-            else {
-                userData.money -= price
-                await set(member.id, JSON.stringify(userData))
-            }
-        } else {
-            rClient.quit()
-            utl.embed(msg, "У Вас недостаточно конфет!")
-            return false
-        }
-    }
+
+            get('pics-' + member.id)
+                .then(async res => {
+                    console.log('res type:', typeof res, res)
+                    if(res != null) {
+                        console.log('extend')
+
+                        var remaining = await ttl('pics-' + member.id)
+                        console.log(remaining)
+                        set('pics-' + member.id, '').then(() => {
+                            expire('pics-' + member.id, remaining + duration).then(() => {
+                                rClient.quit()
+                            }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
+                        }).catch(err => { console.log(err) })
 
 
-    get('pics-' + member.id)
-        .then(async res => {
-            console.log('res type:', typeof res, res)
-            if(res != null) {
-                console.log('extend')
+                        msg.edit(new Discord.MessageEmbed()
+                            .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
+                            .setColor('#2F3136')
+                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
+                        ).then(m => m.reactions.removeAll())
+                    } else {
+                        console.log('buys')
+                        set('pics-' + member.id, '').then(() => {
+                            expire('pics-' + member.id, duration).then(() => {
+                                console.log('db upd')
+                                get(member.id)
+                                    .then(res => {
+                                        if(res) {
+                                            var userData = JSON.parse(res)
+                                            userData.pic = true
+                                            console.log(userData)
+                                            set(member.id, JSON.stringify(userData)).then(() => { rClient.quit() })
+                                        } else
+                                            set(member.id, JSON.stringify({ pic: true })).then(() => { rClient.quit() })
+                                    })
+                            }).catch(err => { console.log(err) })
+                        }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
 
-                var remaining = await ttl('pics-' + member.id)
-                console.log(remaining)
-                set('pics-' + member.id, '').then(() => {
-                    expire('pics-' + member.id, remaining + duration).then(() => {
-                        rClient.quit()
-                    }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
-                }).catch(err => { console.log(err) })
+                        console.log('test')
 
-
-                msg.edit(new Discord.MessageEmbed()
-                    .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
-                    .setColor('#2F3136')
-                    .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                ).then(m => m.reactions.removeAll())
-            } else {
-                console.log('buys')
-                set('pics-' + member.id, '').then(() => {
-                    expire('pics-' + member.id, duration).then(() => {
-                        console.log('db upd')
-                        get(member.id)
-                            .then(res => {
-                                if(res) {
-                                    var userData = JSON.parse(res)
-                                    userData.pic = true
-                                    console.log(userData)
-                                    set(member.id, JSON.stringify(userData)).then(() => { rClient.quit() })
-                                } else
-                                    set(member.id, JSON.stringify({ pic: true })).then(() => { rClient.quit() })
-                            })
-                    }).catch(err => { console.log(err) })
-                }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
-
-                console.log('test')
-
-
-                member.roles.add(constants.roles.pics)
-                msg.edit(new Discord.MessageEmbed()
-                    .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
-                    .setColor('#2F3136')
-                    .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                ).then(m => m.reactions.removeAll())
-            }
+                        member.roles.add(constants.roles.pics)
+                        msg.edit(new Discord.MessageEmbed()
+                            .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
+                            .setColor('#2F3136')
+                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
+                        ).then(m => m.reactions.removeAll())
+                    }
+                })
         })
+    })
 }
 
 module.exports =
