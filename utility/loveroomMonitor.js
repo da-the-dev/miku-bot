@@ -37,17 +37,19 @@ module.exports.roomDeletion = async (member) => {
 
 /**
  * 
- * @param {Discord.Client} client 
+ * @param {Discord.Guild} guild
  */
-const payment = (client) => {
+const payment = (guild) => {
     utl.db.createClient(process.env.MURL).then(db => {
         db.updateMany('718537792195657798', { loveroom: { $exists: true } }, { $inc: { 'loveroom.bal': -3000 } })
             .then(() => {
                 db.getMany('718537792195657798', { loveroom: { $exists: true } }).then(async data => {
                     for(i = 0; i < data.length; i++) {
                         if(data[i].loveroom.bal <= 0) {
-                            var channel = client.channels.cache.get(data[i].loveroom.id)
+                            var channel = guild.channels.cache.get(data[i].loveroom.id)
                             channel ? channel.delete() : null
+                            guild.member(data[i].id).roles.remove(constants.roles.loveroom)
+
                             await db.update('718537792195657798', data[i].id, { $unset: { 'loveroom': '' } })
                         }
                     }
@@ -63,12 +65,12 @@ const payment = (client) => {
  */
 module.exports.initPayment = (client) => {
     schedule.scheduleJob('0 0 1 * *', () => {
-        payment(client)
+        payment(client.guilds.cache.first())
     })
     schedule.scheduleJob('0 0 12 * *', () => {
-        payment(client)
+        payment(client.guilds.cache.first())
     })
     schedule.scheduleJob('0 0 24 * *', () => {
-        payment(client)
+        payment(client.guilds.cache.first())
     })
 }
