@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const constats = require('../constants.json')
+const constants = require('../constants.json')
 const utl = require('../utility')
 module.exports =
     /**
