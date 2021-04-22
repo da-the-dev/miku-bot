@@ -13,7 +13,7 @@ module.exports = (guild) => {
             .then(() => {
                 guild.members.cache.forEach(async m => {
                     console.log(m.displayName, Date.now() - m.joinedTimestamp, Date.now() - m.joinedTimestamp > 7.884e+9)
-                    if(Date.now() - m.joinedTimestamp > 7.884e+6 && !m.user.bot) {
+                    if(Date.now() - m.joinedTimestamp > 7884000 && !m.user.bot) {
                         await m.roles.add(constants.roles.elderly)
                     }
                 })
