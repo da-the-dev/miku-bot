@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const constants = require('../constants.json')
 
 /**
  * Checks is "defenses" key value is "true" and then runs "func"
@@ -193,7 +194,7 @@ module.exports.monitorRoleDelete = role => {
  */
 module.exports.monitorChannelDelete = channel => {
     const kickPool = 2
-    if(channel.parent && channel.parent.name != '⌗                       Private︰ 数字')
+    if(channel.parent && channel.parentID != constants.categories.privateRooms)
         getDef(() => {
             var guild = channel.guild
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
