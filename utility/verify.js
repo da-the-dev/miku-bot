@@ -28,10 +28,11 @@ module.exports = async (msg, client) => {
                         else {
                             msg.channel.send(new Discord.MessageEmbed().setDescription('<:__:827599506928959519> **Неверно введена капча, генерирую новую** . . . ').setColor('#2F3136'))
                             formCaptcha().then(captcha => {
-                                utl.db.createClient(process.env.MURL).then(db => {
-                                    db.set('718537792195657798', 'verify-' + member.id, { captcha: captcha.text }).then(() => {
-                                        db.close(); msg.channel.send(captcha.obj)
-                                    })
+                                utl.db.createClient(process.env.MURL).then(async db => {
+                                    await db.delete('718537792195657798', 'verify-' + member.id)
+                                    await db.set('718537792195657798', 'verify-' + member.id, { captcha: captcha.text })
+                                    db.close()
+                                    msg.channel.send(captcha.obj)
                                 })
                             })
                         }
