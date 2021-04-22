@@ -65,6 +65,10 @@ module.exports =
         if(!nickname)
             nickname = pMember.user.username
 
+        // Account creation date
+        var createDate = new Date(pMember.user.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+        var joinedDate = new Date(pMember.joinedAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+
         // Constructing the embed
         var embed = new Discord.MessageEmbed()
             .setAuthor(`Информация о ${nickname}`, 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
@@ -81,12 +85,12 @@ module.exports =
                 },
                 {
                     "name": "Присоединился к серверу",
-                    "value": pMember.joinedAt.getDate().toString().padStart(2, '0') + '.' + pMember.joinedAt.getMonth().toString().padStart(2, '0') + '.' + pMember.joinedAt.getFullYear().toString().slice(2),
+                    "value": joinedDate.getDate().toString().padStart(2, '0') + '.' + joinedDate.getMonth().toString().padStart(2, '0') + '.' + joinedDate.getFullYear().toString(),
                     "inline": true
                 },
                 {
                     "name": "Аккаунт создан",
-                    "value": pMember.user.createdAt.getDate().toString().padStart(2, '0') + '.' + pMember.user.createdAt.getMonth().toString().padStart(2, '0') + '.' + pMember.user.createdAt.getFullYear().toString().slice(2),
+                    "value": createDate.getDate().toString().padStart(2, '0') + '.' + createDate.getMonth().toString().padStart(2, '0') + '.' + createDate.getFullYear().toString(),
                     "inline": true
                 },
                 {
