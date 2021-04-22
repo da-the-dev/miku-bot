@@ -1,19 +1,17 @@
 const Discord = require('discord.js')
-const redis = require('redis')
 const utl = require('../utility')
 
 /**
  * Checks is "defenses" key value is "true" and then runs "func"
  */
 const getDef = (func) => {
-    const rClient = redis.createClient(process.env.RURL)
-    rClient.get('defenses', (err, res) => {
-        if(err) console.log(err)
-        if(res)
-            if(res == 'true') {
+    utl.db.createClient().then(db => {
+        db.get('', 'serverSettings').then(serverData => {
+            if(serverData.def) {
                 func()
-                rClient.quit()
             }
+            db.close()
+        })
     })
 }
 
