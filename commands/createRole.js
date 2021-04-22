@@ -1,6 +1,26 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const util = require('util')
+const constants = require('../constants.json')
+
+/**
+ * Retrieves HEX color name 
+ * @param {string} hex - HEX string
+ * @returns {Promise<string>} HEX name
+ */
+const fetchHEXName = (hex) => {
+    return new Promise((resolve, reject) => {
+        const fetch = require('node-fetch');
+        fetch(`https://www.thecolorapi.com/id?hex=${hex.slice(1)}`)
+            .then(res => {
+                res.text()
+                    .then(res => {
+                        resolve(JSON.parse(res).name.value)
+                    })
+                    .catch(err => reject(err))
+            })
+            .catch(err => reject(err))
+    })
+}
 
 /**
  * Create a custom role
@@ -9,49 +29,36 @@ const util = require('util')
  * @param {string} hex - Role's hex color
  * @param {Function} success - Success function tp run at the end
  */
-const createRole = (msg, name, hex, success) => {
-    const fetch = require('node-fetch');
-    fetch(`https://www.thecolorapi.com/id?hex=${hex.slice(1)}`)
-        .then(res => {
-            res.text()
-                .then(res => {
-                    utl.embed(msg, `Вы уверены что хотите создать роль \`${name}\` с цветом \`${hex}\` *(${JSON.parse(res).name.value})*?`)
-                        .then(async m => {
-                            utl.yesNoReactionMessage(m, msg.member.id, () => {
-                                msg.guild.roles.create({
-                                    data: {
-                                        name: name,
-                                        color: hex,
-                                        position: 47
-                                    },
-                                    reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
-                                }).then(r => {
-                                    console.log(r.id)
-                                    msg.member.roles.add(r)
-                                        .then(() => {
-                                            m.edit(utl.embed.build(msg, `Вы успешно создали роль <@&${r.id}>!`))
-                                            m.reactions.removeAll()
-                                            success()
-
-                                            const rClient = require('redis').createClient(process.env.RURL)
-                                            const get = util.promisify(rClient.get).bind(rClient)
-                                            const set = util.promisify(rClient.set).bind(rClient)
-                                            get('customRoles')
-                                                .then(res => {
-                                                    var customRolesData = JSON.parse(res)
-                                                    customRolesData[msg.member.id][r.id] = { users: 1 }
-                                                    set('customRoles', JSON.stringify(customRolesData)).then(() => rClient.quit())
-                                                })
-                                        })
-                                })
-                            }, () => {
-                                m.delete()
-                            }, () => {
-                                m.delete()
-                            })
-                        })
+const createRole = (msg, name, hex, success, db) => {
+    msg.guild.roles.create({
+        data: {
+            name: name,
+            color: hex,
+            position: 47
+        },
+        reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
+    }).then(r => {
+        console.log(r.id)
+        msg.member.roles.add(r)
+            .then(() => {
+                utl.db.createClient(process.env.MURL).then(async db => {
+                    // Update serverSettings to include a new custom role
+                    await db.update(msg.guild.id, 'serverSettings', {
+                        $push: {
+                            customRoles: {
+                                id: r.id,
+                                owner: msg.author.id,
+                                members: 1
+                            }
+                        }
+                    })
+                    // Add the role to custom invetory
+                    await db.update(msg.guild.id, msg.author.id, { $push: { customInv: r.id } })
+                    await success(db)
+                    utl.embed(msg, `Вы успешно создали роль <@&${r.id}>!`)
                 })
-        })
+            })
+    })
 }
 
 module.exports =
@@ -86,66 +93,117 @@ module.exports =
             return
         }
 
-        const rClient = require('redis').createClient(process.env.RURL)
-        const get = util.promisify(rClient.get).bind(rClient)
-        const set = util.promisify(rClient.set).bind(rClient)
 
-        // Check if user already has 2 roles created
-        var customRoles = JSON.parse(await get('customRoles'))
-        if(customRoles[msg.author.id] && Object.entries(customRoles[msg.author.id]) >= 2) {
-            utl.embed(msg, 'У Вас уже достигнут по кастомным ролям ***(2)***!')
-            rClient.quit()
-            return
-        }
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                var counter = 0
+                serverData.customRoles.forEach(r => {
+                    r.owner == msg.author.id ? counter++ : null
+                })
 
-        get(msg.author.id)
-            .then(res => {
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(!userData.money && !userData.boosts) {
-                        utl.embed(msg, 'У Вас нет недостаточно ни конфет, ни бустов!')
-                        rClient.quit()
-                        return
-                    }
-                    if(userData.boosts && userData.boosts > 2)
-                        utl.embed(msg, `У Вас есть **${userData.boosts}** буста(-ов), хотите потратить **2** буста для создания роли?`)
-                            .then(m => {
-                                utl.yesNoReactionMessage(m, msg.author.id, () => {
-                                    createRole(msg, name, hex, () => {
-                                        userData.boosts -= 2
-                                        set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
-                                    })
-                                }, () => {
-                                    m.delete()
-                                    if(userData.money < 10000) {
-                                        utl.embed(msg, 'У Вас недостаточно конфет!')
-                                        return
-                                    }
-                                    set(msg.author.id, JSON.stringify(userData))
-                                    createRole(msg, name, hex, () => {
-                                        userData.money -= 10000
-                                        set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
-                                    })
-                                }, () => {
-                                    m.delete()
-                                    rClient.quit()
-                                })
-                            })
-                    else {
-                        if(userData.money < 10000) {
-                            m.delete()
-                            utl.embed(msg, 'У Вас недостаточно конфет!')
-                            rClient.quit()
+                if(counter >= 2) {
+                    utl.embed(msg, 'У Вас уже есть 2 кастомные роли!')
+                    db.close()
+                    return
+                }
+
+                console.log('less than 2 roles')
+
+                db.get(msg.guild.id, msg.author.id).then(async userData => {
+                    if(userData) {
+                        var hasBoosts = !(!userData.boosts || (userData.boosts && userData.boosts < 2))
+                        var hasMoney = !(!userData.money || (userData.money && userData.money < 7000))
+
+                        if(!hasBoosts && !hasMoney) {
+                            utl.embed(msg, 'У Вас не хватает ни бустов, ни конфет!')
+                            db.close()
                             return
                         }
-                        createRole(msg, name, hex, () => {
-                            userData.money -= 10000
-                            set(msg.author.id, JSON.stringify(userData)).then(() => rClient.quit())
-                        })
+
+                        console.log('value data:', hasBoosts, hasMoney)
+
+                        // Paying with boosts, no money
+                        if(hasBoosts && !hasMoney) {
+                            utl.embed(msg, `У Вас есть только **${userData.boosts}** бустов\nПодтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **2** буста`).then(m => {
+                                utl.reactionSelector.yesNo(m, msg.author.id,
+                                    () => {
+                                        createRole(msg, name, hex, (db) => {
+                                            db.update(msg.guild.id, msg.author.id, { $inc: { boosts: -2 } })
+                                        }, db)
+                                        db.close()
+                                    },
+                                    () => {
+                                        m.delete()
+                                        db.close()
+                                    },
+                                    () => {
+                                        m.delete()
+                                        db.close()
+                                    }
+                                )
+                            })
+                        }
+
+                        // Paying with money, no boosts
+                        if(!hasBoosts && hasMoney) {
+                            utl.embed(msg, `У Вас есть только **${userData.money}**<${constants.emojies.sweet}>\nПодтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **7000**<${constants.emojies.sweet}>`).then(m => {
+                                utl.reactionSelector.yesNo(m, msg.author.id,
+                                    () => {
+                                        createRole(msg, name, hex, (db) => {
+                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -7000 } })
+                                        }, db)
+                                        m.delete()
+                                        db.close()
+                                    },
+                                    () => {
+                                        m.delete()
+                                        db.close()
+                                    },
+                                    () => {
+                                        m.delete()
+                                        db.close()
+                                    }
+                                )
+                            })
+                        }
+
+                        // Paying with either money or boosts
+                        if(hasBoosts && hasMoney) {
+                            utl.embed(msg, `У Вас есть **${userData.money}**<${constants.emojies.sweet}> и **${userData.boosts}** бустов\nПодтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **2** буста** или 7000**<${constants.emojies.sweet}>`).then(m => {
+                                utl.reactionSelector.multiselector(m, msg.author.id,
+                                    () => {
+                                        m.delete()
+                                        db.close()
+                                    },
+                                    () => {
+                                        m.delete()
+                                        db.close()
+                                    },
+                                    // Pay with boosts
+                                    () => {
+                                        createRole(msg, name, hex, (db) => {
+                                            db.update(msg.guild.id, msg.author.id, { $inc: { boosts: -2 } })
+                                        }, db)
+                                        m.delete()
+                                        db.close()
+                                    },
+                                    // Pay with money
+                                    () => {
+                                        createRole(msg, name, hex, (db) => {
+                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -7000 } })
+                                        }, db)
+                                        m.delete()
+                                        db.close()
+                                    }
+                                )
+                            })
+                        }
                     }
-                } else {
-                    utl.embed(msg, 'У Вас нет ни достаточно конфет, ни достаточно бустов!')
-                    rClient.quit()
-                }
+                    else {
+                        utl.embed(msg, 'У Вас нет ни бустов, ни конфет!')
+                        db.close()
+                    }
+                })
             })
+        })
     }
