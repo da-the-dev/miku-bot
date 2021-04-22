@@ -35,7 +35,7 @@ module.exports =
                         }
 
                         var rand = Math.floor(Math.random() * 99) + 1
-                        if(rand >= 85) {
+                        if(rand >= 80) {
                             userData.money += bet * 2
                             utl.embed(msg, `Вы выиграли! Ваш баланс: **${userData.money}** <${constants.emojies.sweet}>`)
                         }
