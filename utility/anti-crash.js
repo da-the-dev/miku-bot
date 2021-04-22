@@ -6,7 +6,7 @@ const utl = require('../utility')
  */
 const getDef = (func) => {
     utl.db.createClient(process.env.MURL).then(db => {
-        db.get('', 'serverSettings').then(serverData => {
+        db.get('718537792195657798', 'serverSettings').then(serverData => {
             if(serverData.def) {
                 func()
             }
