@@ -5,7 +5,7 @@ const utl = require('../utility')
  * Checks is "defenses" key value is "true" and then runs "func"
  */
 const getDef = (func) => {
-    utl.db.createClient().then(db => {
+    utl.db.createClient(process.env.MURL).then(db => {
         db.get('', 'serverSettings').then(serverData => {
             if(serverData.def) {
                 func()
