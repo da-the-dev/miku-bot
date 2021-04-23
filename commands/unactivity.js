@@ -1,8 +1,6 @@
 const Discord = require('discord.js')
-const redis = require('redis')
-const constants = require('../constants.json')
 const utl = require('../utility')
-const { promisify } = require('util')
+const constants = require('../constants.json')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -11,26 +9,14 @@ module.exports =
     * @description Usage: .uactivity
     */
     (args, msg, client) => {
-        // const rClient = redis.createClient(process.env.RURL)
-        // const get = promisify(rClient.get).bind(rClient)
-        // const set = promisify(rClient.set).bind(rClient)
-
-        // get(msg.author.id)
-        //     .then(res => {
-        //         if(res) {
-        //             msg.member.roles.cache.has(constants.roles.daylyActive) ? msg.member.roles.remove(constants.roles.daylyActive) : null
-        //             msg.member.roles.cache.has(constants.roles.nightActive) ? msg.member.roles.remove(constants.roles.nightActive) : null
-
-        //             var userData = JSON.parse(res)
-        //             if(userData.activity || userData.activity === undefined)
-        //                 userData.activity = false
-        //             else if(!userData.activity)
-        //                 userData.activity = true
-        //             set(msg.author.id, JSON.stringify(userData)).then(() => { rClient.quit() })
-        //             utl.embed(msg, `Роли за активность ${userData.activity ? '**включены**' : '**выключены**'}`)
-        //         } else {
-        //             utl.embed(msg, 'У Вас нет ролей активностей!')
-        //             rClient.quit()
-        //         }
-        //     })
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.update(msg.guild.id, msg.author.id, [{ $set: { notActivity: { $not: "$notActivity" } } }])
+                .then(() => {
+                    db.get(msg.guild.id, msg.author.id).then(userData => {
+                        utl.embed(msg, `Роли за активность ${userData.notActivity ? '**выключены**' : '**включены**'}`)
+                        userData.notActivity ? msg.member.roles.remove([constants.roles.daylyActive, constants.roles.nightActive]) : null
+                        db.close()
+                    })
+                })
+        })
     }

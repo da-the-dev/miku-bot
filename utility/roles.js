@@ -50,11 +50,16 @@ const activityCalculator = (lastMessages, activityName, guild) => {
                 { nightMsgs: { $exists: true } }
             ]
         }).then(validData => {
+            console.log(validData.find(d => d.id == process.env.MURL))
             validData.forEach(d => {
+                if(d.id == process.env.MYID) console.log(d.notActivity)
                 if(!d.notActivity) {
                     var member = guild.member(d.id)
-                    if(member)
-                        member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) ? member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive) : null
+                    if(member) {
+                        if(!member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive)) {
+                            member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive)
+                        }
+                    }
                 }
             })
             db.close()
@@ -63,7 +68,7 @@ const activityCalculator = (lastMessages, activityName, guild) => {
     })
 }
 
-const n = 10 - 1
+const n = 5 - 1
 
 /**@type {Map<string,number>} */
 var lastDayMessages = new Map()
