@@ -2,19 +2,6 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
 
-const timeCalculator = (time) => {
-    var mmD = Math.floor(time / 24 / 60)
-    var mmH = Math.floor(time / 60) - (mmD * 24)
-    var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
-    var muteMsg = ''
-
-    if(mmD) muteMsg += mmD.toString() + "d "
-    if(mmH) muteMsg += mmH.toString() + "h "
-    if(mmM) muteMsg += mmM.toString() + "m "
-
-    return muteMsg
-}
-
 const topAmount = 10
 module.exports =
     /**
@@ -54,16 +41,16 @@ module.exports =
                 for(i = 0; i < valids.length; i++) {
                     switch(i) {
                         case 0:
-                            description += `\`🥇\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥇\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                         case 1:
-                            description += `\`🥈\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥈\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                         case 2:
-                            description += `\`🥉\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥉\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                         default:
-                            description += `\`🕓\` ${valids[i].member.displayName} — **${timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🕓\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
                             break
                     }
                 }

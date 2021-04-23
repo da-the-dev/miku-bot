@@ -2,18 +2,6 @@ const constants = require('../constants.json')
 const Discord = require('discord.js')
 const utl = require('../utility')
 
-const timeCalculator = (time) => {
-    var mmD = Math.floor(time / 24 / 60)
-    var mmH = Math.floor(time / 60) - (mmD * 24)
-    var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
-    var muteMsg = ''
-
-    if(mmD) muteMsg += `**${mmD.toString()}**d `
-    if(mmH) muteMsg += `**${mmH.toString()}**h `
-    if(mmM) muteMsg += `**${mmM.toString()}**m`
-
-    return muteMsg
-}
 
 const timeTillPayday = () => {
     var today = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
@@ -31,7 +19,7 @@ const timeTillPayday = () => {
     if(today.getDate() >= 12 && today.getDate() <= 23)
         payday.setUTCDate(24)
 
-    return `${timeCalculator(Math.round((payday.getTime() - today.getTime()) / 1000 / 60))}`
+    return `${utl.time.timeCalculator(Math.round((payday.getTime() - today.getTime()) / 1000 / 60))}`
 }
 
 /**
