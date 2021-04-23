@@ -13,7 +13,8 @@ module.exports =
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 if(userData) {
                     if(userData.rewardTime) { // Check if user can collect the reward
-                        if(msg.createdTimestamp - userData.rewardTime >= 12 * 60 * 60 * 1000) { // If 12+ hours passed since last reward collection
+                        var diff = Math.floor((msg.createdTimestamp - userData.rewardTime) / 1000)
+                        if(diff >= 12 * 60 * 60) { // If 12+ hours passed since last reward collection
                             if(msg.createdTimestamp - userData.rewardTime < 24 * 60 * 60 * 1000) { // And less than 24 
                                 var reward = 20 + userData.streak * 10
                                 userData.money += reward
@@ -24,33 +25,22 @@ module.exports =
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
                                 utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<${constants.emojies.sweet}> `)
                             } else {
-                                userData.money += 20
-                                userData.streak = 1
+                                var reward = 20 + userData.streak * 10
                                 userData.rewardTime = msg.createdTimestamp
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
-                                utl.embed(msg, `Вы пришли слишком поздно! Ваша серия призов обнулена! Вы получаете **20**<${constants.emojies.sweet}>`)
+                                utl.embed(msg, `Вы пришли слишком поздно! Вы получаете **${reward}**<${constants.emojies.sweet}>`)
                             }
                         } else {
-                            var time = (12 * 60 * 60 * 1000 - (msg.createdAt - userData.rewardTime)) / 1000
-                            var mmD = Math.floor(time / 60 / 60 / 24)
-                            var mmH = Math.floor(time / 60 / 60) - (mmD * 24)
-                            var mmM = Math.floor(time / 60) - (mmD * 60 * 24 + mmH * 60)
-                            var mmS = Math.floor(time - (mmD * 60 * 60 * 24 + mmH * 60 * 60 + mmM * 60))
-                            var muteMsg = ''
+                            var time = 12 * 60 - Math.floor(((msg.createdAt - userData.rewardTime) / 1000) / 60)
 
-                            if(mmD) muteMsg += `**${mmD.toString()}**д `
-                            if(mmH) muteMsg += `**${mmH.toString()}**ч `
-                            if(mmM) muteMsg += `**${mmM.toString()}**мин `
-                            if(mmS) muteMsg += `**${mmS.toString()}**сек `
-
-                            utl.embed(msg, `Вы пришли слишком рано! Приходите через ${muteMsg}`)
+                            utl.embed(msg, `Вы пришли слишком рано! Приходите через ${utl.time.timeCalculator(time)}`)
                             db.close()
                         }
                     } else { // If user never used .timely, but has some data
                         userData.rewardTime = msg.createdTimestamp
                         userData.streak = 1
-                        if(!userData.money) userData.money = 20
-                        else userData.money += 20
+                        userData.money ? userData.money += 20 : userData.money = 20
+
                         utl.embed(msg, `Вы успешно получили свою награду в размере **20**<${constants.emojies.sweet}> `)
                         db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
                     }
