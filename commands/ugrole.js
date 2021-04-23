@@ -12,7 +12,7 @@ module.exports =
     //!!!GAMEROLES TRUE - DONT GIVE ROLE; GAMEROLES FALSE - GIVE ROLES!!!
     (args, msg, client) => {
         utl.db.createClient(process.env.MURL).then(db => {
-            db.update('718537792195657798', '315339158912761856', [{ $set: { gameRoles: { $not: "$gameRoles" } } }])
+            db.update(msg.guild.id, msg.author.id, [{ $set: { gameRoles: { $not: "$gameRoles" } } }])
                 .then(() => {
                     db.get(msg.guild.id, msg.author.id).then(userData => {
                         utl.embed(msg, `Игровые роли ${!userData.gameRoles ? '**включены**' : '**выключены**'}`)
