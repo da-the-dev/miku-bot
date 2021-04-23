@@ -41,16 +41,16 @@ module.exports =
                 for(i = 0; i < valids.length; i++) {
                     switch(i) {
                         case 0:
-                            description += `\`🥇\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥇\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
                             break
                         case 1:
-                            description += `\`🥈\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥈\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
                             break
                         case 2:
-                            description += `\`🥉\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🥉\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
                             break
                         default:
-                            description += `\`🕓\` ${valids[i].member.displayName} — **${utl.time.timeCalculator(valids[i].voiceTime)}** <${constants.emojies.speaker}>\n`
+                            description += `\`🕓\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
                             break
                     }
                 }
