@@ -1,3 +1,8 @@
+/**
+ * 
+ * @param {number} time - Time in minutes
+ * @returns 
+ */
 module.exports.timeCalculator = (time) => {
     var mmD = Math.floor(time / 24 / 60)
     var mmH = Math.floor(time / 60) - (mmD * 24)
