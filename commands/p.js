@@ -44,7 +44,7 @@ module.exports =
                         },
                         {
                             "name": "> Возлюбленная(-ный):",
-                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Не установлен'}`,
+                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
                             "inline": true
                         }
                     ])
