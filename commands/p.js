@@ -17,13 +17,13 @@ module.exports =
 
 
         var act = pMember.user.presence.activities.find(a => a.type == 'CUSTOM_STATUS')
-        var state = 'Нет'
+        var state = 'Не установлен'
         if(act)
             state = act.state
         state = state.slice(0, state.length <= 60 ? state.length : 60)
         state = state.replace(/[\S]+(.com|.ru|.org|.net|.info)[\S]+/g, '')
 
-        state ? state = state : state = 'Нет'
+        state ? state = state : state = 'Не установлен'
 
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, pMember.id).then(userData => {
@@ -44,7 +44,7 @@ module.exports =
                         },
                         {
                             "name": "> Возлюбленная(-ный):",
-                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
+                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Не установлен'}`,
                             "inline": true
                         }
                     ])
