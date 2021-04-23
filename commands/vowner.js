@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .v <setting> <value>
+     * @description Usage: .vowner <member>
      */
     async (args, msg, client) => {
         if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
