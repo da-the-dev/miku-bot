@@ -50,9 +50,7 @@ const activityCalculator = (lastMessages, activityName, guild) => {
                 { nightMsgs: { $exists: true } }
             ]
         }).then(validData => {
-            console.log(validData.find(d => d.id == process.env.MURL))
             validData.forEach(d => {
-                if(d.id == process.env.MYID) console.log(d.notActivity)
                 if(!d.notActivity) {
                     var member = guild.member(d.id)
                     if(member) {
