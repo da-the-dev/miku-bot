@@ -29,11 +29,20 @@ module.exports =
             pMember = mMember
 
 
+        var act = pMember.user.presence.activities.find(a => a.type == 'CUSTOM_STATUS')
+        var state = 'Нет'
+        if(act)
+            state = act.state
+        state = state.slice(0, state.length <= 60 ? state.length : 60)
+        state = state.replace(/[\S]+(.com|.ru|.org|.net|.info)[\S]+/g, '')
+
+        state ? state = state : state = 'Нет'
+
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, pMember.id).then(userData => {
                 var embed = new Discord.MessageEmbed()
                     .setTitle(`<a:__:825834909146415135> Профиль — ${pMember.user.tag}`)
-                    .setDescription(`> **Статус:**\n\`\`\`${pMember.user.presence.activities.find(a => a.type == 'CUSTOM_STATUS') ? pMember.user.presence.activities.find(a => a.type == 'CUSTOM_STATUS').state : '*нет статуса*'}\`\`\``)
+                    .setDescription(`> **Статус:**\n\`\`\`${state}\`\`\``)
                     .setColor('#2F3136')
                     .addFields([
                         {
@@ -48,7 +57,7 @@ module.exports =
                         },
                         {
                             "name": "> Возлюбленная(-ный):",
-                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : '`*нет*`'}`,
+                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
                             "inline": true
                         }
                     ])
