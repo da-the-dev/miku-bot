@@ -16,20 +16,11 @@ module.exports =
             pMember = mMember
 
 
-        var act = pMember.user.presence.activities.find(a => a.type == 'CUSTOM_STATUS')
-        var state = 'Не установлен'
-        if(act)
-            state = act.state
-        state = state.slice(0, state.length <= 60 ? state.length : 60)
-        state = state.replace(/[\S]+(.com|.ru|.org|.net|.info)[\S]+/g, '')
-
-        state ? state = state : state = 'Не установлен'
-
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, pMember.id).then(userData => {
                 var embed = new Discord.MessageEmbed()
                     .setTitle(`<a:__:825834909146415135> Профиль — ${pMember.user.tag}`)
-                    .setDescription(`> **Статус:**\n\`\`\`${state}\`\`\``)
+                    .setDescription(`> **Статус:**\n\`\`\`${userData.status || 'Не установлен'}\`\`\``)
                     .setColor('#2F3136')
                     .addFields([
                         {
