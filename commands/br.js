@@ -15,7 +15,7 @@ module.exports =
             return
         }
         if(bet < 50) {
-            utl.embed(msg, `Ставка должна быть больше 50 <${constants.emojies.sweet}>!`)
+            utl.embed(msg, `Ставка должна быть больше **50**<${constants.emojies.sweet}>`)
             return
         }
 
