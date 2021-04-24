@@ -49,7 +49,8 @@ module.exports =
 
                 var role = serverData.customRoles.find(r => r.id == mRole.id && r.owner == msg.author.id)
 
-                mMember.roles.add(role.id)
+                utl.embed(msg, `Роль <@&${role.id}> была выдана <@${mMember.id}>`)
+
                 db.update(msg.guild.id, mMember.id, { $push: { customInv: role.id } }).then(() => {
                     db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
                 })

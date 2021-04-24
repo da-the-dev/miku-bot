@@ -34,7 +34,7 @@ const createRole = (msg, name, hex, success, db) => {
         data: {
             name: name,
             color: hex,
-            position: 47
+            position: 16
         },
         reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
     }).then(r => {
@@ -112,7 +112,7 @@ module.exports =
                 db.get(msg.guild.id, msg.author.id).then(async userData => {
                     if(userData) {
                         var hasBoosts = !(!userData.boosts || (userData.boosts && userData.boosts < 2))
-                        var hasMoney = !(!userData.money || (userData.money && userData.money < 7000))
+                        var hasMoney = !(!userData.money || (userData.money && userData.money < 10000))
 
                         if(!hasBoosts && !hasMoney) {
                             utl.embed(msg, 'У Вас не хватает ни бустов, ни конфет!')
