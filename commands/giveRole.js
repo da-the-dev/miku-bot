@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const util = require('util')
 const utl = require('../utility')
 module.exports =
     /**
@@ -21,36 +20,39 @@ module.exports =
             return
         }
 
-        const rClient = require('redis').createClient(process.env.RURL)
-        const get = util.promisify(rClient.get).bind(rClient)
-        const set = util.promisify(rClient.set).bind(rClient)
-
-        get(msg.member.id)
-            .then(res => {
-                if(res) {
-                    var userData = JSON.parse(res)
-                    if(!userData.customRoles) {
-                        utl.embed(msg, 'У Вас нет своих кастомных ролей!')
-                        rClient.quit()
-                        return
-                    }
-                    if(!userData.customRoles.includes(mRole.id)) {
-                        utl.embed(msg, 'Эта роль Вам не принадлежит!')
-                        rClient.quit()
-                        return
-                    }
-                    console.log(userData.customRoles)
-                    console.log(mRole.id)
-                    console.log(userData.customRoles.find(r => r == mRole.id))
-                    mMember.roles.add(userData.customRoles.find(r => r == mRole.id))
-                        .then(() => {
-                            utl.embed(msg, `Успешно выдана роль <@&${mRole.id}> пользователю <@${mMember.id}>`)
-                            rClient.quit()
-                        })
-
-                } else {
-                    utl.embed(msg, 'У Вас нет своих кастомных ролей!')
-                    rClient.quit()
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, 'serverSettings').then(serverData => {
+                // Doesnt have custom roles
+                if(!serverData.customRoles.find(r => r.owner == msg.author.id)) {
+                    utl.embed(msg, 'У Вас нет кастомных ролей!')
+                    db.close()
+                    return
                 }
+
+                // Role isn't custom
+                if(!serverData.customRoles.find(r => r.id == mRole.id)) {
+                    utl.embed(msg, 'Эта роль не является кастомной!')
+                    db.close()
+                    return
+                }
+
+                // Role doesn't belong to the user
+                if(!serverData.customRoles.find(r => r.id == mRole.id).owner == msg.author.id) {
+                    utl.embed(msg, 'Эта роль не Ваша!')
+                    db.close()
+                    return
+                }
+
+                console.log(serverData.customRoles)
+                serverData.customRoles[serverData.customRoles.findIndex(r => r.id == mRole.id && r.owner == msg.author.id)].members += 1
+                console.log(serverData.customRoles)
+
+                var role = serverData.customRoles.find(r => r.id == mRole.id && r.owner == msg.author.id)
+
+                mMember.roles.add(role.id)
+                db.update(msg.guild.id, mMember.id, { $push: { customInv: role.id } }).then(() => {
+                    db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
+                })
             })
+        })
     }
