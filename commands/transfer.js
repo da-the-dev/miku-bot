@@ -29,6 +29,11 @@ module.exports =
             return
         }
 
+        if(amount <= 0) {
+            utl.embed(msg, 'Неверная сумма!')
+            return
+        }
+
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 if(userData) {
