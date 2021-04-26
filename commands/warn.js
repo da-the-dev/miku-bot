@@ -28,9 +28,19 @@ module.exports =
             }
 
             utl.db.createClient(process.env.MURL).then(db => {
-                db.update(msg.guild.id, mMember.user.id, { $addToSet: { 'warns': { 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp } } }).then(() => {
-                    utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
-                    db.close()
+                db.get(msg.guild.id, mMember.id).then(userData => {
+                    if(userData.warns && userData.warns.length == 3)
+                        delete userData.warns
+
+                    if(!userData.warns)
+                        userData.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }]
+                    else
+                        userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
+
+                    db.set(msg.guild.id, mMember.user.id, userData).then(() => {
+                        utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                        db.close()
+                    })
                 })
             })
         } else {
