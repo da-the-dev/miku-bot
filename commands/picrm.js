@@ -27,11 +27,7 @@ module.exports =
     */
     (args, msg, client) => {
         const rClient = redis.createClient(process.env.RURL)
-        const get = require('util').promisify(rClient.get).bind(rClient)
-        const set = require('util').promisify(rClient.set).bind(rClient)
-        const expire = require('util').promisify(rClient.expire).bind(rClient)
         const ttl = require('util').promisify(rClient.ttl).bind(rClient)
-
 
         ttl('pics-' + msg.author.id).then(res => {
             if(res)
