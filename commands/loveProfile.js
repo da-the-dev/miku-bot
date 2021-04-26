@@ -12,11 +12,18 @@ const timeTillPayday = () => {
     payday.setUTCSeconds(0)
     payday.setUTCMilliseconds(0)
 
-    if(today.getDate() >= 24 && today.getDate() <= 31)
+    if(today.getDate() >= 24 && today.getDate() <= 31) {
+        if(today.getUTCMonth() == 12) {
+            payday.setUTCFullYear(today.getUTCFullYear() + 1)
+            payday.setUTCMonth(1)
+        }
+        else
+            payday.setUTCMonth(today.getUTCMonth() + 1)
         payday.setUTCDate(1)
-    if(today.getDate() >= 1 && today.getDate() <= 11)
+    }
+    else if(today.getDate() >= 1 && today.getDate() <= 11)
         payday.setUTCDate(12)
-    if(today.getDate() >= 12 && today.getDate() <= 23)
+    else if(today.getDate() >= 12 && today.getDate() <= 23)
         payday.setUTCDate(24)
 
     return `${utl.time.timeCalculator(Math.round((payday.getTime() - today.getTime()) / 1000 / 60))}`
@@ -51,7 +58,7 @@ module.exports = (args, msg, client) => {
                 var date = new Date(userData.loveroom.creationDate)
                 var embed = utl.embed.build(msg, 't')
                     .setTitle('<a:__:825834909146415135> Профиль пары')
-                    .setDescription(` \`💞\` — **Партнёр:**\n> <@{userData.loveroom.partner}>\n \`📅\` — **Дата регистрации пары:**\n> ${date.toLocaleDateString('ru-RU')}\n \`💳\` — **Баланс пары:**\n> ${userData.loveroom.bal}<${constants.emojies.sweet}>\n \`🕚\` — **До оплаты осталось**\n> ${timeTillPayday()}\n `)
+                    .setDescription(` \`💞\` — **Партнёр:**\n> <@${userData.loveroom.partner}>\n \`📅\` — **Дата регистрации пары:**\n> ${date.toLocaleDateString('ru-RU')}\n \`💳\` — **Баланс пары:**\n> ${userData.loveroom.bal}<${constants.emojies.sweet}>\n \`🕚\` — **До оплаты осталось**\n> ${timeTillPayday()}\n `)
                     .setImage("https://media.discordapp.net/attachments/736038639791767594/743986900179615763/unknown.png")
 
                 // "description": ` \`💞\` — **Партнёр:**\n> <@{userData.loveroom.partner}>\n \`📅\` — **Дата регистрации пары:**\n> ${date.toLocaleDateString('ru-RU')}\n \`💳\` — **Баланс пары:**\n> ${userData.loveroom.bal}<${constants.emojies.sweet}>\n \`🕚\` — **До оплаты осталось:**\n> **1**d **0**h **10**m`,
