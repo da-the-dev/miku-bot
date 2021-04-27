@@ -32,7 +32,7 @@ module.exports =
             room.createOverwrite(mMember.id, {
                 'CONNECT': true
             })
-            utl.embed(msg, `Закрыт доступ для <@${mMember.user.id}> в вашей комнате`)
+            utl.embed(msg, `Открыт доступ для <@${mMember.user.id}> в вашей комнате`)
         } else
             utl.embed(msg, 'Вы не указали пользователя!')
     }
