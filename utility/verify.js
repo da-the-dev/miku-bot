@@ -132,7 +132,7 @@ const formCaptcha = () => {
  * @param {Discord.Message} msg - Message to react to
  * @param {Discord.Client} client - Client to check for perms to react
  */
-const welcomeWords = ['добр', 'прив', 'хай', 'welcome', 'hi', 'салам', 'здрав']
+const welcomeWords = ['добр', 'прив', 'хай', 'welcome', 'hi', 'салам', 'здрав', 'hello']
 module.exports.welcomeReward = (msg, client) => {
     if(reward) {
         var c = msg.content.toLocaleLowerCase()
