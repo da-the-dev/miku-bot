@@ -29,7 +29,7 @@ module.exports =
      * @description Usage: .mute <member> <time> "<reason>"
      * @example .mute @daym bro 5h "reason"
      */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var moderatorRole = msg.guild.roles.cache.get(constants.roles.chatControl)
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
@@ -59,6 +59,8 @@ module.exports =
                 utl.embed(msg, 'Неверный формат времени!')
                 return
             }
+
+            await mMember.roles.add(constants.roles.muted) // Actually mute
 
             var time = 0
 
@@ -93,7 +95,7 @@ module.exports =
                 return
             }
 
-            mMember.roles.add(constants.roles.muted)
+
             const rClient = redis.createClient(process.env.RURL)
             if(time == -1) {
                 utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
