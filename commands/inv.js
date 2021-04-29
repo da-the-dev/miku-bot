@@ -12,7 +12,7 @@ module.exports =
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 db.get(msg.guild.id, 'serverSettings').then(serverData => {
                     if(userData) {
-                        if(!userData.inv && !userData.customInv) {
+                        if((!userData.inv || userData.inv.length <= 0) && (!userData.customInv || userData.customInv <= 0)) {
                             utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
                             db.close()
                             return

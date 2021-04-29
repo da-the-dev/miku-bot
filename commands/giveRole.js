@@ -5,7 +5,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .bal
+    * @description Usage: .giveRole <member>
     */
     (args, msg, client) => {
         var mRole = msg.mentions.roles.first()
@@ -43,9 +43,7 @@ module.exports =
                     return
                 }
 
-                console.log(serverData.customRoles)
                 serverData.customRoles[serverData.customRoles.findIndex(r => r.id == mRole.id && r.owner == msg.author.id)].members += 1
-                console.log(serverData.customRoles)
 
                 var role = serverData.customRoles.find(r => r.id == mRole.id && r.owner == msg.author.id)
 
