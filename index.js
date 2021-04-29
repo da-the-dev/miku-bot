@@ -36,7 +36,7 @@ client.once('ready', () => {
     console.log("[BOT] BOT is online")
 
     utl.redisUnmute(client)
-    utl.moneyGet.voiceActivityInit(client)
+    utl.activity.voiceActivityInit(client)
     utl.elderlyRole(client.guilds.cache.first())
     utl.scanServer(client)
     utl.bannerUpdate(client.guilds.cache.first())
@@ -82,7 +82,7 @@ client.on('channelDelete', channel => {
 // Voice events
 client.on('voiceStateUpdate', (oldState, newState) => {
     utl.privateRooms.roomDeletion(oldState, newState, client)
-    utl.moneyGet.voiceActivity(oldState, newState)
+    utl.activity.voiceActivity(oldState, newState)
 })
 
 // Message events
@@ -95,12 +95,14 @@ client.on('messageReactionAdd', (reaction, user) => {
 })
 client.on('message', msg => {
     // Activity
-    utl.roles.daylyTextActivity(msg)
-    utl.roles.nightTextActivity(msg)
+    utl.activity.chatActivity(msg)
+
+    // Verification
     utl.verify(msg, client)
+
     // Bot commands
     if(!msg.author.bot) {
-        utl.moneyGet.chatActivity(msg)
+        utl.activity.chatActivity(msg)
         utl.verify.welcomeReward(msg, client)
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
