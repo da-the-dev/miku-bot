@@ -20,4 +20,5 @@ module.exports.reactionSelector = require('./utility/reactionSelector')
 module.exports.bannerUpdate = require('./utility/bannerUpdate')
 module.exports.db = require('./utility/db')
 module.exports.time = require('./utility/time')
+module.exports.customRoles = require('./utility/customRoles')
 

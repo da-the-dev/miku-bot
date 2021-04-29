@@ -42,12 +42,20 @@ const createRole = (msg, name, hex, success, db) => {
         msg.member.roles.add(r)
             .then(() => {
                 utl.db.createClient(process.env.MURL).then(async db => {
+                    // Set expireDate to 00:00:00:0000
+                    var expireDate = new Date(Date.now())
+                    expireDate.setHours(0)
+                    expireDate.setMinutes(0)
+                    expireDate.setSeconds(0)
+                    expireDate.setMilliseconds(0)
+
                     // Update serverSettings to include a new custom role
                     await db.update(msg.guild.id, 'serverSettings', {
                         $push: {
                             customRoles: {
                                 id: r.id,
                                 owner: msg.author.id,
+                                expireTimestamp: expireDate.getTime(),
                                 members: 1
                             }
                         }
@@ -106,8 +114,6 @@ module.exports =
                     db.close()
                     return
                 }
-
-                console.log('less than 2 roles')
 
                 db.get(msg.guild.id, msg.author.id).then(async userData => {
                     if(userData) {
