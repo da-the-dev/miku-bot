@@ -84,7 +84,9 @@ module.exports.chatActivity = (msg) => {
             if(++msgCount >= 5) {
                 chatActMessages.delete(msg.author.id)
                 utl.db.createClient(process.env.MURL).then(db => {
-                    db.update(msg.guild.id, msg.author.id, { $inc: { money: 1 } }).then(() => db.close())
+
+
+                    db.update(msg.guild.id, msg.author.id, { $inc: { money: 1, msgs: 1 } }).then(() => db.close())
                 })
                 return
             }
