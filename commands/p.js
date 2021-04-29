@@ -30,7 +30,7 @@ module.exports =
                         },
                         {
                             "name": "> Текстовый онлайн:",
-                            "value": ` \`💭\` — **${userData.dayMsgs || 0 + userData.nightMsgs || 0}**`,
+                            "value": ` \`💭\` — **${userData.msgs || 0}**`,
                             "inline": true
                         },
                         {
