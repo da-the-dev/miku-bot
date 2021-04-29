@@ -15,18 +15,21 @@ module.exports =
                     if(userData.rewardTime) { // Check if user can collect the reward
                         var diff = Math.floor((msg.createdTimestamp - userData.rewardTime) / 1000)
                         if(diff >= 12 * 60 * 60) { // If 12+ hours passed since last reward collection
-                            if(msg.createdTimestamp - userData.rewardTime < 24 * 60 * 60 * 1000) { // And less than 24 
-                                var reward = 20 + userData.streak * 10
-                                userData.money += reward
+                            if(diff < 24 * 60 * 60 * 1000) { // And less than 24 
+                                userData.money += 20 + userData.streak * 10
                                 userData.streak += 1
+
                                 if(userData.streak = 14)
                                     userData.streak = 1
+
                                 userData.rewardTime = msg.createdTimestamp
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
+
                                 utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<${constants.emojies.sweet}> `)
                             } else {
-                                var reward = 20 + userData.streak * 10
+                                userData.money += 20 + userData.streak * 10
                                 userData.rewardTime = msg.createdTimestamp
+
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
                                 utl.embed(msg, `Вы пришли слишком поздно! Вы получаете **${reward}**<${constants.emojies.sweet}>`)
                             }
