@@ -80,10 +80,11 @@ module.exports.voiceActivityInit = async (client) => {
 /**
  * This map holds an array of MessageInfo for each user who sent
  * a message in a guild
- *  @type {Map<string, Array<MessageInfo>}
+ * @type {Map<string, Array<MessageInfo>}
  */
 var messages = new Map()
-
+var messagesCounter = 1
+const amountOfMessages = 10
 /**
  * Give user 1 point every 5 messages, save the message in
  * DB as regular, day and night message accordingly
@@ -91,33 +92,45 @@ var messages = new Map()
  */
 module.exports.chatActivity = (msg) => {
     // Register only if in general and not a bot
-    if(msg.channel.id == constants.channels.general && !msg.author.bot) {
-        if(messages.size < 10) {
-            // Form message data
-            var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-            var message = {
-                dayTime: timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16,
-                nightTime: timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6
-            }
-
-            // Save it in the map
-            messages.set(msg.author.id, messages.get(msg.author.id).push(message) || [message])
+    if(msg.channel.id == constants.channels.dev && !msg.author.bot) {
+        // Form message data
+        var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+        var message = {
+            dayTime: timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16,
+            nightTime: timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6
         }
-        // Once enough messages have been collected
+
+        // Save it in the map
+        if(messages.get(msg.author.id)) {
+            var arr = messages.get(msg.author.id)
+            arr.push(message)
+            messages.set(msg.author.id, arr)
+        } else
+            messages.set(msg.author.id, [message])
+
+        // Check if enough messages have been collected
+        if(messagesCounter < amountOfMessages) {
+            messagesCounter++
+        }
         else {
             utl.db.createClient(process.env.MURL).then(async db => {
                 var arrayMap = Array.from(messages.entries())
-                for(i = 0; i < arrayMap.size; i++) {
+                for(i = 0; i < arrayMap.length; i++) {
                     // Form update query based on message info
-                    var update = { $inc: { msgs: 1 } }
-                    arrayMap[i][1].dayTime ? update.$inc.dayMsgs = 1 : null
-                    arrayMap[i][1].nightTime ? update.$inc.nightMsgs = 1 : null
+                    var update = { $inc: {} }
+                    arrayMap[i][1].forEach(mI => {
+                        mI.dayTime ? update.$inc.dayMsgs ? update.$inc.dayMsgs++ : update.$inc.dayMsgs = 1 : null
+                        mI.nightTime ? update.$inc.nightMsgs ? update.$inc.nightMsgs++ : update.$inc.nightMsgs = 1 : null
+                        update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
+                    })
+                    console.log('Update:', arrayMap[i][0], update)
 
                     // Update member
-                    await db.update('718537792195657798', arrayMap[i][1], update)
+                    await db.update('718537792195657798', arrayMap[i][0], update)
                 }
-                // Clear the map
+                // Reset map and counter
                 messages.clear()
+                messagesCounter = 1
 
                 // Give out activity roles to those who want them
                 db.getMany('718537792195657798', {
@@ -128,11 +141,12 @@ module.exports.chatActivity = (msg) => {
                 }).then(validData => {
                     validData.forEach(d => {
                         if(!d.notActivity) {
-                            var member = guild.member(d.id)
+                            var member = msg.guild.member(d.id)
                             if(member) {
-                                if(!member.roles.cache.has(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive)) {
-                                    member.roles.add(activityName == 'day' ? constants.roles.daylyActive : constants.roles.nightActive)
-                                }
+                                if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
+                                    member.roles.add(constants.roles.daylyActive)
+                                else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
+                                    member.roles.add(constants.roles.nightActive)
                             }
                         }
                     })

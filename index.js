@@ -102,7 +102,6 @@ client.on('message', msg => {
 
     // Bot commands
     if(!msg.author.bot) {
-        utl.activity.chatActivity(msg)
         utl.verify.welcomeReward(msg, client)
         if(msg.content[0] == prefix) {
             var args = msg.content.slice(1).split(" ")
