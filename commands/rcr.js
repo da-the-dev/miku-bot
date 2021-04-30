@@ -122,7 +122,7 @@ module.exports =
 
                 db.get(msg.guild.id, msg.author.id).then(async userData => {
                     if(userData) {
-                        if(!(!userData.money || (userData.money && userData.money < cost))) {
+                        if(!userData.money || (userData.money && userData.money < cost)) {
                             utl.embed(msg, 'У Вас не хватает конфет!')
                             db.close()
                             return
