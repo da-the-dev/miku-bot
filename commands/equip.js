@@ -1,79 +1,60 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+
+
+/**
+ * Equips a role
+ * @param {Discord.GuildMember} member - Member who wants to equip a role
+ * @param {number} index - Index of the role
+ * @param {boolean} isCustom - If the role is custom
+ * @param {Discord.Message} msg - Original message
+ */
+const equipRole = (member, index, isCustom, msg) => {
+    utl.db.createClient(process.env.MURL).then(db => {
+        db.get(member.guild.id, member.id).then(userData => {
+            if(userData) {
+                if((!userData.inv || userData.inv.length <= 0) && (!userData.customInv || userData.customInv <= 0)) {
+                    utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
+                    db.close()
+                    return
+                }
+
+                var field = isCustom ? 'customInv' : 'inv'
+
+                if(!userData[field][index - 1]) {
+                    utl.embed(msg, 'У Вас нет такой роли!')
+                    db.close()
+                    return
+                }
+
+                member.roles.add(userData[field][index - 1])
+                    .then(() => {
+                        utl.embed(msg, `Роль <@&${userData[field][index - 1]}> успешно надета`)
+                        db.close()
+                    })
+            } else {
+                utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
+                db.close()
+            }
+        })
+    })
+}
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .equip <rolePos|role>
+    * @description Usage: .equip <rolePos>
     */
     (args, msg, client) => {
-        var mRole = msg.mentions.roles.first()
-        var pos = args[1]
-        if(mRole) pos = null
-        if(!pos && !mRole) {
-            utl.embed(msg, 'Не указан индекс роли, ни кастомная роль!')
+        if(!args[1]) {
+            utl.embed(msg, 'Не указан индекс роли!!')
             return
         }
-
-        // Shop role
-        if(pos && !mRole)
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.get(msg.guild.id, msg.author.id).then(userData => {
-                    if(userData) {
-                        db.get(msg.guild.id, 'serverSettings').then(serverData => {
-                            if(serverData) {
-                                var selectedRole = serverData.roles[args[1] - 1]
-                                if(!selectedRole) {
-                                    utl.embed(msg, 'Этой роли не существует!')
-                                    db.close()
-                                    return
-                                }
-                                if(!userData.inv.find(r => r == selectedRole.id)) {
-                                    utl.embed(msg, 'Эта роль у Вас не куплена!')
-                                    db.close()
-                                    return
-                                }
-                                msg.member.roles.add(selectedRole.id)
-                                utl.embed(msg, `Роль <@&${selectedRole.id}> успешно надета`)
-                                db.close()
-                            } else
-                                db.close()
-                        })
-                    } else {
-                        utl.embed(msg, 'У Вас нет ролей!')
-                        db.close()
-                    }
-                })
-            })
-
-        // Custom role
-        if(!pos && mRole)
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.get(msg.guild.id, msg.author.id).then(userData => {
-                    if(userData) {
-                        if(!userData.customInv) {
-                            utl.embed(msg, 'У Вас нет кастомных ролей!')
-                            db.close()
-                            return
-                        }
-
-                        var selectedRole = userData.customInv.find(r => r == mRole.id)
-                        if(selectedRole)
-                            msg.member.roles.add(userData.customInv.find(r => r == mRole.id))
-                                .then(() => {
-                                    utl.embed(msg, `Роль <@&${mRole.id}> успешно надета`)
-                                    db.close()
-                                })
-                        else {
-                            utl.embed(msg, 'Этой роли нет у Вас в инвентаре!')
-                            db.close()
-                            return
-                        }
-                    } else {
-                        utl.embed(msg, 'У Вас нет ролей!')
-                        db.close()
-                    }
-                })
-            })
+        console.log(args[1])
+        if(!args[1].startsWith('c'))
+            equipRole(msg.member, Number(args[1]), false, msg)
+        else
+            equipRole(msg.member, Number(args[1].slice(1)), true, msg)
     }
+

@@ -23,13 +23,11 @@ module.exports =
 
                         if(userData.inv && userData.inv.length > 0) {
                             var roles = ''
-                            for(i = 0; i < serverData.roles.length; i++) {
-                                if(userData.inv.includes(serverData.roles[i].id))
-                                    if(msg.member.roles.cache.has(serverData.roles[i].id))
-                                        roles += `\` ${i + 1} \` <@&${serverData.roles[i].id}> — Надета\n`
-                                    else
-                                        roles += `\` ${i + 1} \` <@&${serverData.roles[i].id}> — Не надета\n`
-                            }
+                            for(i = 0; i < userData.inv.length; i++)
+                                if(msg.member.roles.cache.has(userData.inv[i]))
+                                    roles += `\` ${i + 1} \` <@&${userData.inv[i]}> — Надета\n`
+                                else
+                                    roles += `\` ${i + 1} \` <@&${userData.inv[i]}> — Не надета\n`
 
                             embed.addField('Магазинный инвентарь', roles)
                         }
