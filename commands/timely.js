@@ -16,7 +16,8 @@ module.exports =
                         var diff = Math.floor((msg.createdTimestamp - userData.rewardTime) / 1000)
                         if(diff >= 12 * 60 * 60) { // If 12+ hours passed since last reward collection
                             if(diff < 24 * 60 * 60 * 1000) { // And less than 24 
-                                userData.money += 20 + userData.streak * 10
+                                var reward = 20 + userData.streak * 10
+                                userData.money += reward
                                 userData.streak += 1
 
                                 if(userData.streak = 14)
@@ -27,7 +28,8 @@ module.exports =
 
                                 utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<${constants.emojies.sweet}> `)
                             } else {
-                                userData.money += 20 + userData.streak * 10
+                                var reward = 20 + userData.streak * 10
+                                userData.money += reward
                                 userData.rewardTime = msg.createdTimestamp
 
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
