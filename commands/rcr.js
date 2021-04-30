@@ -121,42 +121,15 @@ module.exports =
 
                 db.get(msg.guild.id, msg.author.id).then(async userData => {
                     if(userData) {
-                        var hasBoosts = !(!userData.boosts || (userData.boosts && userData.boosts < 2))
-                        var hasMoney = !(!userData.money || (userData.money && userData.money < cost))
-
-                        if(!hasBoosts && !hasMoney) {
-                            utl.embed(msg, 'У Вас не хватает ни бустов, ни конфет!')
+                        if(!(!userData.money || (userData.money && userData.money < cost))) {
+                            utl.embed(msg, 'У Вас не хватает конфет!')
                             db.close()
                             return
                         }
 
-                        console.log('value data:', hasBoosts, hasMoney)
-
-                        // Paying with boosts, no money
-                        if(hasBoosts && !hasMoney) {
-                            utl.embed(msg, `У Вас есть только **${userData.boosts}** бустов\nПодтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **2** буста`).then(m => {
-                                utl.reactionSelector.yesNo(m, msg.author.id,
-                                    () => {
-                                        createRole(msg, name, hex, (db) => {
-                                            db.update(msg.guild.id, msg.author.id, { $inc: { boosts: -2 } })
-                                        }, db)
-                                        db.close()
-                                    },
-                                    () => {
-                                        m.delete()
-                                        db.close()
-                                    },
-                                    () => {
-                                        m.delete()
-                                        db.close()
-                                    }
-                                )
-                            })
-                        }
-
                         // Paying with money, no boosts
                         if(!hasBoosts && hasMoney) {
-                            utl.embed(msg, `У Вас есть только **${userData.money}**<${constants.emojies.sweet}>\nПодтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **7000**<${constants.emojies.sweet}>`).then(m => {
+                            utl.embed(msg, `Подтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **${cost}** <${constants.emojies.sweet}>`).then(m => {
                                 utl.reactionSelector.yesNo(m, msg.author.id,
                                     () => {
                                         createRole(msg, name, hex, (db) => {
@@ -170,38 +143,6 @@ module.exports =
                                         db.close()
                                     },
                                     () => {
-                                        m.delete()
-                                        db.close()
-                                    }
-                                )
-                            })
-                        }
-
-                        // Paying with either money or boosts
-                        if(hasBoosts && hasMoney) {
-                            utl.embed(msg, `У Вас есть **${userData.money}**<${constants.emojies.sweet}> и **${userData.boosts}** бустов\nПодтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **2** буста** или 7000**<${constants.emojies.sweet}>`).then(m => {
-                                utl.reactionSelector.multiselector(m, msg.author.id,
-                                    () => {
-                                        m.delete()
-                                        db.close()
-                                    },
-                                    () => {
-                                        m.delete()
-                                        db.close()
-                                    },
-                                    // Pay with boosts
-                                    () => {
-                                        createRole(msg, name, hex, (db) => {
-                                            db.update(msg.guild.id, msg.author.id, { $inc: { boosts: -2 } })
-                                        }, db)
-                                        m.delete()
-                                        db.close()
-                                    },
-                                    // Pay with money
-                                    () => {
-                                        createRole(msg, name, hex, (db) => {
-                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -cost } })
-                                        }, db)
                                         m.delete()
                                         db.close()
                                     }
