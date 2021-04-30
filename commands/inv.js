@@ -21,7 +21,7 @@ module.exports =
                             .setDescription('')
                             .setTitle(`<a:__:825834909146415135> Инвентарь ${msg.member.displayName}`)
 
-                        if(userData.inv.length > 0) {
+                        if(userData.inv && userData.inv.length > 0) {
                             var roles = ''
                             for(i = 0; i < serverData.roles.length; i++) {
                                 if(userData.inv.includes(serverData.roles[i].id))
@@ -33,7 +33,7 @@ module.exports =
 
                             embed.addField('Магазинный инвентарь', roles)
                         }
-                        if(userData.customInv.length > 0) {
+                        if(userData.customInv && userData.customInv.length > 0) {
                             var roles = ''
                             for(i = 0; i < userData.customInv.length; i++)
                                 if(msg.guild.roles.cache.get(userData.customInv[i]))

@@ -23,7 +23,7 @@ module.exports =
         utl.customRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => {
             if(res) {
                 utl.db.createClient(process.env.MURL).then(db => {
-                    db.get(guildID, 'serverSettings').then(serverData => {
+                    db.get(msg.guild.id, 'serverSettings').then(serverData => {
                         serverData.customRoles[serverData.customRoles.findIndex(r => r.id == mRole.id && r.owner == msg.author.id)].members += 1
 
                         var role = serverData.customRoles.find(r => r.id == mRole.id && r.owner == msg.author.id)
