@@ -123,7 +123,6 @@ module.exports.chatActivity = (msg) => {
                         mI.nightTime ? update.$inc.nightMsgs ? update.$inc.nightMsgs++ : update.$inc.nightMsgs = 1 : null
                         update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
                     })
-                    console.log('Update:', arrayMap[i][0], update)
 
                     // Update member
                     await db.update('718537792195657798', arrayMap[i][0], update)
