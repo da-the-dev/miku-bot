@@ -21,7 +21,7 @@ module.exports =
                             .setDescription('')
                             .setTitle(`<a:__:825834909146415135> Инвентарь ${msg.member.displayName}`)
 
-                        if(userData.inv) {
+                        if(userData.inv.length > 0) {
                             var roles = ''
                             for(i = 0; i < serverData.roles.length; i++) {
                                 if(userData.inv.includes(serverData.roles[i].id))
@@ -33,18 +33,21 @@ module.exports =
 
                             embed.addField('Магазинный инвентарь', roles)
                         }
-                        if(userData.customInv) {
+                        if(userData.customInv.length > 0) {
                             var roles = ''
                             for(i = 0; i < userData.customInv.length; i++)
-                                if(msg.member.roles.cache.has(userData.customInv[i]))
-                                    roles += `\` ${i + 1} \` <@&${userData.customInv[i]}> — Надета\n`
+                                if(msg.guild.roles.cache.get(userData.customInv[i]))
+                                    if(msg.member.roles.cache.has(userData.customInv[i]))
+                                        roles += `\` ${i + 1} \` <@&${userData.customInv[i]}> — Надета\n`
+                                    else
+                                        roles += `\` ${i + 1} \` <@&${userData.customInv[i]}> — Не надета\n`
                                 else
-                                    roles += `\` ${i + 1} \` <@&${userData.customInv[i]}> — Не надета\n`
-                            embed.addField('Инвентарь кастомных ролей', roles)
+                                    userData.customInv.splice(userData.customInv.findIndex(id => id == userData.customInv[i]), 1)
+                            roles.length > 0 ? embed.addField('Инвентарь кастомных ролей', roles) : null
+                            db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
                         }
 
                         msg.channel.send(embed)
-                        db.close()
                     } else {
                         utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
                         db.close()
