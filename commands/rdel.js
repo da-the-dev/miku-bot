@@ -7,8 +7,9 @@ const constants = require('../constants.json')
  * @param {Discord.Guild} guild - Guild object
  * @param {string} id - User/member ID
  * @param {string} roleID - Role ID
+ * @param {Discord.Message} msg - Message object for responce
  */
-const deleteRole = (guild, id, roleID) => {
+const deleteRole = (guild, id, roleID, msg) => {
     utl.db.createClient(process.env.MURL).then(db => {
         db.get(guild.id, 'serverSettings').then(serverData => {
 
@@ -47,7 +48,7 @@ module.exports =
             isCurator = true
 
         if(isCurator)
-            deleteRole(msg.guild, msg.author.id, mRole.id)
+            deleteRole(msg.guild, msg.author.id, mRole.id, msg)
         else
-            utl.customRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => res ? deleteRole(msg.guild, msg.author.id, mRole.id) : null)
+            utl.customRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => res ? deleteRole(msg.guild, msg.author.id, mRole.id, msg) : null)
     }

@@ -161,7 +161,7 @@ module.exports.monitorRoleDelete = role => {
         guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
             .then(audit => {
                 var executor = audit.entries.first().executor
-                if(executor.id == process.env.MYID)
+                if(executor.id == process.env.MYID || executor.id == executor.client.user.id)
                     return
                 // Executor Role Delete Entries
                 var eRDE = audit.entries.filter(e => e.executor.id == executor.id)
