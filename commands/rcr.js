@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
 
+/** Role cost */
+const cost = 10000
 /**
  * Retrieves HEX color name 
  * @param {string} hex - HEX string
@@ -38,34 +40,30 @@ const createRole = (msg, name, hex, success, db) => {
         },
         reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
     }).then(r => {
-        console.log(r.id)
-        msg.member.roles.add(r)
-            .then(() => {
-                utl.db.createClient(process.env.MURL).then(async db => {
-                    // Set expireDate to 00:00:00:0000
-                    var expireDate = new Date(Date.now())
-                    expireDate.setHours(0)
-                    expireDate.setMinutes(0)
-                    expireDate.setSeconds(0)
-                    expireDate.setMilliseconds(0)
+        utl.db.createClient(process.env.MURL).then(async db => {
+            // Set expireDate to 00:00:00:0000
+            var expireDate = new Date(Date.now())
+            expireDate.setHours(0)
+            expireDate.setMinutes(0)
+            expireDate.setSeconds(0)
+            expireDate.setMilliseconds(0)
 
-                    // Update serverSettings to include a new custom role
-                    await db.update(msg.guild.id, 'serverSettings', {
-                        $push: {
-                            customRoles: {
-                                id: r.id,
-                                owner: msg.author.id,
-                                expireTimestamp: expireDate.getTime(),
-                                members: 1
-                            }
-                        }
-                    })
-                    // Add the role to custom invetory
-                    await db.update(msg.guild.id, msg.author.id, { $push: { customInv: r.id } })
-                    await success(db)
-                    utl.embed(msg, `Вы успешно создали роль <@&${r.id}>!`)
-                })
+            // Update serverSettings to include a new custom role
+            await db.update(msg.guild.id, 'serverSettings', {
+                $push: {
+                    customRoles: {
+                        id: r.id,
+                        owner: msg.author.id,
+                        expireTimestamp: expireDate.getTime(),
+                        members: 1
+                    }
+                }
             })
+            // Add the role to custom invetory
+            await db.update(msg.guild.id, msg.author.id, { $push: { customInv: r.id } })
+            await success(db)
+            utl.embed(msg, `Вы успешно создали роль <@&${r.id}>!`)
+        })
     })
 }
 
@@ -118,7 +116,7 @@ module.exports =
                 db.get(msg.guild.id, msg.author.id).then(async userData => {
                     if(userData) {
                         var hasBoosts = !(!userData.boosts || (userData.boosts && userData.boosts < 2))
-                        var hasMoney = !(!userData.money || (userData.money && userData.money < 10000))
+                        var hasMoney = !(!userData.money || (userData.money && userData.money < cost))
 
                         if(!hasBoosts && !hasMoney) {
                             utl.embed(msg, 'У Вас не хватает ни бустов, ни конфет!')
@@ -156,7 +154,7 @@ module.exports =
                                 utl.reactionSelector.yesNo(m, msg.author.id,
                                     () => {
                                         createRole(msg, name, hex, (db) => {
-                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -7000 } })
+                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -cost } })
                                         }, db)
                                         m.delete()
                                         db.close()
@@ -196,7 +194,7 @@ module.exports =
                                     // Pay with money
                                     () => {
                                         createRole(msg, name, hex, (db) => {
-                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -7000 } })
+                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -cost } })
                                         }, db)
                                         m.delete()
                                         db.close()
