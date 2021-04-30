@@ -1,4 +1,7 @@
+const Discord = require('discord.js')
 const utl = require('../utility')
+const { scheduleJob } = require("node-schedule")
+
 /**
 * Check if the ID is the owner of the role
 * @param {string} guildID - ID of the guild
@@ -34,6 +37,27 @@ module.exports.checkIfOwner = (guildID, id, roleID) => {
 
                 db.close()
                 resolve(true)
+            })
+        })
+    })
+}
+
+/**
+ * Deletes expired roles
+ * @param {Discord.Client} client - Bot client
+ */
+module.exports.deleteExpired = (client) => {
+    scheduleJob('0 0 * * *', () => {
+        utl.db.createClient(process.env.MURL).then(db => {
+            client.guilds.cache.forEach(g => {
+                db.get(g.id, 'serverSettings').then(serverData => {
+                    serverData.customRoles.forEach(r => {
+                        if(Date.now() >= r.expireTimestamp) {
+                            g.roles.cache.get(r.id).delete()
+                            serverData.customRoles.splice(serverData.customRoles.findIndex(R => R.id == r.id), 1)
+                        }
+                    })
+                })
             })
         })
     })
