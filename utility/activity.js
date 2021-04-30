@@ -92,7 +92,7 @@ const amountOfMessages = 10
  */
 module.exports.chatActivity = (msg) => {
     // Register only if in general and not a bot
-    if(msg.channel.id == constants.channels.dev && !msg.author.bot) {
+    if(msg.channel.id == constants.channels.general && !msg.author.bot) {
         // Form message data
         var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
         var message = {
