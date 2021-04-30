@@ -41,8 +41,14 @@ const createRole = (msg, name, hex, success, db) => {
         reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
     }).then(r => {
         utl.db.createClient(process.env.MURL).then(async db => {
-            // Set expireDate to 00:00:00:0000
+            // Set expireDate to 00:00:00:0000 of the next month
             var expireDate = new Date(Date.now())
+            if(expireDate.getMonth() != 12)
+                expireDate.setMonth(expireDate.getMonth() + 1)
+            else {
+                expireDate.setMonth(1)
+                expireDate.setFullYear(expireDate.getFullYear() + 1)
+            }
             expireDate.setHours(0)
             expireDate.setMinutes(0)
             expireDate.setSeconds(0)
