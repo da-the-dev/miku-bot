@@ -32,11 +32,12 @@ const fetchHEXName = (hex) => {
  * @param {Function} success - Success function tp run at the end
  */
 const createRole = (msg, name, hex, success, db) => {
+    msg.guild.roles.cache.get('810460637317955584').position
     msg.guild.roles.create({
         data: {
             name: name,
             color: hex,
-            position: 16
+            position: msg.guild.roles.cache.get(constants.roles.endOfCRoles).position + 1
         },
         reason: `${msg.author.tag} создал(-а) эту роль командой .createRole`
     }).then(r => {
@@ -128,27 +129,25 @@ module.exports =
                         }
 
                         // Paying with money, no boosts
-                        if(!hasBoosts && hasMoney) {
-                            utl.embed(msg, `Подтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **${cost}** <${constants.emojies.sweet}>`).then(m => {
-                                utl.reactionSelector.yesNo(m, msg.author.id,
-                                    () => {
-                                        createRole(msg, name, hex, (db) => {
-                                            db.update(msg.guild.id, msg.author.id, { $inc: { money: -cost } })
-                                        }, db)
-                                        m.delete()
-                                        db.close()
-                                    },
-                                    () => {
-                                        m.delete()
-                                        db.close()
-                                    },
-                                    () => {
-                                        m.delete()
-                                        db.close()
-                                    }
-                                )
-                            })
-                        }
+                        utl.embed(msg, `Подтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **${cost}** <${constants.emojies.sweet}>`).then(m => {
+                            utl.reactionSelector.yesNo(m, msg.author.id,
+                                () => {
+                                    createRole(msg, name, hex, (db) => {
+                                        db.update(msg.guild.id, msg.author.id, { $inc: { money: -cost } })
+                                    }, db)
+                                    m.delete()
+                                    db.close()
+                                },
+                                () => {
+                                    m.delete()
+                                    db.close()
+                                },
+                                () => {
+                                    m.delete()
+                                    db.close()
+                                }
+                            )
+                        })
                     }
                     else {
                         utl.embed(msg, 'У Вас нет ни бустов, ни конфет!')
