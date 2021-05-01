@@ -3,7 +3,7 @@ const utl = require('../utility')
 const constants = require('../constants.json')
 
 /** Role cost */
-const cost = 10000
+const cost = 7000
 /**
  * Retrieves HEX color name 
  * @param {string} hex - HEX string
