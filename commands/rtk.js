@@ -5,7 +5,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .rtk <role> <member>
+    * @description Usage: .rgv <role> <member>
     */
     (args, msg, client) => {
         var mRole = msg.mentions.roles.first()
@@ -20,18 +20,26 @@ module.exports =
             return
         }
 
-        utl.customRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => {
+        utl.cRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => {
             if(res) {
                 utl.db.createClient(process.env.MURL).then(db => {
                     db.get(msg.guild.id, 'serverSettings').then(serverData => {
-                        serverData.customRoles[serverData.customRoles.findIndex(r => r.id == mRole.id && r.owner == msg.author.id)].members -= 1
+                        db.get(msg.guild.id, msg.author.id).then(userData => {
+                            if(!userData || !userData.customInv || userData.customInv.findIndex(r => r == mRole.id) == -1) {
+                                utl.embed(msg, `У <@${mMember.id}> нет роли <@&${mRole.id}>!`)
+                                db.close()
+                                return
+                            }
 
-                        var role = serverData.customRoles.find(r => r.id == mRole.id && r.owner == msg.author.id)
+                            serverData.customRoles[serverData.customRoles.findIndex(r => r.id == mRole.id && r.owner == msg.author.id)].members -= 1
 
-                        utl.embed(msg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
+                            var role = serverData.customRoles.find(r => r.id == mRole.id && r.owner == msg.author.id)
 
-                        db.update(msg.guild.id, mMember.id, { $pull: { customInv: role.id } }).then(() => {
-                            db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
+                            utl.embed(msg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
+
+                            db.update(msg.guild.id, mMember.id, { $pull: { customInv: role.id } }).then(() => {
+                                db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
+                            })
                         })
                     })
                 })
