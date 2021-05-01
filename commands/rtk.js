@@ -9,7 +9,7 @@ module.exports =
     */
     (args, msg, client) => {
         var mMember = msg.mentions.members.first()
-        if(args[2][0] == 'c' || !Number.isInteger(args[2].slice(1))) {
+        if(!args[2][0] == 'c' || !Number.isInteger(Number(args[2].slice(1)))) {
             utl.embed(msg, 'Указан неверный индекс роли!')
         }
         var pos = args[2].slice(1)
@@ -24,16 +24,23 @@ module.exports =
 
         utl.db.createClient(process.env.MURL).then(async db => {
             var userData = await db.get(msg.guild.id, msg.author.id)
-            if(!userData || !userData.customInv || !userData.customInv[pos]) {
+            if(!userData || !userData.customInv || !userData.customInv[pos - 1]) {
                 utl.embed(msg, 'У Вас нет кастомных ролей')
                 db.close()
                 return
             }
 
             var serverData = await db.getServer(msg.guild.id)
-            var role = serverData.customRoles.find(r => r.id == userData.customInv[pos])
+            var role = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1])
             if(!role) {
                 utl.embed(msg, 'Эта роль Вам не принадлежит!')
+                db.close()
+                return
+            }
+
+            var recipientData = await db.get(msg.guild.id, mMember.id)
+            if(!recipientData.customInv || !recipientData.customInv.find(r => r == role.id)) {
+                utl.embed(msg, `Этой роли нет у <@${mMember.id}>!`)
                 db.close()
                 return
             }
@@ -42,7 +49,7 @@ module.exports =
             utl.embed(msg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
 
             db.update(msg.guild.id, mMember.id, { $pull: { customInv: role.id } }).then(() => {
-                db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
+                db.setServer(msg.guild.id, serverData).then(() => db.close())
             })
         })
     }
