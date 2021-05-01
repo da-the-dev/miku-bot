@@ -25,9 +25,9 @@ module.exports =
                             var roles = ''
                             for(i = 0; i < userData.inv.length; i++)
                                 if(msg.member.roles.cache.has(userData.inv[i]))
-                                    roles += `\` ${i + 1} \` <@&${userData.inv[i]}> — Надета\n`
+                                    roles += `\`${i + 1}.\` <@&${userData.inv[i]}> — надета\n`
                                 else
-                                    roles += `\` ${i + 1} \` <@&${userData.inv[i]}> — Не надета\n`
+                                    roles += `\`${i + 1}.\` <@&${userData.inv[i]}> — снята\n`
 
                             embed.addField('Магазинный инвентарь', roles)
                         }
@@ -36,9 +36,9 @@ module.exports =
                             for(i = 0; i < userData.customInv.length; i++)
                                 if(msg.guild.roles.cache.get(userData.customInv[i]))
                                     if(msg.member.roles.cache.has(userData.customInv[i]))
-                                        roles += `\` ${i + 1} \` <@&${userData.customInv[i]}> — Надета\n`
+                                        roles += `\`c${i + 1}.\` <@&${userData.customInv[i]}> — надета\n`
                                     else
-                                        roles += `\` ${i + 1} \` <@&${userData.customInv[i]}> — Не надета\n`
+                                        roles += `\`c${i + 1}.\` <@&${userData.customInv[i]}> — снята\n`
                                 else
                                     userData.customInv.splice(userData.customInv.findIndex(id => id == userData.customInv[i]), 1)
                             roles.length > 0 ? embed.addField('Инвентарь кастомных ролей', roles) : null
