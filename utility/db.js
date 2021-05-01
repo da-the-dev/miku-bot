@@ -56,6 +56,53 @@ class DB {
     }
 
     /**
+     * Gets data about a guild
+     * @param {string} guildID - Guild ID
+     * @returns {Promise<any[]>}
+     */
+    getGuild = (guildID) => {
+        return new Promise(async (resolve, reject) => {
+            if(!guildID) reject('No guild ID! [getGuild]')
+            var cursor = this.__connection.db('hoteru').collection(guildID).find({})
+            var data = []
+            cursor.forEach(r => {
+                let newR = r
+                newR._id ? delete newR._id : null
+                data.push(newR)
+            }).then(() => {
+                resolve(data)
+            })
+        })
+    }
+
+    /**
+     * Gets server data
+     * @param {string} guildID 
+     * @returns {Promise<ServerData>}
+     */
+    getServer(guildID) {
+        return new Promise((resolve, reject) => {
+            this.get(guildID, 'serverSettings').then(serverData => {
+                resolve(serverData)
+            }).catch(err => reject(err))
+        })
+    }
+
+    /**
+     * Gets user data
+     * @param {string} guildID 
+     * @param {string} userID 
+     * @returns {Promise<UserData>}
+     */
+    getUser(guildID, userID) {
+        return new Promise((resolve, reject) => {
+            this.get(guildID, userID).then(userData => {
+                resolve(userData)
+            }).catch(err => reject(err))
+        })
+    }
+
+    /**
      * Updates data about many keys from a guild
      * @param {string} guildID - Guild ID
      * @param {object} filter - Query to use as a filter
@@ -99,6 +146,20 @@ class DB {
     }
 
     /**
+     * Sets server data
+     * @param {string} guildID - Guild ID
+     * @param {ServerData} serverData - Server data
+     * @returns {Promise<string>} - OK is successful
+     */
+    setServer(guildID, serverData) {
+        return new Promise((resolve, reject) => {
+            this.set(guildID, 'serverSettings', serverData).then(() => {
+                resolve('OK')
+            }).catch(err => reject(err))
+        })
+    }
+
+    /**
      * Update data about a key from a guild
      * @param {string} guildID - Guild ID
      * @param {string} uniqueID - Unique ID
@@ -114,26 +175,6 @@ class DB {
             this.__connection.db('hoteru').collection(guildID).updateOne({ id: uniqueID }, query, { upsert: true })
                 .then(() => resolve('OK'))
                 .catch(err => reject(err))
-        })
-    }
-
-    /**
-      * Gets data about a guild
-      * @param {string} guildID - Guild ID
-      * @returns {Promise<any[]>}
-      */
-    getGuild = (guildID) => {
-        return new Promise(async (resolve, reject) => {
-            if(!guildID) reject('No guild ID! [getGuild]')
-            var cursor = this.__connection.db('hoteru').collection(guildID).find({})
-            var data = []
-            cursor.forEach(r => {
-                let newR = r
-                newR._id ? delete newR._id : null
-                data.push(newR)
-            }).then(() => {
-                resolve(data)
-            })
         })
     }
 
@@ -168,3 +209,30 @@ module.exports.createClient = (url) => {
 }
 
 module.exports.DB = DB
+
+// **Custom types**
+
+// *Roles*
+/**
+ * Shop role
+ * @typedef Role
+ * @property {string} id - Role ID
+ * @property {number} price - Role's price
+ */
+/**
+ * Custom role
+ * @typedef CustomRole
+ * @property {string} id - Role ID
+ * @property {string} owner - Role's owner ID
+ * @property {number} expireTimestamp - Expiration timestamp
+ * @property {number} members - Amount of members who have this role in their inventories
+ */
+
+// *Server*
+/**
+ * Server data
+ * @typedef ServerData
+ * @property {boolean} def - Defenses flag
+ * @property {Array<Role>} roles - Array of shop roles
+ * @property {Array<CustomRole>} customRoles - Array of custom roles
+ */
