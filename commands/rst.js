@@ -37,9 +37,17 @@ module.exports =
                 return
             }
 
+            var discordRole = msg.guild.roles.cache.get(role.id)
             var expireDate = new Date(role.expireTimestamp)
+            var creationDate = new Date(discordRole.createdTimestamp)
 
-            utl.embed(msg, `Роль: <@&${role.id}>\nЕсть у **${role.members}** пользователей\nДата удаления: **${expireDate.toLocaleDateString()}**`)
+            var embed = new Discord.MessageEmbed()
+                .setTitle('<:dot:835981467879342160>Информация о роли')
+                .setDescription(`Роль: <@&${role.id}>\nВладелец: <@${role.owner}>\nНосителей: **${role.members}** из **5**\n\nID роли: **${role.id}**\nЦвет роли: **${discordRole.hexColor}**\nДействует до: **${expireDate.toLocaleDateString()}**, **00:00:00**\nКуплена: **${creationDate.toLocaleDateString()}**, **${creationDate.toLocaleTimeString()}**`)
+                .setColor('#2F3136')
+                .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
+
+            msg.channel.send(embed)
             db.close()
         })
     }
