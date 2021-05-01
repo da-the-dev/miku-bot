@@ -46,6 +46,8 @@ module.exports =
             }
 
             serverData.customRoles[serverData.customRoles.findIndex(r => r.id == role.id && r.owner == msg.author.id)].members -= 1
+            if(mMember.roles.cache.has(role.id))
+                mMember.roles.remove(role.id)
             utl.embed(msg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
 
             db.update(msg.guild.id, mMember.id, { $pull: { customInv: role.id } }).then(() => {
