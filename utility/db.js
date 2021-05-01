@@ -82,25 +82,26 @@ class DB {
      */
     getServer(guildID) {
         return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [getServer]!')
             this.get(guildID, 'serverSettings').then(serverData => {
                 resolve(serverData)
             }).catch(err => reject(err))
         })
     }
 
-    /**
-     * Gets user data
-     * @param {string} guildID 
-     * @param {string} userID 
-     * @returns {Promise<UserData>}
-     */
-    getUser(guildID, userID) {
-        return new Promise((resolve, reject) => {
-            this.get(guildID, userID).then(userData => {
-                resolve(userData)
-            }).catch(err => reject(err))
-        })
-    }
+    // /**
+    //  * Gets user data
+    //  * @param {string} guildID 
+    //  * @param {string} userID 
+    //  * @returns {Promise<UserData>}
+    //  */
+    // getUser(guildID, userID) {
+    //     return new Promise((resolve, reject) => {
+    //         this.get(guildID, userID).then(userData => {
+    //             resolve(userData)
+    //         }).catch(err => reject(err))
+    //     })
+    // }
 
     /**
      * Updates data about many keys from a guild
@@ -111,6 +112,9 @@ class DB {
      */
     updateMany(guildID, filter, update) {
         return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [updateMany]!')
+            if(!filter) reject('No filter [updateMany]!')
+            if(!update) reject('No update query [updateMany]!')
             this.__connection.db('hoteru').collection(guildID).updateMany(filter, update, { upsert: true })
                 .then(() => resolve('OK'))
                 .catch(err => reject(err))
@@ -149,10 +153,12 @@ class DB {
      * Sets server data
      * @param {string} guildID - Guild ID
      * @param {ServerData} serverData - Server data
-     * @returns {Promise<string>} - OK is successful
+     * @returns {Promise<string>} OK is successful
      */
     setServer(guildID, serverData) {
         return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [setServer]!')
+            if(!serverData) reject('No server data [setServer]!')
             this.set(guildID, 'serverSettings', serverData).then(() => {
                 resolve('OK')
             }).catch(err => reject(err))
@@ -203,8 +209,9 @@ class DB {
  */
 module.exports.createClient = (url) => {
     return new Promise((resolve, reject) => {
+        if(!url) reject('No URL [createClient]!')
         var db = new DB()
-        db.connect(url).then(() => resolve(db))
+        db.connect(url).then(() => resolve(db)).catch(err => reject(err))
     })
 }
 
