@@ -23,7 +23,7 @@ module.exports =
 
         utl.db.createClient(process.env.MURL).then(async db => {
             var userData = await db.get(msg.guild.id, msg.author.id)
-            if(!userData || !userData.customInv || !userData.customInv[pos - 1]) {
+            if(!userData || !userData.customInv) {
                 utl.embed(msg, 'У Вас нет кастомных ролей')
                 db.close()
                 return
