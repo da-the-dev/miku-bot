@@ -12,7 +12,7 @@ const { scheduleJob } = require("node-schedule")
 module.exports.checkIfOwner = (guildID, id, roleID) => {
     return new Promise((resolve, reject) => {
         utl.db.createClient(process.env.MURL).then(db => {
-            db.get(guildID, 'serverSettings').then(serverData => {
+            db.getServer(guildID).then(serverData => {
 
                 // Doesnt have custom roles
                 if(!serverData.customRoles.find(r => r.owner == id)) {
@@ -41,6 +41,8 @@ module.exports.checkIfOwner = (guildID, id, roleID) => {
         })
     })
 }
+
+module.exports.findRole
 
 /**
  * Deletes expired roles
