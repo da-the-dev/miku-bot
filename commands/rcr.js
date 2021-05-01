@@ -130,7 +130,7 @@ module.exports =
                         }
 
                         // Paying with money, no boosts
-                        utl.embed(msg, `Подтверждаете создание роли c цветом *${await fetchHEXName(hex)}* и названем *${name}*?\n\nСтоимость **${cost}** <${constants.emojies.sweet}>`).then(m => {
+                        utl.embed(msg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названем **${name}**?\nСтоимость роли на **30** дней — **${cost}** <${constants.emojies.sweet}>`).then(m => {
                             utl.reactionSelector.yesNo(m, msg.author.id,
                                 () => {
                                     createRole(msg, name, hex, (db) => {
