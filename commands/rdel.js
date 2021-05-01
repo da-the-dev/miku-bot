@@ -50,5 +50,5 @@ module.exports =
         if(isCurator)
             deleteRole(msg.guild, msg.author.id, mRole.id, msg)
         else
-            utl.customRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => res ? deleteRole(msg.guild, msg.author.id, mRole.id, msg) : null)
+            utl.cRoles.checkIfOwner(msg.guild.id, msg.author.id, mRole.id).then(res => res ? deleteRole(msg.guild, msg.author.id, mRole.id, msg) : null)
     }
