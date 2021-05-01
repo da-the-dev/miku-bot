@@ -231,6 +231,7 @@ module.exports.DB = DB
  * @typedef CustomRole
  * @property {string} id - Role ID
  * @property {string} owner - Role's owner ID
+ * @property {string} createdTimestamp - Creation timestamp
  * @property {number} expireTimestamp - Expiration timestamp
  * @property {number} members - Amount of members who have this role in their inventories
  */

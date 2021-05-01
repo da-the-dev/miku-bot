@@ -61,6 +61,7 @@ const createRole = (msg, name, hex, success, db) => {
                     customRoles: {
                         id: r.id,
                         owner: msg.author.id,
+                        createdTimestamp: Date.now(),
                         expireTimestamp: expireDate.getTime(),
                         members: 1
                     }
