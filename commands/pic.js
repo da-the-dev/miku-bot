@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Картинки'
 
 /**
  * Buys the pic role for some time
@@ -22,7 +23,7 @@ const buyRole = async (msg, member, duration, price) => {
             if(userData) {
                 if(!userData.money || userData.money < price) {
                     db.close()
-                    utl.embed(msg, "У Вас недостаточно конфет!")
+                    utl.embed(msg, sMsg, "У Вас недостаточно конфет!")
                     return false
                 }
                 else
@@ -30,7 +31,7 @@ const buyRole = async (msg, member, duration, price) => {
                         .then(() => db.close())
             } else {
                 db.close()
-                utl.embed(msg, "У Вас недостаточно конфет!")
+                utl.embed(msg, sMsg, "У Вас недостаточно конфет!")
                 return false
             }
 
