@@ -104,6 +104,8 @@ client.on('message', msg => {
     if(!msg.author.bot) {
         utl.verify.welcomeReward(msg, client)
         if(msg.content[0] == prefix) {
+
+
             var args = msg.content.slice(1).split(" ")
             args.forEach(a => a.trim())
 
@@ -121,6 +123,12 @@ client.on('message', msg => {
                 if(c.name == args[0]) {
                     if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
                         msg.delete()
+                        msg.reply('Бот сейчас чинится! Скоро снова заработает!').then(m => {
+                            m.delete({ timeout: 5000 })
+                        })
+                        return
+
+                        msg.delete()
                             .then(() => {
                                 c.foo(args, msg, client)
                             })
@@ -128,6 +136,13 @@ client.on('message', msg => {
                     else if(msg.channel.id == constants.channels.general && !c.allowedInGeneral)
                         msg.delete()
                     else {
+                        if(msg.channel.id != constants.channels.dev) {
+                            msg.delete()
+                            msg.reply('Бот сейчас чинится! Скоро снова заработает!').then(m => {
+                                m.delete({ timeout: 5000 })
+                            })
+                            return
+                        }
                         msg.delete()
                             .then(() => {
                                 c.foo(args, msg, client)
@@ -138,7 +153,7 @@ client.on('message', msg => {
             }
 
             // Reactions
-            utl.reactionHandler(args, msg, client)
+            // utl.reactionHandler(args, msg, client)
         }
         // Selfy moderation
         if(msg.channel.id == '810876164960813086') {

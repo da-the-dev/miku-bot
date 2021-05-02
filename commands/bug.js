@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const sMsg = 'Баг'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -10,13 +11,12 @@ module.exports =
     */
     (args, msg, client) => {
         args.shift()
-        console.log(args)
         if(args.length <= 0) {
-            utl.embed(msg, 'Не указано содержание бага!')
+            utl.embed(msg, sMsg, 'Не указано содержание бага!')
             return
         }
 
-        msg.reply('Баг репорт отправлен, спасибо!').then(m => {
+        utl.embed(msg, sMsg, 'Баг репорт отправлен, спасибо!').then(m => {
             var embed = new Discord.MessageEmbed()
                 .setTitle(`Новый баг от: ${msg.member.displayName}`)
                 .setDescription(args.join(' ') + `\n[Ссылка на сообщение](${m.url})`)

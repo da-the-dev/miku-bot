@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
+const { pillar, ban } = require('../constants.json').emojies
 const utl = require('../utility')
+const sMsg = 'Снятие локальной блокировки'
 
 module.exports =
     /**
@@ -14,7 +16,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= curatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, 'Не указан участник!')
+                utl.embed(msg, sMsg, 'Не указан участник!')
                 return
             }
 
@@ -26,15 +28,15 @@ module.exports =
                                 delete userData.ban
                                 db.set(msg.guild.id, mMember.user.id, userData).then(() => db.close())
                                 mMember.roles.remove(constants.roles.localban)
-                                    .then(() => utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.localban}>`))
+                                    .then(() => utl.embed(msg, sMsg, `${pillar}${ban}${pillar} C пользователя <@${mMember.id}> была снята локальная блокировка`))
                             }
                         } else {
-                            utl.embed(msg, 'Пользователь изначально не был забанен')
+                            utl.embed(msg, sMsg, 'Пользователь изначально не был забанен')
                             db.close()
                         }
                     })
             })
         } else
-            utl.embed(msg, 'У Вас нет доступа к этой команде!')
+            utl.embed(msg, sMsg, 'У Вас нет доступа к этой команде!')
     }
 module.exports.allowedInGeneral = true
