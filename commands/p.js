@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { dot, sweet } = require('../constants.json').emojies
+const { dot } = require('../constants.json').emojies
 
 module.exports =
     /**
@@ -22,18 +22,17 @@ module.exports =
                 var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **Статус:**\n\`\`\`${userData.status || 'Не установлен'}\`\`\``)
                     .addFields([
                         {
-                            "name": "> Баланс:",
-                            "value": ` \`${sweet}\` — **${userData.money || 0}**`,
-                            "inline": true
-                        },
-                        {
                             "name": "> Голосовой онлайн:",
                             "value": ` \`🕓\` — ${utl.time.timeCalculator(userData.voiceTime || 0)}`,
                             "inline": true
                         },
-
                         {
-                            "name": "> Партнер:",
+                            "name": "> Текстовый онлайн:",
+                            "value": ` \`💭\` — **${userData.msgs || 0}**`,
+                            "inline": true
+                        },
+                        {
+                            "name": "> Партнер:                  ",
                             "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
                             "inline": true
                         }

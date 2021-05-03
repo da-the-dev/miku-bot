@@ -50,11 +50,16 @@ const buyRole = async (msg, member, duration, price) => {
                         }).catch(err => { console.log(err) })
 
 
-                        msg.edit(utl.embed.build(msg, sMsg, `Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
+                        msg.edit(new Discord.MessageEmbed()
+                            .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
+                            .setColor('#2F3136')
+                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
+                        ).then(m => m.reactions.removeAll())
                     } else {
                         console.log('buys')
                         set('pics-' + member.id, '').then(() => {
                             expire('pics-' + member.id, duration).then(() => {
+                                console.log('db upd')
                                 get(member.id)
                                     .then(res => {
                                         if(res) {
@@ -68,9 +73,14 @@ const buyRole = async (msg, member, duration, price) => {
                             }).catch(err => { console.log(err) })
                         }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
 
+                        console.log('test')
 
                         member.roles.add(constants.roles.pics)
-                        msg.edit(utl.embed.build(msg, sMsg, `Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
+                        msg.edit(new Discord.MessageEmbed()
+                            .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
+                            .setColor('#2F3136')
+                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
+                        ).then(m => m.reactions.removeAll())
                     }
                 })
         })

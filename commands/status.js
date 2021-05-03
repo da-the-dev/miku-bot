@@ -1,11 +1,12 @@
 const Discord = require('discord.js')
+const constants = require('../constants.json')
 const utl = require('../utility')
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .s <?status>
+    * @description Usage: .status <status>
     */
     (args, msg, client) => {
         args.shift()
