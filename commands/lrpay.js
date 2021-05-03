@@ -13,13 +13,13 @@ module.exports =
     */
     (args, msg, client) => {
         if(!args[1]) {
-            utl.embed(msg, sMsg, 'Не указана сумма!')
+            utl.embed.ping(msg, sMsg, 'не указана сумма!')
             return
         }
 
         var amount = Number(args[1])
         if(!amount || isNaN(amount) || !Number.isInteger(amount)) {
-            utl.embed(msg, sMsg, 'Указана неверная сумма!')
+            utl.embed.ping(msg, sMsg, 'указана неверная сумма!')
             return
         }
 
@@ -27,13 +27,13 @@ module.exports =
             var userData = await db.get(msg.guild.id, msg.author.id)
             if(userData) {
                 if(!userData.loveroom) {
-                    utl.embed('У Вас нет любовной комнаты!')
+                    utl.embed.ping('у Вас нет любовной комнаты!')
                     db.close()
                     return
                 }
 
                 if(amount > userData.money) {
-                    utl.embed(msg, 'У Вас недостаточно средств для пополнения!')
+                    utl.embed.ping(msg, 'у Вас недостаточно средств для пополнения!')
                     db.close()
                     return
                 }
@@ -45,7 +45,7 @@ module.exports =
                 utl.embed(msg, sMsg, `Вы успешно пополнили баланс комнаты на **${amount}** ${sweet}`)
                 db.close()
             } else {
-                utl.embed(msg, sMsg, 'У Вас нет любовной комнаты!')
+                utl.embed.ping(msg, sMsg, 'у Вас нет любовной комнаты!')
                 db.close()
             }
         })

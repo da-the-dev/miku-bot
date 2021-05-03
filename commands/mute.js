@@ -36,7 +36,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, sMsg, 'Вы не указали пользователя для мута!')
+                utl.embed.ping(msg, sMsg, 'Вы не указали пользователя для мута!')
                 return
             }
 
@@ -44,13 +44,13 @@ module.exports =
             args.shift()
 
             if(args.length == 0) { // If no settings were provided
-                utl.embed(msg, sMsg, 'Вы не указали время, на которое замутить человека!')
+                utl.embed.ping(msg, sMsg, 'Вы не указали время, на которое замутить человека!')
                 return
             }
 
             var reasonIndex = args.findIndex(r => r.startsWith('-'))
             if(reasonIndex == -1) {
-                utl.embed(msg, sMsg, 'Не указана причина мута!')
+                utl.embed.ping(msg, sMsg, 'Не указана причина мута!')
                 return
             }
             var reason = args.slice(reasonIndex, args.length).join(' ')
@@ -58,7 +58,7 @@ module.exports =
             args = args.slice(0, reasonIndex)
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
-                utl.embed(msg, sMsg, 'Неверный формат времени!')
+                utl.embed.ping(msg, sMsg, 'Неверный формат времени!')
                 return
             }
 
@@ -93,7 +93,7 @@ module.exports =
                 time = -1
 
             if(time == 0) {
-                utl.embed(msg, sMsg, 'Неверный формат времени!')
+                utl.embed.ping(msg, sMsg, 'Неверный формат времени!')
                 return
             }
 
@@ -136,6 +136,6 @@ module.exports =
                 utl.embed(msg, 'Выдача мута', `${pillar}${mute}${pillar} <@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }
         } else
-            utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
+            utl.embed.ping(msg, sMsg, 'у Вас нет прав для этой команды!')
     }
 module.exports.allowedInGeneral = true

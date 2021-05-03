@@ -41,7 +41,7 @@ module.exports = (args, msg, client) => {
         var userData = await db.get(msg.guild.id, msg.author.id)
         if(userData) {
             if(!userData.loveroom) {
-                utl.embed(msg, sMsg, 'У Вас нет пары!')
+                utl.embed(msg, sMsg, 'у Вас нет пары!')
                 db.close()
                 return
             }
@@ -65,7 +65,7 @@ module.exports = (args, msg, client) => {
             msg.channel.send(embed)
             db.close()
         } else {
-            utl.embed(msg, sMsg, 'У Вас нет пары!')
+            utl.embed(msg, sMsg, 'у Вас нет пары!')
             db.close()
         }
     })

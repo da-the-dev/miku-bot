@@ -18,7 +18,7 @@ module.exports =
                 .setColor('#2F3136')
             embed.setImage(mMember.user.displayAvatarURL({ dynamic: true }) + "?size=2048")
         } else {
-            utl.embed(msg, sMsg, 'Не указан пользователь!')
+            utl.embed.ping(msg, sMsg, 'не указан пользователь!')
             return
         }
 

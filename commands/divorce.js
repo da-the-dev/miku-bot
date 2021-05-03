@@ -13,7 +13,7 @@ module.exports =
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 if(!userData && userData.loveroom) {
-                    utl.embed(msg, sMsg, 'У Вас нет пары!')
+                    utl.embed.ping(msg, sMsg, 'у Вас нет пары!')
                     db.close()
                     return
                 }

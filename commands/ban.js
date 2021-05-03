@@ -15,7 +15,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= curatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, sMsg, 'Не указан участник!')
+                utl.embed.ping(msg, sMsg, 'не указан участник!')
                 return
             }
 
@@ -27,6 +27,6 @@ module.exports =
                 db.close()
             })
         } else
-            utl.embed(msg, sMsg, 'У Вас нет доступа к этой команде!')
+            utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }
 module.exports.allowedInGeneral = true

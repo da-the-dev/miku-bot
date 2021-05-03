@@ -12,7 +12,7 @@ module.exports =
     (args, msg, client) => {
         args.shift()
         if(args.length <= 0) {
-            utl.embed(msg, sMsg, 'Не указано содержание бага!')
+            utl.embed.ping(msg, sMsg, 'Не указано содержание бага!')
             return
         }
 

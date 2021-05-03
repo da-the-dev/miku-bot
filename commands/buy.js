@@ -12,7 +12,7 @@ module.exports =
     */
     (args, msg, client) => {
         if(!args[1]) {
-            utl.embed(msg, sMsg, 'Не указан номер роли для покупки!')
+            utl.embed.ping(msg, sMsg, 'Не указан номер роли для покупки!')
             return
         }
 
@@ -23,16 +23,16 @@ module.exports =
                 var userData = await db.get(msg.guild.id, msg.author.id)
                 if(userData) {
                     if(!userData.money) {
-                        utl.embed(msg, sMsg, `Не достаточно <${sweet}> для покупки роли!`)
+                        utl.embed.ping(msg, sMsg, `Не достаточно <${sweet}> для покупки роли!`)
                         db.close()
                         return
                     }
                     if(userData.money < selectedRole.price) {
-                        utl.embed(msg, sMsg, `Не достаточно <${sweet}> для покупки роли!`)
+                        utl.embed.ping(msg, sMsg, `Не достаточно <${sweet}> для покупки роли!`)
                         db.close()
                         return
                     }
-                    utl.embed(msg, sMsg, `Вы уверены, что хотите купить роль <@&${selectedRole.id}>?`)
+                    utl.embed.ping(msg, sMsg, `Вы уверены, что хотите купить роль <@&${selectedRole.id}>?`)
                         .then(m => {
                             utl.reactionSelector.yesNo(m, msg.author.id,
                                 () => {
@@ -57,12 +57,12 @@ module.exports =
                             )
                         })
                 } else {
-                    utl.embed(msg, sMsg, 'Не достаточно средств для покупки роли!')
+                    utl.embed.ping(msg, sMsg, 'не достаточно средств для покупки роли!')
                     db.close()
                     return
                 }
             } else {
-                utl.embed(msg, sMsg, 'Нет ролей для покупки!')
+                utl.embed.ping(msg, sMsg, 'нет ролей для покупки!')
                 db.close()
             }
         })

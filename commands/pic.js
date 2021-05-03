@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const constants = require('../constants.json')
+const { one, two, three, pic, escape, sweet } = require('../constants.json').emojies
 const utl = require('../utility')
 const sMsg = 'Картинки'
 
@@ -55,6 +56,7 @@ const buyRole = async (msg, member, duration, price) => {
                         console.log('buys')
                         set('pics-' + member.id, '').then(() => {
                             expire('pics-' + member.id, duration).then(() => {
+                                console.log('db upd')
                                 get(member.id)
                                     .then(res => {
                                         if(res) {
@@ -68,6 +70,7 @@ const buyRole = async (msg, member, duration, price) => {
                             }).catch(err => { console.log(err) })
                         }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
 
+                        console.log('test')
 
                         member.roles.add(constants.roles.pics)
                         msg.edit(utl.embed.build(msg, sMsg, `Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
@@ -85,20 +88,20 @@ module.exports =
     * @description Usage: .pic
     */
     (args, msg, client) => {
-        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}>\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}>\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}>\n<${constants.emojies.escape}> — Отмена\n`)
+        const emb = utl.embed.build(msg, sMsg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${one}> — **7** дней, цена: 1000 ${sweet}\n<${two}> — **14** дней, цена: 1800 ${sweet}\n<${three}> — **30** дней, цена: 4000 ${sweet}\n`)
         msg.channel.send(emb)
             .then(async m => {
                 await m.react(constants.emojies.one)
                 await m.react(constants.emojies.two)
                 await m.react(constants.emojies.three)
-                await m.react(constants.emojies.escape)
+                await m.react('❌')
 
                 /**
                  * @param {Discord.MessageReaction} reaction 
                  * @param {Discord.User} user 
                  */
                 const filter = (reaction, user) => {
-                    return [constants.emojies.one, constants.emojies.two, constants.emojies.three, constants.emojies.escape].includes(reaction.emoji.identifier) && user.id == msg.author.id
+                    return [constants.emojies.one, constants.emojies.two, constants.emojies.three, ':x:'].includes(reaction.emoji.identifier) && user.id == msg.author.id
                 }
                 m.awaitReactions(filter, { max: 1 })
                     .then(reactions => {

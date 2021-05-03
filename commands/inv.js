@@ -13,7 +13,7 @@ module.exports =
             var userData = await db.get(msg.guild.id, msg.author.id)
             if(userData) {
                 if((!userData.inv || userData.inv.length <= 0) && (!userData.customInv || userData.customInv.length <= 0)) {
-                    utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
+                    utl.embed.ping(msg, 'к сожалению, Ваш инвентарь пуст')
                     db.close()
                     return
                 }
@@ -46,7 +46,7 @@ module.exports =
                 msg.channel.send(embed)
                 db.close()
             } else {
-                utl.embed(msg, sMsg, 'К сожалению, Ваш инвентарь пуст')
+                utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
                 db.close()
             }
         })
