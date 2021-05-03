@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const reactions = require('./reactions')
-const sMsg = 'Реакция'
+
 /**
  * @description Constructs an embed to send
  * @param {Discord.Message} msg - Message to reply to
@@ -12,7 +12,7 @@ const buildMessage = (msg, reactions, description) => {
     if(!msg.deleted) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
-    return utl.embed.build(msg, sMsg, `<@${msg.member.id}> ${description}`)
+    return utl.embed.build(msg, `<@${msg.member.id}> ${description}`)
         .setImage(reactions[rand])
 }
 
@@ -40,7 +40,7 @@ const reactionHandle = (mMember, func, ...args) => {
         msg.delete()
         func(...args)
     } else {
-        utl.embed(msg, sMsg, 'Не лучшая идея (ノωヽ)')
+        utl.embed(msg, 'Не лучшая идея (ノωヽ)')
         msg.delete()
     }
 }
@@ -54,7 +54,7 @@ const reactionHandle = (mMember, func, ...args) => {
  */
 const permisson = (msg, member2, description, ...args) => {
     const requestEmbed = new Discord.MessageEmbed()
-        .setDescription(`<@${member2.id}>, ${description} <@${msg.member.id}>, что ответишь? `)
+        .setDescription(`<@${member2.id}>, ${description} <@${msg.member.id}>, что ответишь ? `)
         .setColor('#2F3136')
 
     msg.channel.send(requestEmbed)
@@ -66,12 +66,12 @@ const permisson = (msg, member2, description, ...args) => {
             m.awaitReactions(filter, { time: 60000, max: 1 })
                 .then(reactions => {
                     if(reactions.array().length == 0) {
-                        m.edit(utl.embed.build(msg, sMsg, `<@${member2.id}> тебя проигнорировал(-а)`))
+                        m.edit(utl.embed.build(msg, `<@${member2.id}> тебя проигнорировал(-а)`))
                         m.reactions.removeAll()
                         return
                     }
                     if(reactions.first().emoji.name == '❌') {
-                        m.edit(utl.embed.build(msg, sMsg, `<@${member2.id}> тебе отказал(-а)`))
+                        m.edit(utl.embed.build(msg, `<@${member2.id}> тебе отказал(-а)`))
                         m.reactions.removeAll()
                         return
                     }
