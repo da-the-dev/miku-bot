@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const { dot, sweet } = require('../constants.json').emojies
-const sMsg = 'Профиль'
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -23,7 +23,7 @@ module.exports =
                     .addFields([
                         {
                             "name": "> Баланс:",
-                            "value": ` \`💳\` — **${userData.money || 0}**`,
+                            "value": ` \`${sweet}\` — **${userData.money || 0}**`,
                             "inline": true
                         },
                         {
