@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const emojies = ['1️⃣', '2️⃣', '3️⃣']
 
 /**
  * Reacts to a message with 2 reactions and executes provided functions accordingly
@@ -44,22 +45,23 @@ module.exports.yesNo = async (msg, id, yes, no, fail) => {
  * @param {*} funcs - Functions
  */
 module.exports.multiselector = async (msg, id, cancel, fail, ...funcs) => {
-    var numbers = Object.values(constants.emojies).slice(1, 5)
     for(i = 0; i < funcs.length; i++)
-        await msg.react(numbers[i])
-    await msg.react(constants.emojies.escape)
+        await msg.react(emojies[i])
+    await msg.react('❌')
     const filter = (reaction, user) => {
-        console.log(user.username, user.id, reaction.emoji.identifier)
-        console.log(reaction.emoji.identifier)
-        console.log(numbers.includes(reaction.emoji.identifier) && user.id == id)
-        return numbers.includes(reaction.emoji.identifier) && user.id == id
+        return (emojies.includes(reaction.emoji.name) || reaction.emoji.name == '❌') && user.id == id
     }
     msg.awaitReactions(filter, { max: 1, time: 60000, errors: 'time' })
         .then(reactions => {
             var reaction = reactions.first()
-            var index = numbers.findIndex(n => n == reaction.emoji.identifier && reaction.emoji.identifier != constants.emojies.escape)
-            console.log(index)
-            index >= 0 ? funcs[index]() : cancel()
+            for(i = 0; i < emojies.length; i++) {
+                if(reaction.emoji.name == emojies[i]) {
+                    funcs[i]()
+                    return
+                }
+            }
+
+            cancel()
         })
         .catch(err => {
             fail()
