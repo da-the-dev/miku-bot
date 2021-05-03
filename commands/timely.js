@@ -1,8 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const { sweet } = require('../constants.json').emojies
 const utl = require('../utility')
-const sMsg = 'Временные награды'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -28,19 +26,19 @@ module.exports =
                                 userData.rewardTime = msg.createdTimestamp
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
 
-                                utl.embed(msg, sMsg, `<@${msg.author.id}> Вы забрали свои **${reward}** <${sweet}>. Приходите через **12** часов`)
+                                utl.embed(msg, `Вы успешно получили свою награду в размере **${reward}**<${constants.emojies.sweet}> `)
                             } else {
                                 var reward = 20 + userData.streak * 10
                                 userData.money += reward
                                 userData.rewardTime = msg.createdTimestamp
 
                                 db.set(msg.guild.id, msg.author.id, userData).then(() => { db.close() })
-                                utl.embed(msg, sMsg, `Вы пришли слишком поздно! Вы получаете **${reward}** <${sweet}>`)
+                                utl.embed(msg, `Вы пришли слишком поздно! Вы получаете **${reward}**<${constants.emojies.sweet}>`)
                             }
                         } else {
                             var time = 12 * 60 - Math.floor(((msg.createdAt - userData.rewardTime) / 1000) / 60)
 
-                            utl.embed(msg, sMsg, `Вы пришли слишком рано! Приходите через ${utl.time.timeCalculator(time)}`)
+                            utl.embed(msg, `Вы пришли слишком рано! Приходите через ${utl.time.timeCalculator(time)}`)
                             db.close()
                         }
                     } else { // If user never used .timely, but has some data

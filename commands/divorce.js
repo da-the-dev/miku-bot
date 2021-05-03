@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const util = require('util')
 const constants = require('../constants.json')
-const sMsg = 'Разрыв отношений'
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -13,7 +14,7 @@ module.exports =
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 if(!userData && userData.loveroom) {
-                    utl.embed(msg, sMsg, 'У Вас нет пары!')
+                    utl.embed(msg, 'У Вас нет пары!')
                     db.close()
                     return
                 }
@@ -30,7 +31,10 @@ module.exports =
                     db.get(msg.guild.id, partnerID).then(partnerData => {
                         delete partnerData.loveroom
                         db.set(msg.guild.id, partnerID, partnerData).then(() => db.close())
-                        utl.embed(msg, sMsg, `\`💔\` <@${msg.member.id}> и <@${partnerID}> больше не пара :(`)
+                        const embed = utl.embed.build(msg, 't')
+                            .setDescription(`\`💔\` <@${msg.member.id}> и <@${partnerID}> больше не пара :(`)
+                            .setImage('https://cdn.discordapp.com/attachments/819932384375734292/827578839168581633/1506858016_tenor.gif')
+                        msg.channel.send(embed)
                     })
                 })
             })

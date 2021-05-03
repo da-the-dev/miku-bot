@@ -1,13 +1,12 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { dot } = require('../constants.json').emojies
 
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .p
+    * @description Usage: .profile
     */
     (args, msg, client) => {
         // Member to get the profile of
@@ -19,7 +18,10 @@ module.exports =
 
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, pMember.id).then(userData => {
-                var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **Статус:**\n\`\`\`${userData.status || 'Не установлен'}\`\`\``)
+                var embed = new Discord.MessageEmbed()
+                    .setTitle(`<a:__:825834909146415135> Профиль — ${pMember.user.tag}`)
+                    .setDescription(`> **Статус:**\n\`\`\`${userData.status || 'Не установлен'}\`\`\``)
+                    .setColor('#2F3136')
                     .addFields([
                         {
                             "name": "> Голосовой онлайн:",
@@ -32,11 +34,12 @@ module.exports =
                             "inline": true
                         },
                         {
-                            "name": "> Партнер:                  ",
+                            "name": "> Возлюбленная(-ный):",
                             "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
                             "inline": true
                         }
                     ])
+                    .setFooter(`${msg.member.displayName} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
                 msg.channel.send(embed)
                 db.close()

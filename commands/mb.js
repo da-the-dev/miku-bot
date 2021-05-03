@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
-const { dot } = require('../constants.json').emojies
 
 var getStatus = (msg, id) => {
     return `<${msg.guild.member(id).user.presence.status == 'online' ? constants.emojies.true : constants.emojies.false}>`
@@ -18,7 +17,7 @@ module.exports =
 
         var embed = new Discord.MessageEmbed()
             .setColor('#2F3136')
-            .setTitle(`${dot}Статусы музыкальных ботов`)
+            .setFooter(`${msg.member.displayName} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
             .addFields(
                 [
                     {
@@ -53,6 +52,7 @@ module.exports =
                     }
                 ]
             )
+            .setImage('https://cdn.discordapp.com/attachments/810255515854569472/829766695790313512/00.gif')
 
         msg.channel.send(embed)
     }

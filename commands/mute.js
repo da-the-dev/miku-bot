@@ -2,8 +2,6 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const redis = require('redis')
 const constants = require('../constants.json')
-const { pillar, mute } = require('../constants.json').emojies
-const sMsg = 'Мут'
 
 /**
  * @description Check if there's only one 's', 'm', 'h' is 'life'
@@ -36,7 +34,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, sMsg, 'Вы не указали пользователя для мута!')
+                utl.embed(msg, 'Вы не указали пользователя для мута!')
                 return
             }
 
@@ -44,13 +42,13 @@ module.exports =
             args.shift()
 
             if(args.length == 0) { // If no settings were provided
-                utl.embed(msg, sMsg, 'Вы не указали время, на которое замутить человека!')
+                utl.embed(msg, 'Вы не указали время, на которое замутить человека!')
                 return
             }
 
             var reasonIndex = args.findIndex(r => r.startsWith('-'))
             if(reasonIndex == -1) {
-                utl.embed(msg, sMsg, 'Не указана причина мута!')
+                utl.embed(msg, 'Не указана причина мута!')
                 return
             }
             var reason = args.slice(reasonIndex, args.length).join(' ')
@@ -58,7 +56,7 @@ module.exports =
             args = args.slice(0, reasonIndex)
 
             if(!args.every(a => checkForLetters(a))) { // Check if settings are valid
-                utl.embed(msg, sMsg, 'Неверный формат времени!')
+                utl.embed(msg, 'Неверный формат времени!')
                 return
             }
 
@@ -93,13 +91,14 @@ module.exports =
                 time = -1
 
             if(time == 0) {
-                utl.embed(msg, sMsg, 'Неверный формат времени!')
+                utl.embed(msg, 'Неверный формат времени!')
                 return
             }
 
+
             const rClient = redis.createClient(process.env.RURL)
             if(time == -1) {
-                utl.embed(msg, sMsg, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут навсегда** \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             } else {
                 var mmD = Math.floor(time / 60 / 60 / 24)
                 var mmH = Math.floor(time / 60 / 60) - (mmD * 24)
@@ -133,9 +132,9 @@ module.exports =
                         rClient.quit()
                     }
                 })
-                utl.embed(msg, 'Выдача мута', `${pillar}${mute}${pillar} <@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                utl.embed(msg, `Пользователь <@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }
         } else
-            utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
+            utl.embed(msg, 'У Вас нет прав для этой команды!')
     }
 module.exports.allowedInGeneral = true

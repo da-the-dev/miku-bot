@@ -2,8 +2,6 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const redis = require('redis')
 const constants = require('../constants.json')
-const { pillar, mute } = require('../constants.json').emojies
-const sMsg = 'Снятие мута'
 
 module.exports =
     /**
@@ -17,7 +15,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, sMsg, 'Вы не указали пользователя для мута!')
+                utl.embed(msg, 'Вы не указали пользователя для мута!')
                 return
             }
 
@@ -40,19 +38,20 @@ module.exports =
                             console.error(err)
 
                         mMember.roles.remove(constants.roles.muted)
+                        console.log('unmute 1')
                         var userData = JSON.parse(res)
                         if(userData.mute) delete userData.mute
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
 
-                        utl.embed(msg, sMsg, `${pillar}${mute}${pillar} <@${mMember.user.id}> был(-а) размьючен(-а)`)
+                        utl.embed(msg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
                     })
                 } else {
-                    utl.embed(msg, sMsg, 'Пользователь не был замьючен в первую очередь!')
+                    utl.embed(msg, 'Пользователь не был замьючен в первую очередь!')
                 }
             })
         } else {
-            utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
+            utl.embed(msg, 'У Вас нет прав для этой команды!')
         }
     }
 module.exports.allowedInGeneral = true
