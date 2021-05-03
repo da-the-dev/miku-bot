@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const { pillar, warn } = require('../constants.json').emojies
 const emojies = ['1️⃣', '2️⃣', '3️⃣']
 const sMsg = 'Снятие предупреждений'
 module.exports =
@@ -23,7 +24,7 @@ module.exports =
                 db.get(msg.guild.id, mMember.user.id).then(userData => {
                     if(userData) {
                         if(!userData.warns || userData.warns.length == 0) {
-                            utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
+                            utl.embed(msg, sMsg, `${pillar}${warn}${pillar}У пользователя <@${mMember.user.id}> нет предупреждений`)
                             db.close()
                             return
                         }
@@ -32,7 +33,7 @@ module.exports =
                         for(i = 0; i < userData.warns.length; i++) {
                             var w = userData.warns[i]
                             var date = new Date(w.time)
-                            embed.addField('Дата', `\` ${i + 1} \` — ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(2)} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`, true)
+                            embed.addField('Дата выдачи', `**${i + 1}.** — ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(2)} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`, true)
                             embed.addField(`Исполнитель`, `<@${w.who}>`, true)
                             embed.addField(`Причина`, `${w.reason}`, true)
                         }

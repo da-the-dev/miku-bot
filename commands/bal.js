@@ -30,11 +30,11 @@ module.exports =
         var mMember = msg.mentions.members.first()
         if(!mMember) {
             getBal(msg.member).then(bal => {
-                utl.embed(msg, 'Баланс', `У тебя **${bal}** ${sweet}`)
+                utl.embed(msg, 'Баланс', `У тебя на балансе **${bal}** ${sweet}`)
             })
         } else {
             getBal(mMember).then(bal => {
-                utl.embed(msg, 'Баланс', `У <@${mMember.id}> **${bal}** ${sweet}`)
+                utl.embed(msg, 'Баланс', `У <@${mMember.id}> на балансе **${bal}** ${sweet}`)
             })
         }
     }

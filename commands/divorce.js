@@ -30,7 +30,7 @@ module.exports =
                     db.get(msg.guild.id, partnerID).then(partnerData => {
                         delete partnerData.loveroom
                         db.set(msg.guild.id, partnerID, partnerData).then(() => db.close())
-                        utl.embed(msg, sMsg, `\`💔\` <@${msg.member.id}> и <@${partnerID}> больше не пара :(`)
+                        utl.embed(msg, sMsg, `<@${msg.member.id}> и <@${partnerID}> больше не пара :(`)
                     })
                 })
             })

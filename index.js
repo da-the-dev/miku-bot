@@ -30,18 +30,18 @@ commandNames.forEach(c => {
     )
 })
 
-// // General events
-// client.login(process.env.BOTTOKEN)
-// client.once('ready', () => {
-//     console.log("[BOT] BOT is online")
+// General events
+client.login(process.env.BOTTOKEN)
+client.once('ready', () => {
+    console.log("[BOT] BOT is online")
 
-//     utl.redisUnmute(client)
-//     utl.activity.voiceActivityInit(client)
-//     utl.elderlyRole(client.guilds.cache.first())
-//     utl.scanServer(client)
-//     utl.bannerUpdate(client.guilds.cache.first())
-//     utl.loveroomMonitor.initPayment(client)
-// })
+    // utl.redisUnmute(client)
+    // utl.activity.voiceActivityInit(client)
+    // utl.elderlyRole(client.guilds.cache.first())
+    // utl.scanServer(client)
+    // utl.bannerUpdate(client.guilds.cache.first())
+    // utl.loveroomMonitor.initPayment(client)
+})
 
 // // Role events
 // client.on('roleUpdate', (oldRole, newRole) => {
@@ -85,58 +85,24 @@ commandNames.forEach(c => {
 //     utl.activity.voiceActivity(oldState, newState)
 // })
 
-// // Message events
-// client.on('messageReactionAdd', (reaction, user) => {
-//     utl.fetch.fetchReactions(reaction)
+// Message events
+client.on('messageReactionAdd', (reaction, user) => {
+    utl.fetch.fetchReactions(reaction)
 
-//     if(reaction.message.channel.id != client.verifyMsg)
-//         utl.shop(reaction, user, client)
-//     utl.reportHandler.reportAssignmentHandler(reaction, user, client)
-// })
+    if(reaction.message.channel.id != constants.channels.dev)
+        utl.shop(reaction, user, client)
+    // utl.reportHandler.reportAssignmentHandler(reaction, user, client)
+})
 client.on('message', msg => {
-    // Activity
-    // utl.activity.chatActivity(msg)
+    if(msg.channel.id == constants.channels.dev) {
+        var args = msg.content.slice(1).split(" ")
+        args.forEach(a => a.trim())
 
-    // Verification
-    // utl.verify(msg, client)
-
-    // Bot commands
-    // if(!msg.author.bot) {
-    //     utl.verify.welcomeReward(msg, client)
-    //     if(msg.content[0] == prefix) {
-    //         var args = msg.content.slice(1).split(" ")
-    //         args.forEach(a => a.trim())
-
-    //         // Say command
-    //         if(args[0].includes('\n'))
-    //             if(args[0].slice(0, args[0].indexOf('\n')) == "say") {
-    //                 client.commands.find(c => c.name == "say").foo(args, msg, client)
-    //                 msg.delete()
-    //                 return
-    //             }
-
-    // Regular commands
-    for(i = 0; i < client.commands.length; i++) {
-        var c = client.commands[i]
-        if(c.name == args[0]) {
-            if(msg.channel.id == constants.channels.dev)
-                msg.delete()
-                    .then(() => {
-                        c.foo(args, msg, client)
-                    })
-        }
-        return
+        var command = client.commands.find(c => c.name == args[0])
+        if(command)
+            msg.delete()
+                .then(() => {
+                    command.foo(args, msg, client)
+                })
     }
-    // }
-
-    // Reactions
-    // utl.reactionHandler(args, msg, client)
-    // }
-    // // Selfy moderation
-    // if(msg.channel.id == '810876164960813086') {
-    //     if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
-    //         msg.delete()
-    //     else
-    //         msg.react('<a:__:819566414368473098>')
-    // }
 })

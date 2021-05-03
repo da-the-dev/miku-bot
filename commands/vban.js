@@ -1,7 +1,7 @@
-const Discord = require('discord.js')
-const constants = require('../constants.json')
-const utl = require('../utility')
-const sMsg = 'Приватные комнаты'
+const Discord = require(`discord.js`)
+const constants = require(`../constants.json`)
+const utl = require(`../utility`)
+const sMsg = `Приватные комнаты`
 
 module.exports =
     /**
@@ -14,8 +14,8 @@ module.exports =
         if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
             return
 
-        if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
-            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
+        if(!msg.member.permissionsIn(msg.member.voice.channel).has(`CREATE_INSTANT_INVITE`)) {
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет прав на эту команду!`)
             return
         }
 
@@ -23,7 +23,7 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            utl.embed(msg, sMsg, 'У Вас нет приватной комнаты!')
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет приватной комнаты!`)
             return
         }
 
@@ -31,13 +31,13 @@ module.exports =
 
         if(mMember) {
             room.createOverwrite(mMember.id, {
-                'CONNECT': false
+                "CONNECT": false
             })
             room.members.forEach(m => {
                 if(m.id == mMember.id)
                     m.voice.setChannel(null)
             })
-            utl.embed(msg, sMsg, `Закрыт доступ для <@${mMember.user.id}> в вашей комнате`)
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, Вы **закрыли доступ** в комнату <@${mMember.user.id}>`)
         } else
-            utl.embed(msg, sMsg, 'Вы не указали пользователя!')
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, Вы не указали пользователя!`)
     }

@@ -9,9 +9,9 @@ module.exports.timeCalculator = (time) => {
     var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
     var msg = ''
 
-    if(mmD) msg += `**${mmD.toString()}**d `
-    if(mmH) msg += `**${mmH.toString()}**h `
-    if(mmM) msg += `**${mmM.toString()}**m`
+    if(mmD) msg += `**${mmD.toString()}**д `
+    if(mmH) msg += `**${mmH.toString()}**ч `
+    if(mmM) msg += `**${mmM.toString()}**м`
 
     return msg
 }

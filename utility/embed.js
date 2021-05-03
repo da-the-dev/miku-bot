@@ -18,6 +18,23 @@ module.exports =
         )
     }
 
+module.exports.ping =
+    /**
+     * Standard embed reply plus member ping
+     * @param {Discord.Message} msg - Disord message
+     * @param {string} title - Message title
+     * @param {string} message - Text message to send
+     * @returns {Promise<Discord.Message>}
+     */
+    (msg, title, message = '') => {
+        return msg.channel.send(new Discord.MessageEmbed()
+            .setTitle(`${dot}${title}`)
+            .setDescription(`<@${msg.author.id}>, message`)
+            .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
+            .setColor('#2F3136')
+        )
+    }
+
 /**
  * Calculate time when the message was sent
  * @param {(Discord.Message|Discord.GuildMember|number)} source

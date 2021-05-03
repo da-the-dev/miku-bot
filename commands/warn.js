@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const { pillar, warn } = require('../constants.json').emojies
 const sMsg = 'Выдача предупреждения'
 module.exports =
     /**
@@ -38,7 +39,7 @@ module.exports =
                         userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
 
                     db.set(msg.guild.id, mMember.user.id, userData).then(() => {
-                        utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> было выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                        utl.embed(msg, sMsg, `${pillar}${warn}${pillar}Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
                         db.close()
                     })
                 })

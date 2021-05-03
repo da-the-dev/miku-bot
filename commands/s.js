@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const sMsg = 'Статус'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -14,7 +15,7 @@ module.exports =
             utl.db.createClient(process.env.MURL).then(db => {
                 db.update(msg.guild.id, msg.author.id, { $unset: { status: '' } })
                     .then(() => {
-                        utl.embed(msg, 'Статус успешно удален')
+                        utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно удален`)
                         db.close()
                     })
             })
@@ -28,7 +29,7 @@ module.exports =
         utl.db.createClient(process.env.MURL).then(db => {
             db.update(msg.guild.id, msg.author.id, { $set: { status: state } })
                 .then(() => {
-                    utl.embed(msg, 'Успешно установлен статус')
+                    utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно установлен`)
                     db.close()
                 })
         })

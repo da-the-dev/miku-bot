@@ -95,7 +95,7 @@ module.exports =
                                             db.set(msg.guild.id, msg.author.id, userData).then(() => {
                                                 db.update(msg.guild.id, mMember.id, { $set: { 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now(), 'bal': 6000 } } }).then(() => {
                                                     db.close()
-                                                    m.edit(utl.embed.build(msg, ssMsg, "`💞`" + `<@${msg.member.id}> и <@${mMember.id}> теперь пара!`))
+                                                    m.edit(utl.embed.build(msg, ssMsg, `<@${msg.member.id}> и <@${mMember.id}> теперь пара!`))
                                                 })
                                             })
                                         })

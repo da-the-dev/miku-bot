@@ -23,18 +23,18 @@ module.exports =
                     .addFields([
                         {
                             "name": "> Баланс:",
-                            "value": ` \`${sweet}\` — **${userData.money || 0}**`,
+                            "value": `\`\`\`${userData.money || 0}\`\`\``,
                             "inline": true
                         },
                         {
                             "name": "> Голосовой онлайн:",
-                            "value": ` \`🕓\` — ${utl.time.timeCalculator(userData.voiceTime || 0)}`,
+                            "value": `\`\`\`${utl.time.timeCalculator(userData.voiceTime || 0).replace(/[**]/g, '')}\`\`\``,
                             "inline": true
                         },
 
                         {
                             "name": "> Партнер:",
-                            "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
+                            "value": `\`\`\`${userData.loveroom ? `${msg.guild.member(userData.loveroom.partner).displayName}` : 'Нет'}\`\`\``,
                             "inline": true
                         }
                     ])

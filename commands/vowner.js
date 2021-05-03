@@ -1,7 +1,7 @@
-const Discord = require('discord.js')
-const constants = require('../constants.json')
-const utl = require('../utility')
-const sMsg = 'Приватные комнаты'
+const Discord = require(`discord.js`)
+const constants = require(`../constants.json`)
+const utl = require(`../utility`)
+const sMsg = `Приватные комнаты`
 
 module.exports =
     /**
@@ -14,8 +14,8 @@ module.exports =
         if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
             return
 
-        if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
-            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
+        if(!msg.member.permissionsIn(msg.member.voice.channel).has(`CREATE_INSTANT_INVITE`)) {
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет прав на эту команду!`)
             return
         }
 
@@ -23,7 +23,7 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            utl.embed(msg, sMsg, 'У Вас нет приватной комнаты!')
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет приватной комнаты!`)
             return
         }
         var mMember = msg.mentions.members.first()
@@ -33,18 +33,18 @@ module.exports =
                 var oldOwner = msg.member
                 var mMember = msg.mentions.members.first()
 
-                if(room.permissionOverwrites.find(o => o.id == msg.member.id && o.allow.has('CREATE_INSTANT_INVITE'))) {// If creator
+                if(room.permissionOverwrites.find(o => o.id == msg.member.id && o.allow.has(`CREATE_INSTANT_INVITE`))) {// If creator
                     room.permissionOverwrites.delete(msg.author.id)
                     room.overwritePermissions(
                         room.permissionOverwrites.set(mMember.id, {
                             id: mMember.id,
                             allow: 'CREATE_INSTANT_INVITE'
                         })).then(() => {
-                            utl.embed(msg, sMsg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
+                            utl.embed(msg, sMsg, `<@${msg.author.id}>, Вы **передали права** владения комнаты <@${mMember.id}>`)
                         })
                 }
             } else
-                utl.embed(msg, sMsg, 'Пользователь не находится в Вашей комнате!')
+                utl.embed(msg, sMsg, `<@${msg.author.id}>, Пользователь не находится в Вашей комнате!`)
         } else
-            utl.embed(msg, sMsg, 'Вы не указали пользователя!')
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, Вы не указали пользователя!`)
     }
