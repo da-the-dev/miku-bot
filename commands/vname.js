@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Приватные комнаты'
 
 module.exports =
     /**
@@ -14,7 +15,7 @@ module.exports =
             return
 
         if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
-            utl.embed(msg, 'У Вас нет прав на эту команду!')
+            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
             return
         }
 
@@ -22,7 +23,7 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            utl.embed(msg, 'У Вас нет приватной комнаты!')
+            utl.embed(msg, sMsg, 'У Вас нет приватной комнаты!')
             return
         }
 
@@ -31,9 +32,9 @@ module.exports =
 
         if(newName && newName.length <= 31) {
             room.setName(newName)
-            utl.embed(msg, `Название вашей комнаты изменено на \` ${newName} \``)
+            utl.embed(msg, sMsg, `Название вашей комнаты изменено на \` ${newName} \``)
         } else if(newName && newName.length > 31)
-            utl.embed(msg, 'Вы указали слишком длинное имя комнаты!')
+            utl.embed(msg, sMsg, 'Вы указали слишком длинное имя комнаты!')
         else
-            utl.embed(msg, 'Вы не указали имя комнаты!')
+            utl.embed(msg, sMsg, 'Вы не указали имя комнаты!')
     }

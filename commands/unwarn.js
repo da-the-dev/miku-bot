@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
 const emojies = ['1️⃣', '2️⃣', '3️⃣']
+const sMsg = 'Снятие предупреждений'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -14,7 +15,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= chatControlRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, 'Не указан пользователь!')
+                utl.embed(msg, sMsg, 'Не указан пользователь!')
                 return
             }
 
@@ -22,14 +23,11 @@ module.exports =
                 db.get(msg.guild.id, mMember.user.id).then(userData => {
                     if(userData) {
                         if(!userData.warns || userData.warns.length == 0) {
-                            utl.embed(msg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
+                            utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
                             db.close()
                             return
                         }
-                        var embed = new Discord.MessageEmbed()
-                            .setAuthor(`${mMember.displayName} • Предупреждения`, mMember.user.avatarURL())
-                            .setColor('#2F3136')
-                            .setFooter(`${msg.member.displayName} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+                        var embed = utl.embed.build(msg, `${sMsg} • ${mMember.displayName}`)
 
                         for(i = 0; i < userData.warns.length; i++) {
                             var w = userData.warns[i]
@@ -54,7 +52,7 @@ module.exports =
 
                                                 db.set(msg.guild.id, mMember.id, userData).then(() => {
                                                     db.close()
-                                                    m.edit(utl.embed.build(msg, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
+                                                    m.edit(utl.embed.build(msg, sMsg, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
                                                     m.reactions.removeAll()
                                                 })
                                             })
@@ -62,13 +60,13 @@ module.exports =
                                     })
                             })
                     } else {
-                        utl.embed(msg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
+                        utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
                         db.close()
                     }
                 })
             })
         } else {
-            utl.embed(msg, 'У Вас нет прав для этой команды!')
+            utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
         }
     }
 module.exports.allowedInGeneral = true

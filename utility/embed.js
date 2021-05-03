@@ -9,7 +9,7 @@ module.exports =
      * @param {string} message - Text message to send
      * @returns {Promise<Discord.Message>}
      */
-    (msg, title, message) => {
+    (msg, title, message = '') => {
         return msg.channel.send(new Discord.MessageEmbed()
             .setTitle(`${dot}${title}`)
             .setDescription(message)
@@ -44,7 +44,7 @@ module.exports.calculateTime = (source) => {
  * @param {string} title - Message title
  * @param {string} message - Text message to send
  */
-module.exports.build = (msg, title, message) => {
+module.exports.build = (msg, title, message = '') => {
     return new Discord.MessageEmbed()
         .setTitle(`${dot}${title}`)
         .setDescription(message)

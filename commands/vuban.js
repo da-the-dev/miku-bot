@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Приватные комнаты'
 
 module.exports =
     /**
@@ -14,7 +15,7 @@ module.exports =
             return
 
         if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
-            utl.embed(msg, 'У Вас нет прав на эту команду!')
+            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
             return
         }
 
@@ -22,7 +23,7 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            utl.embed(msg, 'У Вас нет приватной комнаты!')
+            utl.embed(msg, sMsg, 'У Вас нет приватной комнаты!')
             return
         }
 
@@ -32,7 +33,7 @@ module.exports =
             room.createOverwrite(mMember.id, {
                 'CONNECT': true
             })
-            utl.embed(msg, `Открыт доступ для <@${mMember.user.id}> в вашей комнате`)
+            utl.embed(msg, sMsg, `Открыт доступ для <@${mMember.user.id}> в вашей комнате`)
         } else
-            utl.embed(msg, 'Вы не указали пользователя!')
+            utl.embed(msg, sMsg, 'Вы не указали пользователя!')
     }

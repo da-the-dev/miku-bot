@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
-
+const sMsg = 'Выдача предупреждения'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -14,7 +14,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= cControlRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, 'Вы не указали пользователя для варна!')
+                utl.embed(msg, sMsg, 'Вы не указали пользователя для варна!')
                 return
             }
 
@@ -23,7 +23,7 @@ module.exports =
 
             var reason = args.join(" ").trim()
             if(!reason) {
-                utl.embed(msg, 'Вы не указали причину варна!')
+                utl.embed(msg, sMsg, 'Вы не указали причину варна!')
                 return
             }
 
@@ -38,13 +38,13 @@ module.exports =
                         userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
 
                     db.set(msg.guild.id, mMember.user.id, userData).then(() => {
-                        utl.embed(msg, `Пользователю <@${mMember.user.id}> было выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                        utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> было выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
                         db.close()
                     })
                 })
             })
         } else {
-            utl.embed(msg, 'У Вас нет прав для этой команды!')
+            utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
         }
     }
 module.exports.allowedInGeneral = true
