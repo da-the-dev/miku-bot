@@ -1,12 +1,13 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { dot, sweet } = require('../constants.json').emojies
 
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .profile
+    * @description Usage: .p
     */
     (args, msg, client) => {
         // Member to get the profile of
@@ -18,28 +19,25 @@ module.exports =
 
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, pMember.id).then(userData => {
-                var embed = new Discord.MessageEmbed()
-                    .setTitle(`<a:__:825834909146415135> Профиль — ${pMember.user.tag}`)
-                    .setDescription(`> **Статус:**\n\`\`\`${userData.status || 'Не установлен'}\`\`\``)
-                    .setColor('#2F3136')
+                var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **Статус:**\n\`\`\`${userData.status || 'Не установлен'}\`\`\``)
                     .addFields([
+                        {
+                            "name": "> Баланс:",
+                            "value": ` \`${sweet}\` — **${userData.money || 0}**`,
+                            "inline": true
+                        },
                         {
                             "name": "> Голосовой онлайн:",
                             "value": ` \`🕓\` — ${utl.time.timeCalculator(userData.voiceTime || 0)}`,
                             "inline": true
                         },
+
                         {
-                            "name": "> Текстовый онлайн:",
-                            "value": ` \`💭\` — **${userData.msgs || 0}**`,
-                            "inline": true
-                        },
-                        {
-                            "name": "> Возлюбленная(-ный):",
+                            "name": "> Партнер:",
                             "value": ` \`💕\` — ${userData.loveroom ? `<@${userData.loveroom.partner}>` : 'Нет'}`,
                             "inline": true
                         }
                     ])
-                    .setFooter(`${msg.member.displayName} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
 
                 msg.channel.send(embed)
                 db.close()

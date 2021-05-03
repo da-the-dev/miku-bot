@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Прочие роли'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -13,7 +14,7 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
-                utl.embed(msg, 'Не указан участник!')
+                utl.embed(msg, sMsg, 'Не указан участник!')
                 return
             }
 
@@ -24,16 +25,16 @@ module.exports =
                             delete userData.toxic
                             db.set(msg.guild.id, mMember.user.id, userData).then(() => db.close())
                             mMember.roles.remove(constants.roles.toxic).then(() => {
-                                utl.embed(msg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
+                                utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
                             })
                         }
                     } else {
-                        utl.embed(msg, `У пользователя <@${mMember.user.id}> изначально не было роли <@&${constants.roles.toxic}>`)
+                        utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> изначально не было роли <@&${constants.roles.toxic}>`)
                         db.close()
                     }
                 })
             })
         } else
-            utl.embed(msg, 'У Вас нет доступа к этой команде!')
+            utl.embed(msg, sMsg, 'У Вас нет доступа к этой команде!')
     }
 module.exports.allowedInGeneral = true

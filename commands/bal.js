@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const constants = require('../constants.json')
+const { sweet } = require('../constants.json').emojies
 
 /**
  * Gets balance of the member
@@ -9,7 +9,7 @@ const constants = require('../constants.json')
 const getBal = async (member) => {
     var db = await utl.db.createClient(process.env.MURL)
     var userData = await db.get(member.guild.id, member.id)
-    await db.close()
+    db.close()
     if(userData)
         if(!userData.money)
             return 0
@@ -30,11 +30,11 @@ module.exports =
         var mMember = msg.mentions.members.first()
         if(!mMember) {
             getBal(msg.member).then(bal => {
-                utl.embed(msg, `У тебя на счету **${bal}** <${constants.emojies.sweet}>`)
+                utl.embed(msg, 'Баланс', `У тебя **${bal}** ${sweet}`)
             })
         } else {
             getBal(mMember).then(bal => {
-                utl.embed(msg, `У ${mMember.displayName} на счету **${bal}** <${constants.emojies.sweet}>`)
+                utl.embed(msg, 'Баланс', `У <@${mMember.id}> **${bal}** ${sweet}`)
             })
         }
     }

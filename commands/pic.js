@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Картинки'
 
 /**
  * Buys the pic role for some time
@@ -22,7 +23,7 @@ const buyRole = async (msg, member, duration, price) => {
             if(userData) {
                 if(!userData.money || userData.money < price) {
                     db.close()
-                    utl.embed(msg, "У Вас недостаточно конфет!")
+                    utl.embed(msg, sMsg, "У Вас недостаточно конфет!")
                     return false
                 }
                 else
@@ -30,7 +31,7 @@ const buyRole = async (msg, member, duration, price) => {
                         .then(() => db.close())
             } else {
                 db.close()
-                utl.embed(msg, "У Вас недостаточно конфет!")
+                utl.embed(msg, sMsg, "У Вас недостаточно конфет!")
                 return false
             }
 
@@ -49,16 +50,11 @@ const buyRole = async (msg, member, duration, price) => {
                         }).catch(err => { console.log(err) })
 
 
-                        msg.edit(new Discord.MessageEmbed()
-                            .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
-                            .setColor('#2F3136')
-                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                        ).then(m => m.reactions.removeAll())
+                        msg.edit(utl.embed.build(msg, sMsg, `Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
                     } else {
                         console.log('buys')
                         set('pics-' + member.id, '').then(() => {
                             expire('pics-' + member.id, duration).then(() => {
-                                console.log('db upd')
                                 get(member.id)
                                     .then(res => {
                                         if(res) {
@@ -72,14 +68,9 @@ const buyRole = async (msg, member, duration, price) => {
                             }).catch(err => { console.log(err) })
                         }).catch(err => { console.log(err) }).then(() => { console.log('set key:', 'pics-' + member.id) })
 
-                        console.log('test')
 
                         member.roles.add(constants.roles.pics)
-                        msg.edit(new Discord.MessageEmbed()
-                            .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
-                            .setColor('#2F3136')
-                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                        ).then(m => m.reactions.removeAll())
+                        msg.edit(utl.embed.build(msg, sMsg, `Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
                     }
                 })
         })

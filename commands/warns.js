@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const sMsg = 'Предупреждения'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -12,11 +13,7 @@ module.exports =
             db.get(msg.guild.id, msg.author.id).then(userData => {
                 db.close()
                 if(userData) {
-                    var embed = new Discord.MessageEmbed()
-                        .setAuthor(`${msg.member.displayName} • Предупреждения`, msg.author.avatarURL())
-                        .setColor('#2F3136')
-                        .setFooter(`${msg.member.displayName} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
-
+                    var embed = utl.embed.build(msg, `${sMsg} • ${msg.member.displayName}`)
 
                     if(!userData.warns || userData.warns.length == 0) {
                         utl.embed(msg, 'У Вас нет предупреждений')

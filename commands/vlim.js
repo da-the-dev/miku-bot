@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Приватные комнаты'
 
 module.exports =
     /**
@@ -14,7 +15,7 @@ module.exports =
             return
 
         if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
-            utl.embed(msg, 'У Вас нет прав на эту команду!')
+            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
             return
         }
 
@@ -22,24 +23,24 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            utl.embed(msg, 'У Вас нет приватной комнаты!')
+            utl.embed(msg, sMsg, 'У Вас нет приватной комнаты!')
             return
         }
 
         var limit = Number(args[1])
         if(limit == null) {
-            utl.embed(msg, 'Вы не указали лимит!')
+            utl.embed(msg, sMsg, 'Вы не указали лимит!')
             return
         }
 
         if(limit > 0 && limit < 100 && Number.isInteger(limit)) {
             room.setUserLimit(limit)
-            utl.embed(msg, `Установлен лимит пользователей на \` ${limit} \` в вашей комнате`)
+            utl.embed(msg, sMsg, `Установлен лимит пользователей на \` ${limit} \` в вашей комнате`)
         } else if(limit == 0) {
             room.setUserLimit(null)
-            utl.embed(msg, `Лимит пользователей снят с вашей комнаты`)
+            utl.embed(msg, sMsg, `Лимит пользователей снят с вашей комнаты`)
         } else if(limit >= 100)
-            utl.embed(msg, 'Вы указали слишком большой лимит!')
+            utl.embed(msg, sMsg, 'Вы указали слишком большой лимит!')
         else
-            utl.embed(msg, 'Вы указали неверное число!')
+            utl.embed(msg, sMsg, 'Вы указали неверное число!')
     }
