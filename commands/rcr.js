@@ -1,6 +1,9 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const { sweet } = require('../constants.json').emojies
+const sMsg = 'Создание кастомной роли'
+
 
 /** Role cost */
 const cost = 7000
@@ -70,7 +73,7 @@ const createRole = (msg, name, hex, success, db) => {
             // Add the role to custom invetory
             await db.update(msg.guild.id, msg.author.id, { $push: { customInv: r.id } })
             await success(db)
-            utl.embed(msg, `Вы успешно создали роль <@&${r.id}>!`)
+            utl.embed(msg, sMsg, `Вы успешно создали роль <@&${r.id}>`)
         })
     })
 }
@@ -85,15 +88,15 @@ module.exports =
     async (args, msg, client) => {
         var hex = args[1]
         if(!hex) {
-            utl.embed(msg, 'Не указан цвет роли!')
+            utl.embed(msg, sMsg, 'Не указан цвет роли!')
             return
         }
         if(!hex.startsWith('#')) {
-            utl.embed(msg, 'Цвет роли должен быть в формате **HEX** и начинаться с `#`!')
+            utl.embed(msg, sMsg, 'Цвет роли должен быть в формате **HEX** и начинаться с `#`!')
             return
         }
         if(hex.length != 7) {
-            utl.embed(msg, 'Цвет роли должен быть в формате **HEX** и состоять в общей сложности из **7** символов!\n```#FFFFFF - Белый\n#000000 - Черный```')
+            utl.embed(msg, sMsg, 'Цвет роли должен быть в формате **HEX** и состоять в общей сложности из **7** символов!\n```#FFFFFF - Белый\n#000000 - Черный```')
             return
         }
         hex = hex.toUpperCase()
@@ -103,7 +106,7 @@ module.exports =
 
         var name = args.join(' ')
         if(!name) {
-            utl.embed(msg, 'Не указано название роли!')
+            utl.embed(msg, sMsg, 'Не указано название роли!')
             return
         }
 
@@ -116,7 +119,7 @@ module.exports =
                 })
 
                 if(counter >= 2) {
-                    utl.embed(msg, 'У Вас уже есть 2 кастомные роли!')
+                    utl.embed(msg, sMsg, 'У Вас уже есть 2 кастомные роли!')
                     db.close()
                     return
                 }
@@ -124,13 +127,13 @@ module.exports =
                 db.get(msg.guild.id, msg.author.id).then(async userData => {
                     if(userData) {
                         if(!userData.money || (userData.money && userData.money < cost)) {
-                            utl.embed(msg, 'У Вас не хватает конфет!')
+                            utl.embed(msg, sMsg, 'У Вас не хватает конфет!')
                             db.close()
                             return
                         }
 
                         // Paying with money, no boosts
-                        utl.embed(msg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названем **${name}**?\nСтоимость роли на **30** дней — **${cost}** <${constants.emojies.sweet}>`).then(m => {
+                        utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названем **${name}**?\nСтоимость роли на **30** дней — **${cost}** ${sweet}`).then(m => {
                             utl.reactionSelector.yesNo(m, msg.author.id,
                                 () => {
                                     createRole(msg, name, hex, (db) => {
@@ -151,7 +154,7 @@ module.exports =
                         })
                     }
                     else {
-                        utl.embed(msg, 'У Вас нет ни бустов, ни конфет!')
+                        utl.embed(msg, sMsg, 'У Вас нет ни бустов, ни конфет!')
                         db.close()
                     }
                 })
