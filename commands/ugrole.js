@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
-const sMsg = 'Игровые роли'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -16,7 +15,7 @@ module.exports =
             db.update(msg.guild.id, msg.author.id, [{ $set: { gameRoles: { $not: "$gameRoles" } } }])
                 .then(() => {
                     db.get(msg.guild.id, msg.author.id).then(userData => {
-                        utl.embed(msg, sMsg, `Игровые роли ${!userData.gameRoles ? '**включены**' : '**выключены**'}`)
+                        utl.embed(msg, `Игровые роли ${!userData.gameRoles ? '**включены**' : '**выключены**'}`)
                         userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
                         db.close()
                     })

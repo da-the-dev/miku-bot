@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const sMsg = 'Прочие роли'
+const sMsg = 'Снятие ролей'
 module.exports =
     /**
     * @param {Array<string>} args Command argument

@@ -1,26 +1,28 @@
 const Discord = require('discord.js')
 const emojies = ['➡️', '⬅️']
-const { dot, sweet } = require('../constants.json').emojies
+const constants = require('../constants.json')
 const utl = require('../utility')
 
 /** 
  * Build and edit shop message
  * @param {number} page - Page to switch to
+ * @param {string} footerUser - Username of user who sent shop message
+ * @param {string} footerURL - User's avatar URL
  * @param {Discord.Message} msg - Message to edit
  */
-const buildPage = (page, msg) => {
+const buildPage = (page, footerUser, footerURL, msg) => {
     var embed = new Discord.MessageEmbed()
-        .setTitle(`${dot}Магазин`)
-        .setFooter(`Страница ${page}/2 • ${msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('•') + 2)}`)
         .setColor('#2F3136')
+        .setFooter(`${footerUser} • ${utl.embed.calculateTime(msg)} • стр ${page}/2`, footerURL)
 
     utl.db.createClient(process.env.MURL).then(db => {
         db.get(msg.guild.id, 'serverSettings').then(serverSettings => {
             if(serverSettings) {
                 db.close()
                 var length = serverSettings.roles.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
-                for(i = (page - 1) * 9; i < length; i++)
-                    embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}${sweet}`, ` <@&${serverSettings.roles[i].id}>`, true)
+                for(i = (page - 1) * 9; i < length; i++) {
+                    embed.addField(`⌗ ${i + 1} — ${serverSettings.roles[i].price}<${constants.emojies.sweet}>`, ` <@&${serverSettings.roles[i].id}>`, true)
+                }
 
                 msg.edit(embed)
                     .then(async m => {
@@ -40,23 +42,22 @@ const buildPage = (page, msg) => {
  */
 module.exports = (reaction, user, client) => {
     var msg = reaction.message
-    if(!(!msg.embeds[0] || !msg.embeds[0].footer || !msg.embeds[0].footer.text.includes('Страница') || user.id == client.user.id || user.bot)) {
-        var footerThumbnail = msg.embeds[0].thumbnail.url
-
-        const text = msg.embeds[0].footer.text
-        var user = text.slice(text.indexOf('•') + 2)
-        var index1 = text.slice(0, text.indexOf('•')).indexOf('1')
-
-        if(user != reaction.users.cache.last().tag)
+    if(!(!msg.embeds[0] || !msg.embeds[0].footer || !msg.embeds[0].footer.text.includes('стр') || user.id == client.user.id || user.bot)) {
+        var footerUser = msg.embeds[0].footer.text.slice(0, msg.embeds[0].footer.text.indexOf('•') - 1)
+        if(user.username != footerUser)
             return
 
+        var footerURL = msg.embeds[0].footer.iconURL
+        var footerPage = msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('• стр'))
+
+        var index1 = footerPage.indexOf('1')
         if(reaction.emoji.name == '⬅️' && index1 == -1) { // 
             console.log('Second page, flip to first')
-            buildPage(1, footerThumbnail, msg)
+            buildPage(1, footerUser, footerURL, msg)
         }
         else if(reaction.emoji.name == '➡️' && index1 != -1) { // 
             console.log('First page, flip to second')
-            buildPage(2, footerThumbnail, msg)
+            buildPage(2, footerUser, footerURL, msg)
         }
     }
 }

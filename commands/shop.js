@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { dot, sweet } = require('../constants.json').emojies
+const constants = require('../constants.json')
 const emojies = ['⬅️', '➡️']
 
 module.exports =
@@ -12,9 +12,8 @@ module.exports =
     */
     (args, msg, client) => {
         var embed = new Discord.MessageEmbed()
-            .setTitle(`${dot}Магазин`)
-            .setFooter(`Страница 1/2 • ${msg.author.tag}`)
             .setColor('#2F3136')
+            .setFooter(`${msg.author.username} • ${utl.embed.calculateTime(msg)} • стр 1/2`, msg.author.avatarURL())
 
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, 'serverSettings').then(serverData => {
@@ -30,7 +29,7 @@ module.exports =
 
                     var length = rolesData.slice(0, 9).length
                     for(i = 0; i < length; i++)
-                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}${sweet}`, ` <@&${serverData.roles[i].id}>`, true)
+                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}<${constants.emojies.sweet}>`, ` <@&${serverData.roles[i].id}>`, true)
 
                     msg.channel.send(embed)
                         .then(async m => {

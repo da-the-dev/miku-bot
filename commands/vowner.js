@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const sMsg = 'Приватные комнаты'
 
 module.exports =
     /**
@@ -15,7 +14,7 @@ module.exports =
             return
 
         if(!msg.member.permissionsIn(msg.member.voice.channel).has('CREATE_INSTANT_INVITE')) {
-            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
+            utl.embed(msg, 'У Вас нет прав на эту команду!')
             return
         }
 
@@ -23,7 +22,7 @@ module.exports =
         var room = msg.member.voice.channel
 
         if(!room) {
-            utl.embed(msg, sMsg, 'У Вас нет приватной комнаты!')
+            utl.embed(msg, 'У Вас нет приватной комнаты!')
             return
         }
         var mMember = msg.mentions.members.first()
@@ -40,11 +39,11 @@ module.exports =
                             id: mMember.id,
                             allow: 'CREATE_INSTANT_INVITE'
                         })).then(() => {
-                            utl.embed(msg, sMsg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
+                            utl.embed(msg, `Вы **передали владение** приватной комнаты <@${mMember.id}>`)
                         })
                 }
             } else
-                utl.embed(msg, sMsg, 'Пользователь не находится в Вашей комнате!')
+                utl.embed(msg, 'Пользователь не находится в Вашей комнате!')
         } else
-            utl.embed(msg, sMsg, 'Вы не указали пользователя!')
+            utl.embed(msg, 'Вы не указали пользователя!')
     }
