@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const { dot } = require('../constants.json').emojies
+const utl = require('../utility')
 
 module.exports =
     /**
@@ -84,7 +85,7 @@ module.exports.def = (msg, value) => {
 module.exports.sus = (client, reason) => {
     return new Discord.MessageEmbed()
         .setColor('#2F3136')
-        .setAuthor('С Вас были сняты роли за подозрительную деятельность', 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
-        .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: \`${reason}\``)
-        .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения обстоятельств`, client.user.avatarURL())
+        .setTitle(`${dot}Подозрительная деятельность`)
+        .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: **${reason}**`)
+        .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
 }

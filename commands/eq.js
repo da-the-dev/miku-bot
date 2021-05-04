@@ -29,7 +29,7 @@ const equipRole = (member, index, isCustom, msg) => {
 
                 member.roles.add(userData[field][index - 1])
                     .then(() => {
-                        utl.embed(msg, sMsg, `Роль <@&${userData[field][index - 1]}> успешно надета`)
+                        utl.embed.ping(msg, sMsg, `роль <@&${userData[field][index - 1]}> успешно надета`)
                         db.close()
                     })
             } else {

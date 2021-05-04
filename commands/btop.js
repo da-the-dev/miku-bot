@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const { sweet } = require('../constants.json').emojies
 
 const topAmount = 10
 module.exports =
@@ -8,7 +9,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .top
+     * @description Usage: .btop
      */
     async (args, msg, client) => {
         utl.db.createClient(process.env.MURL).then(db => {
@@ -22,10 +23,7 @@ module.exports =
                     return 0
                 })
 
-                var embed = new Discord.MessageEmbed()
-                    .setTitle('<a:__:825834909146415135> Топ 10 пользователей по балансу')
-                    .setColor('#2F3136')
-                    .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+                var embed = utl.embed.build(msg, 'Топ пользователей по балансу')
 
                 var description = ''
 
@@ -41,16 +39,16 @@ module.exports =
                 for(i = 0; i < topAmount; i++) {
                     switch(i) {
                         case 0:
-                            description += `\`🥇\` ${valids[i].member.displayName} — **${valids[i].money}** <${constants.emojies.sweet}>\n`
+                            description += `\`🥇\` • <@${valids[i].member.id}> — **${valids[i].money}** ${sweet}\n`
                             break
                         case 1:
-                            description += `\`🥈\` ${valids[i].member.displayName} — **${valids[i].money}** <${constants.emojies.sweet}>\n`
+                            description += `\`🥈\` • <@${valids[i].member.id}> — **${valids[i].money}** ${sweet}\n`
                             break
                         case 2:
-                            description += `\`🥉\` ${valids[i].member.displayName} — **${valids[i].money}** <${constants.emojies.sweet}>\n`
+                            description += `\`🥉\` • <@${valids[i].member.id}> — **${valids[i].money}** ${sweet}\n`
                             break
                         default:
-                            description += `\`💰\` ${valids[i].member.displayName} — **${valids[i].money}** <${constants.emojies.sweet}>\n`
+                            description += `\`💰\` • <@${valids[i].member.id}> — **${valids[i].money}** ${sweet}\n`
                             break
                     }
                 }

@@ -11,7 +11,7 @@ module.exports =
     */
     (args, msg, client) => {
         if(!args[1] || !args[1][0] == 'c' || !Number.isInteger(Number(args[1].slice(1)))) {
-            utl.embed(msg, 'Указан неверный индекс роли!')
+            utl.embe.pingd(msg, sMsg, 'указан неверный индекс роли!')
             return
         }
         var pos = args[1].slice(1)
@@ -19,7 +19,7 @@ module.exports =
         utl.db.createClient(process.env.MURL).then(async db => {
             var userData = await db.get(msg.guild.id, msg.author.id)
             if(!userData || !userData.customInv) {
-                utl.embed(msg, 'У Вас нет кастомных ролей')
+                utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей')
                 db.close()
                 return
             }
@@ -27,13 +27,13 @@ module.exports =
             var serverData = await db.getServer(msg.guild.id)
             var role = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1])
             if(!role) {
-                utl.embed(msg, 'Этой роли не существует!')
+                utl.embed.ping(msg, sMsg, 'этой роли не существует!')
                 db.close()
                 return
             }
             var owner = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1]).owner
             if(owner != msg.author.id && !msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
-                utl.embed(msg, 'Эта роль Вам не принадлежит!')
+                utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
                 db.close()
                 return
             }
@@ -41,7 +41,7 @@ module.exports =
             // Find and delete role from guild
             var role = serverData.customRoles.find(r => r.id == role.id && r.owner == msg.author.id)
             var guildRole = msg.guild.roles.cache.get(role.id)
-            utl.embed(msg, `Роль ${guildRole.name} была удалена`)
+            utl.embed.ping(msg, sMsg, `роль **${guildRole.name}** была удалена`)
             guildRole.delete()
 
             // Delete the role for server settings

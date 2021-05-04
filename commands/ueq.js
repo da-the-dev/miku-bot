@@ -14,7 +14,7 @@ const equipRole = (member, index, isCustom, msg) => {
         db.get(member.guild.id, member.id).then(userData => {
             if(userData) {
                 if((!userData.inv || userData.inv.length <= 0) && (!userData.customInv || userData.customInv <= 0)) {
-                    utl.embed(msg, sMsg, 'К сожалению, Ваш инвентарь пуст')
+                    utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
                     db.close()
                     return
                 }
@@ -22,18 +22,18 @@ const equipRole = (member, index, isCustom, msg) => {
                 var field = isCustom ? 'customInv' : 'inv'
 
                 if(!userData[field][index - 1]) {
-                    utl.embed(msg, sMsg, 'У Вас нет такой роли!')
+                    utl.embed.ping(msg, sMsg, 'у Вас нет такой роли!')
                     db.close()
                     return
                 }
 
                 member.roles.remove(userData[field][index - 1])
                     .then(() => {
-                        utl.embed(msg, sMsg, `Роль <@&${userData[field][index - 1]}> успешно снята`)
+                        utl.embed.ping(msg, sMsg, `роль <@&${userData[field][index - 1]}> успешно снята`)
                         db.close()
                     })
             } else {
-                utl.embed(msg, sMsg, 'К сожалению, Ваш инвентарь пуст')
+                utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
                 db.close()
             }
         })

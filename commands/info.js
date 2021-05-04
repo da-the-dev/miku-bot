@@ -37,15 +37,13 @@ module.exports =
         var memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
 
         var info =
-            new Discord.MessageEmbed()
-                .setColor('#2F3136')
-                .setImage("https://cdn.discordapp.com/attachments/826131659333042256/828705514237198346/00.gif")
-                .addField('Author', `\`\`\`${client.users.cache.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
-                .addField('Prefix', '```.```', true)
-                .addField('RAM usage', `\`\`\`${memoryUsed.toFixed(2)} MB\`\`\``, true)
-                .addField('Prog. Lang.', '```JavaScript```', true)
-                .addField('Ping', `\`\`\`${Math.floor(client.ws.ping)}\`\`\``, true)
-                .addField('Uptime', `\`\`\`${getTime(client)}\`\`\``, true)
-                .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+            utl.embed.build(msg, 'Информация о боте')
+                .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+                .addField('Автор бота', `\`\`\`${client.users.cache.find(u => u.id == process.env.MYID).tag}\`\`\``, true)
+                .addField('Префикс', '```.```', true)
+                .addField('Использование RAM', `\`\`\`${memoryUsed.toFixed(2)} MB\`\`\``, true)
+                .addField('Язык Программирования', '```JavaScript```', true)
+                .addField('Задержка', `\`\`\`${Math.floor(client.ws.ping)}\`\`\``, true)
+                .addField('Время активности', `\`\`\`${getTime(client)}\`\`\``, true)
         msg.channel.send(info)
     }

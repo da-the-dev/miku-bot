@@ -73,7 +73,7 @@ const createRole = (msg, name, hex, success, db) => {
             // Add the role to custom invetory
             await db.update(msg.guild.id, msg.author.id, { $push: { customInv: r.id } })
             await success(db)
-            utl.embed(msg, sMsg, `Вы успешно создали роль <@&${r.id}>`)
+            utl.embed.ping(msg, sMsg, `Вы успешно создали роль <@&${r.id}>`)
         })
     })
 }
@@ -83,7 +83,7 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .createRole <hex> <name>
+    * @description Usage: .rcr <hex> <name>
     */
     async (args, msg, client) => {
         var hex = args[1]
@@ -154,7 +154,7 @@ module.exports =
                         })
                     }
                     else {
-                        utl.embed(msg, sMsg, 'У Вас нет ни бустов, ни конфет!')
+                        utl.embed(msg, sMsg, 'У Вас нет конфет!')
                         db.close()
                     }
                 })

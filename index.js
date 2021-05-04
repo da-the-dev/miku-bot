@@ -89,7 +89,7 @@ client.once('ready', () => {
 client.on('messageReactionAdd', (reaction, user) => {
     utl.fetch.fetchReactions(reaction)
 
-    if(reaction.message.channel.id != constants.channels.dev)
+    if(reaction.message.channel.id == constants.channels.dev)
         utl.shop(reaction, user, client)
     // utl.reportHandler.reportAssignmentHandler(reaction, user, client)
 })

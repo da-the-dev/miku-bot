@@ -11,10 +11,8 @@ module.exports =
     * @description Usage: .shop
     */
     (args, msg, client) => {
-        var embed = new Discord.MessageEmbed()
-            .setTitle(`${dot}Магазин`)
+        var embed = utl.embed.build(msg, 'Магазин')
             .setFooter(`Страница 1/2 • ${msg.author.tag}`)
-            .setColor('#2F3136')
 
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(msg.guild.id, 'serverSettings').then(serverData => {
@@ -30,7 +28,7 @@ module.exports =
 
                     var length = rolesData.slice(0, 9).length
                     for(i = 0; i < length; i++)
-                        embed.addField(`⌗ ${i + 1} — ${serverData.roles[i].price}${sweet}`, ` <@&${serverData.roles[i].id}>`, true)
+                        embed.addField(`${i + 1}. — ${serverData.roles[i].price}${sweet}`, ` <@&${serverData.roles[i].id}>`)
 
                     msg.channel.send(embed)
                         .then(async m => {

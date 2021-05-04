@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const { dot } = require('../constants.json').emojies
 var reward = false
 var currentTimeout = null
 /**
@@ -58,10 +59,10 @@ const takeRole = async (client, id) => {
     reward = true
 
     const emb = new Discord.MessageEmbed()
-        .setDescription(`**Тепло приветствуем** ${member.user.username} <:__:827851416886312970>\nНадеемся, что тебе понравится у нас и ты останешься.\nЧтобы легче было ориентироваться, прочитай <#810202155079696414> <a:__:827590350083194930>`)
-        .setImage("https://cdn.discordapp.com/attachments/826131659333042256/827862202488848394/00.gif")
+        .setTitle(`${dot}Тепло приветствуем`)
+        .setDescription(`Надеемся, что тебе понравится у нас и ты останешься.\nЧтобы легче было ориентироваться, прочитай <#810202155079696414>`)
         .setColor('#2F3136')
-        .setFooter(`${member.user.username} • ${utl.embed.calculateTime(member)}`, member.user.avatarURL())
+        .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 
     client.guilds.cache.first().channels.cache.get(constants.channels.general).send(`<@${member.user.id}>`, { embed: emb })
         .then(m => {
