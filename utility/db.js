@@ -322,6 +322,68 @@ module.exports.DB = DB
 module.exports.DBUser = DBUser
 
 
+/**
+ * @property {string} id -222
+ */
+class DBUser extends DB {
+    // /**@type {DB}*/
+    #connection
+    /**@type {string}*/
+    guildID
+    id
+    /** @type {UserData}*/
+    #userData
+
+    /**
+     * Creates a connection to DB and stores IDs
+     * @param {string} url 
+     * @param {string} guildID
+     * @param {string} id
+     */
+    async constructor(url, guildID, id) {
+        this.#connection = new co
+        this.#guildID = guildID
+        this.#id = id
+        var userData = await this.get(guildID, id)
+    }
+
+    get id() { return this.#userData.id }
+    get money() { return this.#userData.money }
+    get msgs() { return this.#userData.msgs }
+    get dayMsgs() { return this.#userData.dayMsgs }
+    get nightMsgs() { return this.#userData.nightMsgs }
+    get voiceTime() { return this.#userData.voiceTime }
+    get dayVoiceTime() { return this.#userData.dayVoiceTime }
+    get nightVoiceTime() { return this.#userData.nightVoiceTime }
+    get inv() { return this.#userData.inv }
+    get customInv() { return this.#userData.customInv }
+    get warns() { return this.#userData.warns }
+    get ban() { return this.#userData.ban }
+    get toxic() { return this.#userData.toxic }
+    get mute() { return this.#userData.mute }
+    get status() { return this.#userData.status }
+    get loveroom() { return this.#userData.loveroom }
+
+    get id() { return this.#userData.id }
+    get money() { return this.#userData.money }
+    get msgs() { return this.#userData.msgs }
+    get dayMsgs() { return this.#userData.dayMsgs }
+    get nightMsgs() { return this.#userData.nightMsgs }
+    get voiceTime() { return this.#userData.voiceTime }
+    get dayVoiceTime() { return this.#userData.dayVoiceTime }
+    get nightVoiceTime() { return this.#userData.nightVoiceTime }
+    get inv() { return this.#userData.inv }
+    get customInv() { return this.#userData.customInv }
+    get warns() { return this.#userData.warns }
+    get ban() { return this.#userData.ban }
+    get toxic() { return this.#userData.toxic }
+    get mute() { return this.#userData.mute }
+    get status() { return this.#userData.status }
+    get loveroom() { return this.#userData.loveroom }
+}
+
+var test = new DBUser()
+
 // **Custom types**
 
 // *Roles*
