@@ -162,15 +162,14 @@ class DBUser {
 
     /**
     * Retrieves data about a user
-    * @param {string} url
     * @param {string} guildID
     * @param {string} id
     */
-    constructor(url, guildID, id) {
+    constructor(guildID, id) {
         return (async () => {
             this.#guildID = guildID
             this.#id = id
-            this.#connection = await new DB(url)
+            this.#connection = await new DB(process.env.MURL)
             const userData = await this.#connection.get(guildID, id)
             this.money = userData.money
             this.msgs = userData.msgs
@@ -246,13 +245,12 @@ class DBServer {
 
     /**
     * Retrieves data about a server
-    * @param {string} url
     * @param {string} guildID
     */
-    constructor(url, guildID) {
+    constructor(guildID) {
         return (async () => {
             this.#guildID = guildID
-            this.#connection = await new DB(url)
+            this.#connection = await new DB(process.env.MURL)
 
             const serverData = await this.#connection.get(guildID, 'serverSettings')
             console.log(serverData)
@@ -304,7 +302,7 @@ class DBServer {
  */
 const getGuild = (url, guildID) => {
     return new Promise(async (resolve, reject) => {
-        const connection = await new DB(url)
+        const connection = await new DB(process.env.MURL)
         var guildData = await connection.getMany(guildID, { id: { $regex: /^\d+$/ } })
         guildData.forEach(u => {
             u._id ? delete u._id : null
