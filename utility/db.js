@@ -107,118 +107,36 @@ class DB {
         })
     }
 
-    // ////// SERVER DATA METODS \\\\\\
-    // /**
-    //  * Gets server data
-    //  * @param {string} guildID 
-    //  * @returns {Promise<ServerData>}
-    //  */
-    // getServer(guildID) {
-    //     return new Promise((resolve, reject) => {
-    //         if(!guildID) reject('No guild ID [getServer]!')
-    //         this.get(guildID, 'serverSettings').then(serverData => {
-    //             resolve(serverData)
-    //         }).catch(err => reject(err))
-    //     })
-    // }
-    // /**
-    //  * Sets server data
-    //  * @param {string} guildID - Guild ID
-    //  * @param {ServerData} serverData - Server data
-    //  * @returns {Promise<string>} OK is successful
-    //  */
-    // setServer(guildID, serverData) {
-    //     return new Promise((resolve, reject) => {
-    //         if(!guildID) reject('No guild ID [setServer]!')
-    //         if(!serverData) reject('No server data [setServer]!')
-    //         this.set(guildID, 'serverSettings', serverData).then(() => {
-    //             resolve('OK')
-    //         }).catch(err => reject(err))
-    //     })
-    // }
-
-    // ////// USER METODS \\\\\\
-    // /**
-    //  * Gets user data
-    //  * @param {string} guildID 
-    //  * @param {string} userID 
-    //  * @returns {Promise<UserData>}
-    //  */
-    // getUser(guildID, userID) {
-    //     return new Promise((resolve, reject) => {
-    //         this.get(guildID, userID).then(userData => {
-    //             resolve(userData)
-    //         }).catch(err => reject(err))
-    //     })
-    // }
-    // /**
-    //  * Sets user data
-    //  * @param {string} guildID 
-    //  * @param {string} userID 
-    //  * @param {UserData} userData
-    //  * @returns {Promis<string>} 
-    //  */
-    // setUser(guildID, userID, userData) {
-    //     return new Promise((resolve, reject) => {
-    //         this.set(guildID, userID, userData).then(res => {
-    //             resolve(res)
-    //         }).catch(err => reject(err))
-    //     })
-    // }
-
-    // ////// MISC METODS \\\\\\
-    // /**
-    //  * Gets data about a guild
-    //  * @param {string} guildID - Guild ID
-    //  * @returns {Promise<UserData[]>}
-    //  */
-    // getGuild = (guildID) => {
-    //     return new Promise(async (resolve, reject) => {
-    //         if(!guildID) reject('No guild ID! [getGuild]')
-    //         var cursor = this.#connection.db('hoteru').collection(guildID).find({})
-    //         /**@type {Array<UserData>} */
-    //         var data = []
-    //         cursor.forEach(r => {
-    //             let newR = r
-    //             newR._id ? delete newR._id : null
-    //             data.push(newR)
-    //         }).then(() => {
-    //             resolve(data)
-    //         })
-    //     })
-    // }
-
-    // /**
-    //  * Gets data about many keys from a guild
-    //  * @param {string} guildID - Guild ID
-    //  * @param {object} query - Query to use as a filter
-    //  * @return {Promise<Array<any>>} Info about the keys
-    //  */
-    // getMany(guildID, query) {
-    //     return new Promise((resolve, reject) => {
-    //         this.#connection.db('hoteru').collection(guildID).find(query).toArray()
-    //             .then(res => resolve(res))
-    //             .catch(err => reject(err))
-    //     })
-    // }
-
-    // /**
-    //  * Updates data about many keys from a guild
-    //  * @param {string} guildID - Guild ID
-    //  * @param {object} filter - Query to use as a filter
-    //  * @param {object} update - Query to update documents with
-    //  * @return {Promise<any>} Info about the keys
-    //  */
-    // updateMany(guildID, filter, update) {
-    //     return new Promise((resolve, reject) => {
-    //         if(!guildID) reject('No guild ID [updateMany]!')
-    //         if(!filter) reject('No filter [updateMany]!')
-    //         if(!update) reject('No update query [updateMany]!')
-    //         this.#connection.db('hoteru').collection(guildID).updateMany(filter, update, { upsert: true })
-    //             .then(() => resolve('OK'))
-    //             .catch(err => reject(err))
-    //     })
-    // }
+    /**
+     * Gets data about many keys from a guild
+     * @param {string} guildID - Guild ID
+     * @param {object} query - Query to use as a filter
+     * @return {Promise<Array<any>>} Info about the keys
+     */
+    getMany(guildID, query) {
+        return new Promise((resolve, reject) => {
+            this.#connection.db('hoteru').collection(guildID).find(query).toArray()
+                .then(res => resolve(res))
+                .catch(err => reject(err))
+        })
+    }
+    /**
+     * Updates data about many keys from a guild
+     * @param {string} guildID - Guild ID
+     * @param {object} filter - Query to use as a filter
+     * @param {object} update - Query to update documents with
+     * @return {Promise<any>} Info about the keys
+     */
+    updateMany(guildID, filter, update) {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [updateMany]!')
+            if(!filter) reject('No filter [updateMany]!')
+            if(!update) reject('No update query [updateMany]!')
+            this.#connection.db('hoteru').collection(guildID).updateMany(filter, update, { upsert: true })
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
 }
 
 class DBUser {
@@ -243,7 +161,7 @@ class DBUser {
     /**@type {LoveRoom} Love room*/ loveroom
 
     /**
-    * Creates a connection to DB and stores IDs
+    * Retrieves data about a user
     * @param {string} url
     * @param {string} guildID
     * @param {string} id
@@ -318,81 +236,99 @@ class DBUser {
     }
 }
 
-module.exports.DB = DB
-module.exports.DBUser = DBUser
+class DBServer {
+    /**@type {DB} DB connection*/ #connection
+    /**@type {string} User's guild ID*/ #guildID
+
+    /**@type {boolean}  - Defenses flag*/ def
+    /**@type {Role[]}  - Array of shop roles*/ roles
+    /**@type {CustomRole[]}  - Array of custom roles*/ customRoles
+
+    /**
+    * Retrieves data about a server
+    * @param {string} url
+    * @param {string} guildID
+    */
+    constructor(url, guildID) {
+        return (async () => {
+            this.#guildID = guildID
+            this.#connection = await new DB(url)
+
+            const serverData = await this.#connection.get(guildID, 'serverSettings')
+            console.log(serverData)
+            this.def = serverData.def
+            this.roles = serverData.roles
+            this.customRoles = serverData.customRoles
+
+            return this
+        })()
+    }
+
+    get = () => {
+        /**@type {ServerData}*/ var serverData = {}
+
+        this.def ? serverData.def = this.def : null
+        this.roles ? serverData.roles = this.roles : null
+        this.customRoles ? serverData.customRoles = this.customRoles : null
+
+        return serverData
+    }
+
+    save = () => {
+        return new Promise((resolve, reject) => {
+            this.#connection.set(this.#guildID, 'serverSettings', this.get())
+                .then(() => {
+                    this.close()
+                        .then(res => resolve(res))
+                        .catch(err => reject(err))
+                })
+                .catch(err => reject(err))
+        })
+    }
+
+    close = () => {
+        return new Promise((resolve, reject) => {
+            this.#connection.close()
+                .then(res => resolve(res))
+                .catch(err => reject(err))
+        })
+    }
+}
 
 
 /**
- * @property {string} id -222
+ * Retrieves guild user data
+ * @param {string} url - Connection URL
+ * @param {string} guildID - Guild ID
+ * @returns {Promise<UserData[]>} Guild data
  */
-class DBUser extends DB {
-    // /**@type {DB}*/
-    #connection
-    /**@type {string}*/
-    guildID
-    id
-    /** @type {UserData}*/
-    #userData
-
-    /**
-     * Creates a connection to DB and stores IDs
-     * @param {string} url 
-     * @param {string} guildID
-     * @param {string} id
-     */
-    async constructor(url, guildID, id) {
-        this.#connection = new co
-        this.#guildID = guildID
-        this.#id = id
-        var userData = await this.get(guildID, id)
-    }
-
-    get id() { return this.#userData.id }
-    get money() { return this.#userData.money }
-    get msgs() { return this.#userData.msgs }
-    get dayMsgs() { return this.#userData.dayMsgs }
-    get nightMsgs() { return this.#userData.nightMsgs }
-    get voiceTime() { return this.#userData.voiceTime }
-    get dayVoiceTime() { return this.#userData.dayVoiceTime }
-    get nightVoiceTime() { return this.#userData.nightVoiceTime }
-    get inv() { return this.#userData.inv }
-    get customInv() { return this.#userData.customInv }
-    get warns() { return this.#userData.warns }
-    get ban() { return this.#userData.ban }
-    get toxic() { return this.#userData.toxic }
-    get mute() { return this.#userData.mute }
-    get status() { return this.#userData.status }
-    get loveroom() { return this.#userData.loveroom }
-
-    get id() { return this.#userData.id }
-    get money() { return this.#userData.money }
-    get msgs() { return this.#userData.msgs }
-    get dayMsgs() { return this.#userData.dayMsgs }
-    get nightMsgs() { return this.#userData.nightMsgs }
-    get voiceTime() { return this.#userData.voiceTime }
-    get dayVoiceTime() { return this.#userData.dayVoiceTime }
-    get nightVoiceTime() { return this.#userData.nightVoiceTime }
-    get inv() { return this.#userData.inv }
-    get customInv() { return this.#userData.customInv }
-    get warns() { return this.#userData.warns }
-    get ban() { return this.#userData.ban }
-    get toxic() { return this.#userData.toxic }
-    get mute() { return this.#userData.mute }
-    get status() { return this.#userData.status }
-    get loveroom() { return this.#userData.loveroom }
+const getGuild = (url, guildID) => {
+    return new Promise(async (resolve, reject) => {
+        const connection = await new DB(url)
+        var guildData = await connection.getMany(guildID, { id: { $regex: /^\d+$/ } })
+        guildData.forEach(u => {
+            u._id ? delete u._id : null
+        })
+        await connection.close()
+        resolve(guildData)
+    })
 }
 
-var test = new DBUser()
+
+module.exports.DB = DB
+module.exports.DBUser = DBUser
+module.exports.DBServer = DBServer
+module.exports.getGuild = getGuild
 
 // **Custom types**
 
 // *Roles*
 /**
- * Shop role
- * @typedef Role
- * @property {string} id - Role ID
- * @property {number} price - Role's price
- */
+* Shop role
+* @typedef Role
+* @property {string} id - Role ID
+* @property {number} price - Role's price
+*/
 /**
  * Custom role
  * @typedef CustomRole
