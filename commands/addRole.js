@@ -11,23 +11,23 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mRole = msg.mentions.roles.first()
             if(!mRole) {
-                utl.embed(msg, 'Не указана роль!')
+                utl.embed.ping(msg, 'не указана роль!')
                 return
             }
 
             var pos = Number(args[2])
             if(!pos || !Number.isInteger(pos)) {
-                utl.embed(msg, 'Не указана позиция роли!')
+                utl.embed.ping(msg, 'не указана позиция роли!')
                 return
             }
             if(pos == 0 || pos > 18) {
-                utl.embed(msg, 'Позиция роли ограничена диапозоном 1-18!')
+                utl.embed.ping(msg, 'позиция роли ограничена диапозоном 1-18!')
                 return
             }
 
             var price = Number(args[3])
             if(!price || !Number.isInteger(price)) {
-                utl.embed(msg, 'Не указана цена роли!')
+                utl.embed.ping(msg, 'не указана цена роли!')
                 return
             }
 

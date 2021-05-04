@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-
+const sMsg = 'Экипировка роли'
 
 /**
  * Equips a role
@@ -14,7 +14,7 @@ const equipRole = (member, index, isCustom, msg) => {
         db.get(member.guild.id, member.id).then(userData => {
             if(userData) {
                 if((!userData.inv || userData.inv.length <= 0) && (!userData.customInv || userData.customInv <= 0)) {
-                    utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
+                    utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
                     db.close()
                     return
                 }
@@ -22,18 +22,18 @@ const equipRole = (member, index, isCustom, msg) => {
                 var field = isCustom ? 'customInv' : 'inv'
 
                 if(!userData[field][index - 1]) {
-                    utl.embed(msg, 'У Вас нет такой роли!')
+                    utl.embed.ping(msg, sMsg, 'у Вас нет такой роли!')
                     db.close()
                     return
                 }
 
                 member.roles.add(userData[field][index - 1])
                     .then(() => {
-                        utl.embed(msg, `Роль <@&${userData[field][index - 1]}> успешно надета`)
+                        utl.embed.ping(msg, sMsg, `роль <@&${userData[field][index - 1]}> успешно надета`)
                         db.close()
                     })
             } else {
-                utl.embed(msg, 'К сожалению, Ваш инвентарь пуст')
+                utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
                 db.close()
             }
         })
@@ -48,7 +48,7 @@ module.exports =
     */
     (args, msg, client) => {
         if(!args[1]) {
-            utl.embed(msg, 'Не указан индекс роли!!')
+            utl.embed(msg, sMsg, 'Не указан индекс роли!!')
             return
         }
         console.log(args[1])

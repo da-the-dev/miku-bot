@@ -1,27 +1,39 @@
 const Discord = require('discord.js')
-
-const calculateTime = (msg) => {
-    var time = 'Сегодня, в '
-    var offset = msg.createdAt.getTimezoneOffset() + 180
-    var hours = (msg.createdAt.getHours() + offset / 60).toString().padStart(2, '0')
-    var minutes = msg.createdAt.getMinutes().toString().padStart(2, '0')
-    time += `${hours}:${minutes}`
-    return time
-}
+const { dot } = require('../constants.json').emojies
+const utl = require('../utility')
 
 module.exports =
     /**
      * Standard embed reply
      * @param {Discord.Message} msg - Disord message
+     * @param {string} title - Message title
      * @param {string} message - Text message to send
      * @returns {Promise<Discord.Message>}
      */
-    (msg, message) => {
+    (msg, title, message = '') => {
         return msg.channel.send(new Discord.MessageEmbed()
+            .setTitle(`${dot}${title}`)
             .setDescription(message)
+            .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
             .setColor('#2F3136')
-            .setFooter(`${msg.member.displayName} • ${calculateTime(msg)}`, msg.author.avatarURL()))
+        )
+    }
 
+module.exports.ping =
+    /**
+     * Standard embed reply plus member ping
+     * @param {Discord.Message} msg - Disord message
+     * @param {string} title - Message title
+     * @param {string} message - Text message to send
+     * @returns {Promise<Discord.Message>}
+     */
+    (msg, title, message = '') => {
+        return msg.channel.send(new Discord.MessageEmbed()
+            .setTitle(`${dot}${title}`)
+            .setDescription(`<@${msg.author.id}>, ${message}`)
+            .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
+            .setColor('#2F3136')
+        )
     }
 
 /**
@@ -47,19 +59,22 @@ module.exports.calculateTime = (source) => {
 /**
  * Return MessageEmbeded embed reply
  * @param {Discord.Message} msg - Disord message
+ * @param {string} title - Message title
  * @param {string} message - Text message to send
  */
-module.exports.build = (msg, message) => {
+module.exports.build = (msg, title, message = '') => {
     return new Discord.MessageEmbed()
+        .setTitle(`${dot}${title}`)
         .setDescription(message)
+        .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
         .setColor('#2F3136')
-        .setFooter(`${msg.member.displayName} • ${calculateTime(msg)}`, msg.author.avatarURL())
+
 }
 
 module.exports.def = (msg, value) => {
     var message = new Discord.MessageEmbed()
         .setColor('#FF0000')
-        .setFooter(`${msg.author.tag} • ${calculateTime(msg)} `, msg.author.avatarURL())
+        .setFooter(`${msg.author.tag} • ${module.exports.calculateTime(msg)} `, msg.author.avatarURL())
     if(value)
         message.setDescription(`Антикраш защита **включена**!`)
     else
@@ -70,7 +85,7 @@ module.exports.def = (msg, value) => {
 module.exports.sus = (client, reason) => {
     return new Discord.MessageEmbed()
         .setColor('#2F3136')
-        .setAuthor('С Вас были сняты роли за подозрительную деятельность', 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png')
-        .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: \`${reason}\``)
-        .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения обстоятельств`, client.user.avatarURL())
+        .setTitle(`${dot}Подозрительная деятельность`)
+        .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: **${reason}**`)
+        .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
 }

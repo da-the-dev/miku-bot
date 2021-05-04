@@ -9,9 +9,11 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .top
+     * @description Usage: .mtop
      */
     async (args, msg, client) => {
+        // Disabled
+        return
         utl.db.createClient(process.env.MURL).then(db => {
             db.getGuild('718537792195657798').then(data => {
                 db.close()

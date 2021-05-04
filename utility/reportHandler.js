@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const { dot } = require('../constants.json').emojies
 
 /**
  * Handles report reactions
@@ -37,10 +38,11 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                             reportInfo.reportVoiceChannel ? description += `— [Канал пожаловавшегося](${reportInfo.reportVoiceChannel})\n` : null
                             reportInfo.guiltyVoiceChannel ? description += `— [Канал виновника](${reportInfo.guiltyVoiceChannel})` : null
 
+                            const { dot } = require('../constants.json').emojies
                             const takenReport = reaction.message.embeds[0]
+                            takenReport.setTitle(`${dot}Жалоба от ${reaction.message.guild.member(reportInfo.caller).user.tag || 'неизвестный'}`)
                             takenReport.setDescription(description)
-                            takenReport.setFooter(`Report-System • ${utl.embed.calculateTime(Date.now())}`, client.user.avatarURL())
-                            takenReport.addField("Жалоба на", `${reportInfo.guilty}`, true)
+                            takenReport.addField("Жалоба на", `<@${reportInfo.guilty}>`, true)
                             takenReport.addField("Содержимое жалобы", `${reportInfo.description}`, true)
 
                             reaction.message.edit(takenReport)
@@ -61,13 +63,13 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                 var moderID = reaction.message.embeds[0].description.slice(reaction.message.embeds[0].description.indexOf('<@') + 2, reaction.message.embeds[0].description.indexOf('>'))
 
                 if(user.id != client.user.id && user.id == moderID) {
-                    var name = reaction.message.embeds[0].author.name
-                    name = name.slice(0, name.indexOf('•') - 1)
+                    var name = reaction.message.embeds[0].title
+                    name = name.slice(name.indexOf('от') + 3)
                     var successEmbed = new Discord.MessageEmbed()
+                        .setTitle(`${dot}Вердикт жалобы • ${name}`)
                         .setDescription(`<@${user.id}> закрыл репорт с пометкой **выполнен**`)
-                        .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].author.proxyIconURL)
-                        .setColor(reaction.message.embeds[0].color)
-                        .setFooter(`Report-System • ${utl.embed.calculateTime(Date.now())}`, client.user.avatarURL())
+                        .setThumbnail(reaction.message.embeds[0].thumbnail.url)
+                        .setColor('#2F3136')
                     reaction.message.edit(successEmbed)
                         .then(m => {
                             m.reactions.removeAll()
@@ -81,13 +83,13 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                 var moderID = reaction.message.embeds[0].description.slice(reaction.message.embeds[0].description.indexOf('<@') + 2, reaction.message.embeds[0].description.indexOf('>'))
 
                 if(user.id != client.user.id && user.id == moderID) {
-                    var name = reaction.message.embeds[0].author.name
-                    name = name.slice(0, name.indexOf('•') - 1)
+                    var name = reaction.message.embeds[0].title
+                    name = name.slice(name.indexOf('от') + 3)
                     var successEmbed = new Discord.MessageEmbed()
+                        .setTitle(`${dot}Вердикт жалобы • ${name}`)
                         .setDescription(`<@${user.id}> закрыл репорт с пометкой **не выполнен**`)
-                        .setAuthor(`${reaction.message.embeds[0].author.name} • Вердикт жалобы`, reaction.message.embeds[0].author.proxyIconURL)
-                        .setColor(reaction.message.embeds[0].color)
-                        .setFooter(`Report-System • ${utl.embed.calculateTime(Date.now())}`, client.user.avatarURL())
+                        .setThumbnail(reaction.message.embeds[0].thumbnail.url)
+                        .setColor('#2F3136')
                     reaction.message.edit(successEmbed)
                         .then(m => {
                             m.reactions.removeAll()

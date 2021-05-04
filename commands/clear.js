@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
-const util = require('../utility')
+const utl = require('../utility')
 const constants = require('../constants.json')
+const sMsg = 'Удаление сообщений'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -13,11 +14,11 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
             var msgAmount = Number(args[1])
             if(!msgAmount) {
-                util.embed(msg, 'Не указано количество сообщений!')
+                utl.embed(msg, sMsg, 'Не указано количество сообщений!')
                 return
             }
             if(!Number.isInteger(msgAmount) && !Number.isFinite(msgAmount) && !Number.isNaN(msgAmount)) {
-                util.embed(msg, 'Указано неверное количество сообщений!')
+                utl.embed(msg, sMsg, 'Указано неверное количество сообщений!')
                 return
             }
 
@@ -28,8 +29,8 @@ module.exports =
                 msg.channel.bulkDelete(100)
 
             rest > 0 ? await msg.channel.bulkDelete(rest) : null
-            util.embed(msg, `Удалено **${msgAmount}** сообщений`).then(m => m.delete({ timeout: 3000 }))
+            utl.embed(msg, sMsg, `Удалено сообщений **(${msgAmount})**`).then(m => m.delete({ timeout: 3000 }))
         } else
-            util.embed(msg, 'У Вас нет прав на эту команду!')
+            utl.embed(msg, sMsg, 'У Вас нет прав на эту команду!')
     }
 module.exports.allowedInGeneral = true
