@@ -1,8 +1,7 @@
 // Libraries
 const Discord = require('discord.js')
 const fs = require('fs')
-const dotenv = require('dotenv').config()
-const redis = require('redis')
+require('dotenv').config()
 
 // Constants
 const constants = require('./constants.json')
