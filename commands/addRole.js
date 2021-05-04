@@ -7,7 +7,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .addRole <role> <positon> <price>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mRole = msg.mentions.roles.first()
             if(!mRole) {
@@ -31,20 +31,12 @@ module.exports =
                 return
             }
 
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.get(msg.guild.id, 'serverSettings').then(serverData => {
-                    if(serverData) {
-                        if(!serverData.roles)
-                            serverData.roles = [{ id: mRole.id, price: price }]
-                        else {
-                            serverData.roles.splice(pos - 1, 0, { id: mRole.id, price: price })
-                        }
+            var server = await new utl.db.DBServer(msg.guild)
+            if(!server.roles)
+                server.roles = [{ id: mRole.id, price: price }]
+            else
+                server.roles.splice(pos - 1, 0, { id: mRole.id, price: price })
+            server.save()
 
-                        db.set(msg.guild.id, 'serverSettings', serverData).then(() => db.close())
-                    }
-                    else
-                        db.set(msg.guild.id, 'serverSettings', { roles: [{ id: mRole.id, price: price }] }).then(() => db.close())
-                })
-            })
         }
     }
