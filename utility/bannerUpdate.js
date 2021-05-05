@@ -4,15 +4,13 @@ const Discord = require('discord.js')
  * Updated the banner every hour
  * @param {Discord.Guild} guild
  */
-module.exports.updateBanner = async guild => {
+const updateBanner = async guild => {
     const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
-
-    const img = await loadImage(path.resolve(path.join('./', 'imgs', 'banner.png')))
-    const canvas = createCanvas(img.width, img.height)
-
+    const canvas = createCanvas(1202, 676)
     const ctx = canvas.getContext('2d')
 
+    const img = await loadImage(path.resolve(path.join('./', 'imgs', 'banner.png')))
     ctx.drawImage(img, 0, 0, img.width, img.height)
 
     var members = 0
@@ -21,10 +19,10 @@ module.exports.updateBanner = async guild => {
             members += c.members.size
         })
     const text = members.toString()
-    const font = 'bold 25px "Sans"'
-    const args = [text, img.width / 2, img.height - 21]
+    const font = 'bold 90px "Sans"'
+    const args = [text, img.width / 5, img.height / 2 + 35]
 
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = '#CDDAF3'
     ctx.font = font
     ctx.textAlign = 'left'
     ctx.fillText(...args)
