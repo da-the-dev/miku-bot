@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const { unlinkSync } = require('fs')
 const constants = require('../constants.json')
 const { dot } = constants.emojies
 const utl = require('../utility')
