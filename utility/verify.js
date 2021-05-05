@@ -2,7 +2,6 @@ const Discord = require('discord.js')
 const constants = require('../constants.json')
 const { dot } = constants.emojies
 const utl = require('../utility')
-const { dot } = require('../constants.json').emojies
 var reward = false
 var currentTimeout = null
 
