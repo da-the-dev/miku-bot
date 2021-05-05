@@ -30,7 +30,7 @@ commandNames.forEach(c => {
 })
 
 // General events
-client.login(process.env.BOTTOKEN)
+client.login(process.env.BETABOTTOKEN)
 client.once('ready', () => {
     console.log("[BOT] BOT is online")
 
@@ -38,7 +38,7 @@ client.once('ready', () => {
     // utl.activity.voiceActivityInit(client)
     // utl.elderlyRole(client.guilds.cache.first())
     // utl.scanServer(client)
-    // utl.bannerUpdate(client.guilds.cache.first())
+    utl.bannerUpdate(client.guilds.cache.first())
     // utl.loveroomMonitor.initPayment(client)
 })
 
@@ -50,14 +50,6 @@ client.once('ready', () => {
 //     utl.anticrash.monitorRoleDelete(role)
 // })
 
-// // Member events
-// client.on('guildMemberAdd', (member) => {
-//     console.log('+1 member')
-//     utl.verify.mark(member, client)
-//     utl.roles.reapplyRoles(member)
-//     if(member.user.bot)
-//         utl.anticrash.monitorBotInvites(member)
-// })
 // client.on('guildBanAdd', (guild, member) => {
 //     utl.anticrash.monitorBans(guild, member)
 // })
