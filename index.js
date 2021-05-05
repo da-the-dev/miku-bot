@@ -50,14 +50,14 @@ client.once('ready', () => {
 //     utl.anticrash.monitorRoleDelete(role)
 // })
 
-// Member events
-client.on('guildMemberAdd', (member) => {
-    console.log('+1 member')
-    utl.verify.mark(member, client)
-    utl.roles.reapplyRoles(member)
-    if(member.user.bot)
-        utl.anticrash.monitorBotInvites(member)
-})
+// // Member events
+// client.on('guildMemberAdd', (member) => {
+//     console.log('+1 member')
+//     utl.verify.mark(member, client)
+//     utl.roles.reapplyRoles(member)
+//     if(member.user.bot)
+//         utl.anticrash.monitorBotInvites(member)
+// })
 // client.on('guildBanAdd', (guild, member) => {
 //     utl.anticrash.monitorBans(guild, member)
 // })
