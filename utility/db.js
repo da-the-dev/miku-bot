@@ -1,11 +1,24 @@
 const MongoClient = require('mongodb').MongoClient
+
+/**@type {Array<DBServer|DBUser>} */
+var connections = []
 class DB {
+    static saveAll() {
+        return new Promise(async (resolve, reject) => {
+            var promises = []
+            connections.map(c => {
+                return c.save()
+            })
+
+            await Promise.all(promises)
+            resolve('OK')
+        })
+    }
     /**@type {MongoClient} */
     #connection
     /**
      * Start a connection
      * @param {string} url - Connection URL
-     * @returns 
      */
     constructor(url) {
         return (async () => {
@@ -13,7 +26,6 @@ class DB {
             return this
         })();
     }
-
     /**
      * Closes connection to current DB
      * @returns Returns 'OK' once disconnected
@@ -30,7 +42,7 @@ class DB {
      * @param {string} uniqueID - Unique ID
      * @return {Promise<any>} Info about the key
      */
-    get = (guildID, uniqueID) => {
+    get(guildID, uniqueID) {
         return new Promise((resolve, reject) => {
             if(!guildID) reject('No guild ID [get]!')
             if(!uniqueID) reject('No unique ID [get]!')
@@ -52,7 +64,7 @@ class DB {
      * @param {object} data - Data to set
      * @returns {Promise<string>} Returns 'OK' if set succesfully
      */
-    set = async (guildID, uniqueID, data) => {
+    set(guildID, uniqueID, data) {
         return new Promise((resolve, reject) => {
             if(!guildID) reject('No guild ID [set]!')
             if(!uniqueID) reject('No unique ID [set]!')
@@ -96,7 +108,7 @@ class DB {
      * @param {string} uniqueID - Unique ID
      * @return {Promise<string>} 'OK' if deleted succesfully 
      */
-    delete = (guildID, uniqueID) => {
+    delete(guildID, uniqueID) {
         return new Promise((resolve, reject) => {
             if(!guildID) reject('No guild ID [delete]!')
             if(!uniqueID) reject('No unique ID [delete]!')
@@ -169,7 +181,8 @@ class DBUser {
         return (async () => {
             this.#guildID = guildID
             this.#id = id
-            this.#connection = await new DB(process.env.MURL)
+            connections.push(this)
+
             const userData = await this.#connection.get(guildID, id)
             this.money = userData.money
             this.msgs = userData.msgs
@@ -191,7 +204,7 @@ class DBUser {
         })()
     }
 
-    get = () => {
+    get() {
         /**@type {UserData}*/ var userData = {}
 
         this.#id ? userData.id = this.#id : null
@@ -202,9 +215,9 @@ class DBUser {
         this.voiceTime ? userData.voiceTime = this.voiceTime : null
         this.dayVoiceTime ? userData.dayVoiceTime = this.dayVoiceTime : null
         this.nightVoiceTime ? userData.nightVoiceTime = this.nightVoiceTime : null
-        this.inv ? userData.inv = this.inv : null
-        this.customInv ? userData.customInv = this.customInv : null
-        this.warns ? userData.warns = this.warns : null
+        if(this.inv || this.inv.length > 0) userData.inv = this.inv
+        if(this.customInv || this.customInv.length > 0) userData.customInv = this.customInv
+        if(this.warns || this.warns.length > 0) userData.warns = this.warns
         this.ban ? userData.ban = this.ban : null
         this.toxic ? userData.toxic = this.toxic : null
         this.mute ? userData.mute = this.mute : null
@@ -214,7 +227,7 @@ class DBUser {
         return userData
     }
 
-    save = () => {
+    save() {
         return new Promise((resolve, reject) => {
             this.#connection.set(this.#guildID, this.#id, this.get())
                 .then(() => {
@@ -226,7 +239,7 @@ class DBUser {
         })
     }
 
-    close = () => {
+    close() {
         return new Promise((resolve, reject) => {
             this.#connection.close()
                 .then(res => resolve(res))
@@ -251,6 +264,7 @@ class DBServer {
         return (async () => {
             this.#guildID = guildID
             this.#connection = await new DB(process.env.MURL)
+            connections.push(this)
 
             const serverData = await this.#connection.get(guildID, 'serverSettings')
             console.log(serverData)
@@ -262,7 +276,7 @@ class DBServer {
         })()
     }
 
-    get = () => {
+    get() {
         /**@type {ServerData}*/ var serverData = {}
 
         this.def ? serverData.def = this.def : null
@@ -272,7 +286,7 @@ class DBServer {
         return serverData
     }
 
-    save = () => {
+    save() {
         return new Promise((resolve, reject) => {
             this.#connection.set(this.#guildID, 'serverSettings', this.get())
                 .then(() => {
@@ -284,7 +298,7 @@ class DBServer {
         })
     }
 
-    close = () => {
+    close() {
         return new Promise((resolve, reject) => {
             this.#connection.close()
                 .then(res => resolve(res))
@@ -296,13 +310,13 @@ class DBServer {
 
 /**
  * Retrieves guild user data
- * @param {string} url - Connection URL
  * @param {string} guildID - Guild ID
  * @returns {Promise<UserData[]>} Guild data
  */
-const getGuild = (url, guildID) => {
+function getGuild(guildID) {
     return new Promise(async (resolve, reject) => {
         const connection = await new DB(process.env.MURL)
+
         var guildData = await connection.getMany(guildID, { id: { $regex: /^\d+$/ } })
         guildData.forEach(u => {
             u._id ? delete u._id : null
@@ -317,6 +331,7 @@ module.exports.DB = DB
 module.exports.DBUser = DBUser
 module.exports.DBServer = DBServer
 module.exports.getGuild = getGuild
+
 
 // **Custom types**
 
