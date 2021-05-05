@@ -52,7 +52,7 @@ module.exports = async (msg, client) => {
 const takeRole = async (client, id) => {
     var member = await client.guilds.cache.first().members.fetch(id)
     console.log(member.user.username)
-    await member.roles.remove(client.verify)
+    await member.roles.remove(constants.roles.verify)
         .catch(err => console.log(err))
 
     console.log(`[VR] Verified user '${member.user.tag}'`)
@@ -148,14 +148,13 @@ module.exports.welcomeReward = (msg, client) => {
  * @param {Discord.GuildMember} member
  */
 module.exports.mark = async (member, client) => {
-    member.roles.add(constants.roles.verify).then(() => {
-        console.log(`[VR] Marked user '${member.user.username}'`)
-        formCaptcha().then(captcha => {
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.set('718537792195657798', 'verify-' + member.id, { captcha: captcha.text }).then(() => {
-                    db.close(); member.send(captcha.obj)
-                })
-            })
+    await member.roles.add(constants.roles.man)
+    await member.roles.add(constants.roles.verify)
+    console.log(`[VR] Marked user '${member.user.username}'`)
+    const captcha = await formCaptcha()
+    utl.db.createClient(process.env.MURL).then(db => {
+        db.set('718537792195657798', 'verify-' + member.id, { captcha: captcha.text }).then(() => {
+            db.close(); member.send(captcha.obj)
         })
     })
 }
