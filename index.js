@@ -98,6 +98,14 @@ client.on('message', msg => {
         var args = msg.content.slice(1).split(" ")
         args.forEach(a => a.trim())
 
+        // Say command
+        if(args[0].includes('\n'))
+            if(args[0].slice(0, args[0].indexOf('\n')) == "say") {
+                client.commands.find(c => c.name == "say").foo(args, msg, client)
+                msg.delete()
+                return
+            }
+
         var command = client.commands.find(c => c.name == args[0])
         if(command)
             msg.delete()
