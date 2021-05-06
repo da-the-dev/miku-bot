@@ -5,6 +5,7 @@ require('dotenv').config()
 
 // Constants
 const constants = require('./constants.json')
+const { dot, heart } = constants.emojies
 
 // Utilities
 const utl = require('./utility')
@@ -112,5 +113,24 @@ client.on('message', msg => {
                 .then(() => {
                     command.foo(args, msg, client)
                 })
+
+    }
+    // Selfy moderation
+    if(msg.channel.id == constants.channels.selfie2 && !msg.author.bot) {
+        const checkFile = (msg) => {
+            if(msg.attachments.array().length != 1) return false
+            const name = msg.attachments.array()[0].name
+            return ['.png', '.gif', '.mp4', '.jpeg', '.jpg'].includes(name.slice(name.lastIndexOf('.')))
+        }
+        if(!checkFile(msg))
+            msg.delete()
+        else {
+            const embed = new Discord.MessageEmbed()
+                .setDescription(`<@${msg.author.id}>`)
+                .setColor('#2F3136')
+                .setImage(msg.attachments.array()[0].url)
+            msg.channel.send(embed).then(m => m.react(heart))
+            msg.delete()
+        }
     }
 })
