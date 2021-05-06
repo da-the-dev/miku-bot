@@ -100,54 +100,53 @@ client.on('message', msg => {
     // Verification
     utl.verify(msg, client)
 
-    // Bot commands
-    if(!msg.author.bot) {
-        utl.verify.welcomeReward(msg, client)
-        if(msg.content[0] == prefix) {
-            var args = msg.content.slice(1).split(" ")
-            args.forEach(a => a.trim())
+    if(msg.channel.id != constants.channels.dev)
+        // Bot commands
+        if(!msg.author.bot) {
+            utl.verify.welcomeReward(msg, client)
+            if(msg.content[0] == prefix) {
+                var args = msg.content.slice(1).split(" ")
+                args.forEach(a => a.trim())
 
-            // Say command
-            if(args[0].includes('\n'))
-                if(args[0].slice(0, args[0].indexOf('\n')) == "say") {
-                    client.commands.find(c => c.name == "say").foo(args, msg, client)
-                    msg.delete()
-                    return
-                }
-
-            // Regular commands
-            for(i = 0; i < client.commands.length; i++) {
-                var c = client.commands[i]
-                if(c.name == args[0]) {
-                    if(msg.channel.id == constants.channels.dev)
+                // Say command
+                if(args[0].includes('\n'))
+                    if(args[0].slice(0, args[0].indexOf('\n')) == "say") {
+                        client.commands.find(c => c.name == "say").foo(args, msg, client)
+                        msg.delete()
                         return
-                    else if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
-                        msg.delete()
-                            .then(() => {
-                                c.foo(args, msg, client)
-                            })
                     }
-                    else if(msg.channel.id == constants.channels.general && !c.allowedInGeneral)
-                        msg.delete()
-                    else {
-                        msg.delete()
-                            .then(() => {
-                                c.foo(args, msg, client)
-                            })
-                    }
-                    return
-                }
-            }
 
-            // Reactions
-            utl.reactionHandler(args, msg, client)
+                // Regular commands
+                for(i = 0; i < client.commands.length; i++) {
+                    var c = client.commands[i]
+                    if(c.name == args[0]) {
+                        if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
+                            msg.delete()
+                                .then(() => {
+                                    c.foo(args, msg, client)
+                                })
+                        }
+                        else if(msg.channel.id == constants.channels.general && !c.allowedInGeneral)
+                            msg.delete()
+                        else {
+                            msg.delete()
+                                .then(() => {
+                                    c.foo(args, msg, client)
+                                })
+                        }
+                        return
+                    }
+                }
+
+                // Reactions
+                utl.reactionHandler(args, msg, client)
+            }
+            // Selfy moderation
+            if(msg.channel.id == '810876164960813086') {
+                if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
+                    msg.delete()
+                else
+                    msg.react('<a:__:819566414368473098>')
+            }
         }
-        // Selfy moderation
-        if(msg.channel.id == '810876164960813086') {
-            if(msg.attachments.array().length == 0 || (!msg.attachments.array()[0].name.endsWith('.png') && !msg.attachments.array()[0].name.endsWith('.gif')) && !msg.attachments.array()[0].name.endsWith('.mp4') && !msg.attachments.array()[0].name.endsWith('.jpeg') && !msg.attachments.array()[0].name.endsWith('.jpg'))
-                msg.delete()
-            else
-                msg.react('<a:__:819566414368473098>')
-        }
-    }
 })
