@@ -48,7 +48,7 @@ module.exports =
                         userData.streak = 1
                         userData.money ? userData.money += 20 : userData.money = 20
 
-                        utl.embed(msg, `<@${msg.author.id}, вы забрали свои **20** <${constants.emojies.sweet}> `)
+                        utl.embed(msg, sMsg, `<@${msg.author.id}, вы забрали свои **20** <${constants.emojies.sweet}> `)
                         db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
                     }
                 } else { // If user has no user data

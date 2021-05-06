@@ -130,12 +130,13 @@ client.on('message', msg => {
                                 c.foo(args, msg, client)
                             })
                     }
-                    else if(!args[0] == 'duel') {
+                    else if(args[0] != 'duel') {
                         msg.delete()
                             .then(() => {
                                 c.foo(args, msg, client)
                             })
                     }
+                    msg.deleted ? null : msg.delete()
                     return
                 }
             }
