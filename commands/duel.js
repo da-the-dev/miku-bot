@@ -33,9 +33,10 @@ const checkBal = (guildID, caller, dueiler, bet) => {
  * @param {number} bet
  */
 const startDuel = (m, msg, caller, duelist, bet) => {
+    console.log(m.id, msg.id)
     const roll = Math.random()
     if(roll < 0.5) {
-        m.edit(utl.embed(msg, sMsg, `В **дуэли** одержал победу <@${caller.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
+        m.edit(utl.embed.build(msg, sMsg, `В **дуэли** одержал победу <@${caller.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
         utl.db.createClient(process.env.MURL).then(async db => {
             var users = await Promise.all([db.get(msg.guild.id, caller.id), db.get(msg.guild.id, duelist.id)])
             users[0].money += bet
@@ -45,10 +46,10 @@ const startDuel = (m, msg, caller, duelist, bet) => {
         })
     }
     if(roll == 0.5) {
-        m.edit(utl.embed(msg, sMsg, `**Дуэль** окончилась ничьей\n\n**Вызов принял:** <@${duelist.id}>`))
+        m.edit(utl.embed.build(msg, sMsg, `**Дуэль** окончилась ничьей\n\n**Вызов принял:** <@${duelist.id}>`))
     }
     if(roll > 0.5) {
-        m.edit(utl.embed(msg, sMsg, `В **дуэли** одержал победу <@${duelist.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
+        m.edit(utl.embed.build(msg, sMsg, `В **дуэли** одержал победу <@${duelist.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
         utl.db.createClient(process.env.MURL).then(async db => {
             var users = await Promise.all([db.get(msg.guild.id, caller.id), db.get(msg.guild.id, duelist.id)])
             users[0].money -= bet
@@ -57,6 +58,7 @@ const startDuel = (m, msg, caller, duelist, bet) => {
             db.close()
         })
     }
+    m.reactions.removeAll()
 }
 
 module.exports =
