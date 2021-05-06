@@ -30,7 +30,7 @@ commandNames.forEach(c => {
 })
 
 // General events
-client.login(process.env.BOTTOKEN)
+client.login(process.env.BETABOTTOKEN)
 client.once('ready', () => {
     console.log("[BOT] BOT is online")
 
