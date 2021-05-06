@@ -4,7 +4,7 @@ const Discord = require('discord.js')
  * Updated the banner every hour
  * @param {Discord.Guild} guild
  */
-module.exports.updateBanner = async guild => {
+const updateBanner = async guild => {
     const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
 
