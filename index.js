@@ -140,7 +140,7 @@ client.on('message', msg => {
             // utl.reactionHandler(args, msg, client)
         }
         // Selfy moderation
-        if(msg.channel.id == constants.channels.selfie2 && !msg.author.bot) {
+        if(msg.channel.id == constants.channels.selfie && !msg.author.bot) {
             const checkFile = (msg) => {
                 if(msg.attachments.array().length != 1) return false
                 const name = msg.attachments.array()[0].name
