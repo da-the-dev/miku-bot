@@ -30,7 +30,7 @@ const updateBanner = async guild => {
     ctx.fillText(...args)
 
     guild.setBanner(canvas.toBuffer())
-        .then(() => console.log('set banner'))
+    // .then(() => console.log('set banner'))
 }
 
 /**
