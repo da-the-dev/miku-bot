@@ -33,7 +33,6 @@ const checkBal = (guildID, caller, dueiler, bet) => {
  * @param {number} bet
  */
 const startDuel = (m, msg, caller, duelist, bet) => {
-    console.log(m.id, msg.id)
     const roll = Math.random()
     if(roll < 0.5) {
         m.edit(utl.embed.build(msg, sMsg, `В **дуэли** одержал победу <@${caller.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
