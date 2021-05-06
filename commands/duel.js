@@ -87,10 +87,12 @@ module.exports =
                     startDuel(m, msg, msg.member, mMember, bet)
                 },
                 () => {
-                    m.edit(utl.embed(msg, sMsg, `<@${mMember.id}> **струсил**\n\n**Вызов принял:** <@${mMember.id}>`))
+                    m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, ><@${mMember.id}> **струсил**\n\n**Вызов принял:** <@${mMember.id}>`))
+                    m.reactions.removeAll()
                 },
                 () => {
-                    m.edit(utl.embed.ping(msg, sMsg, `<@${mMember.id}> **струсил** и **не ответил** на Ваш вызов\n\n**Вызов принял:** <@${mMember.id}>`))
+                    m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, <@${mMember.id}> **струсил** и **не ответил** на Ваш вызов`))
+                    m.reactions.removeAll()
                 }
             )
         } else {
