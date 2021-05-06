@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 const redis = require('redis')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Картинки'
 
 /**
  * Buys the pic role for some time
@@ -31,9 +32,9 @@ module.exports =
 
         ttl('pics-' + msg.author.id).then(res => {
             if(res)
-                utl.embed(msg, `До окончания действия роли <@&${constants.roles.pics}> осталось ${utl.time.timeCalculator(Math.floor(res / 60))}`)
+                utl.embed(msg, sMsg, `До окончания действия роли <@&${constants.roles.pics}> осталось ${utl.time.timeCalculator(Math.floor(res / 60))}`)
             else
-                utl.embed(msg, `У Вас не куплена роль <@&${constants.roles.pics}>`)
+                utl.embed(msg, sMsg, `У Вас не куплена роль <@&${constants.roles.pics}>`)
             rClient.quit()
         })
     }

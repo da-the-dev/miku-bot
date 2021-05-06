@@ -22,10 +22,7 @@ module.exports =
                     return 0
                 })
 
-                var embed = new Discord.MessageEmbed()
-                    .setTitle('<a:__:825834909146415135> Топ 10 пользователей по голосовому онлайну')
-                    .setColor('#2F3136')
-                    .setFooter(`${msg.author.tag} • ${utl.embed.calculateTime(msg)}`, msg.author.avatarURL())
+                var embed = utl.embed.build(msg, 'Топ пользователей по голосовому онлайну')
 
                 var description = ''
 
@@ -41,16 +38,16 @@ module.exports =
                 for(i = 0; i < valids.length; i++) {
                     switch(i) {
                         case 0:
-                            description += `\`🥇\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
+                            description += `\`🥇\` • <@${valids[i].member.id}> — ${utl.time.timeCalculator(valids[i].voiceTime)}\n`
                             break
                         case 1:
-                            description += `\`🥈\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
+                            description += `\`🥈\` • <@${valids[i].member.id}> — ${utl.time.timeCalculator(valids[i].voiceTime)}\n`
                             break
                         case 2:
-                            description += `\`🥉\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
+                            description += `\`🥉\` • <@${valids[i].member.id}> — ${utl.time.timeCalculator(valids[i].voiceTime)}\n`
                             break
                         default:
-                            description += `\`🕓\` ${valids[i].member.displayName} — ${utl.time.timeCalculator(valids[i].voiceTime)} <${constants.emojies.speaker}>\n`
+                            description += `\`🕓\` • <@${valids[i].member.id}> — ${utl.time.timeCalculator(valids[i].voiceTime)}\n`
                             break
                     }
                 }

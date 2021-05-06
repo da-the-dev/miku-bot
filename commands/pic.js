@@ -1,16 +1,19 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const constants = require('../constants.json')
+const { one, two, three, sweet } = require('../constants.json').emojies
 const utl = require('../utility')
+const sMsg = 'Картинки'
 
 /**
  * Buys the pic role for some time
  * @param {Discord.Message} msg - OG message
+ * @param {Discord.Message} m - Reply message
  * @param {Discord.GuildMember} member - Member who bought it
  * @param {number} duration - Duration in seconds
  * @param {number} price - Price
  */
-const buyRole = async (msg, member, duration, price) => {
+const buyRole = async (msg, m, member, duration, price) => {
     const rClient = redis.createClient(process.env.RURL)
     const get = require('util').promisify(rClient.get).bind(rClient)
     const set = require('util').promisify(rClient.set).bind(rClient)
@@ -22,7 +25,7 @@ const buyRole = async (msg, member, duration, price) => {
             if(userData) {
                 if(!userData.money || userData.money < price) {
                     db.close()
-                    utl.embed(msg, "У Вас недостаточно конфет!")
+                    utl.embed.ping(msg, sMsg, `у Вас недостаточно ${sweet}`)
                     return false
                 }
                 else
@@ -30,7 +33,7 @@ const buyRole = async (msg, member, duration, price) => {
                         .then(() => db.close())
             } else {
                 db.close()
-                utl.embed(msg, "У Вас недостаточно конфет!")
+                utl.embed.ping(msg, sMsg, `у Вас недостаточно ${sweet}`)
                 return false
             }
 
@@ -49,11 +52,7 @@ const buyRole = async (msg, member, duration, price) => {
                         }).catch(err => { console.log(err) })
 
 
-                        msg.edit(new Discord.MessageEmbed()
-                            .setDescription(`Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
-                            .setColor('#2F3136')
-                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                        ).then(m => m.reactions.removeAll())
+                        m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, Вы продлили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
                     } else {
                         console.log('buys')
                         set('pics-' + member.id, '').then(() => {
@@ -75,11 +74,7 @@ const buyRole = async (msg, member, duration, price) => {
                         console.log('test')
 
                         member.roles.add(constants.roles.pics)
-                        msg.edit(new Discord.MessageEmbed()
-                            .setDescription(`Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)
-                            .setColor('#2F3136')
-                            .setFooter(`${member.user.tag} • ${utl.embed.calculateTime(Date.now())}`, member.user.avatarURL())
-                        ).then(m => m.reactions.removeAll())
+                        m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, Вы успешно купили роль <@&${constants.roles.pics}> на **${duration / 24 / 60 / 60}** дней`)).then(m => m.reactions.removeAll())
                     }
                 })
         })
@@ -94,38 +89,23 @@ module.exports =
     * @description Usage: .pic
     */
     (args, msg, client) => {
-        const emb = utl.embed.build(msg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n<${constants.emojies.one}> — **7** дней, цена: 1000 <${constants.emojies.sweet}>\n<${constants.emojies.two}> — **14** дней, цена: 1800 <${constants.emojies.sweet}>\n<${constants.emojies.three}> — **30** дней, цена: 4000 <${constants.emojies.sweet}>\n<${constants.emojies.escape}> — Отмена\n`)
-        msg.channel.send(emb)
-            .then(async m => {
-                await m.react(constants.emojies.one)
-                await m.react(constants.emojies.two)
-                await m.react(constants.emojies.three)
-                await m.react(constants.emojies.escape)
-
-                /**
-                 * @param {Discord.MessageReaction} reaction 
-                 * @param {Discord.User} user 
-                 */
-                const filter = (reaction, user) => {
-                    return [constants.emojies.one, constants.emojies.two, constants.emojies.three, constants.emojies.escape].includes(reaction.emoji.identifier) && user.id == msg.author.id
-                }
-                m.awaitReactions(filter, { max: 1 })
-                    .then(reactions => {
-                        var reaction = reactions.first()
-                        switch(reaction.emoji.identifier) {
-                            case constants.emojies.one:
-                                buyRole(m, msg.member, 7 * 24 * 60 * 60, 1000)
-                                break
-                            case constants.emojies.two:
-                                buyRole(m, msg.member, 14 * 24 * 60 * 60, 1800)
-                                break
-                            case constants.emojies.three:
-                                buyRole(m, msg.member, 30 * 24 * 60 * 60, 4000)
-                                break
-                            case constants.emojies.escape:
-                                m.delete()
-                                break
-                        }
-                    })
-            })
+        utl.embed(msg, sMsg, `<@${msg.author.id}>, на сколько Вы хотите **купить** <@&${constants.roles.pics}>?\n\n${one} — **7** дней︰Стоимость: **1000** ${sweet}\n${two} — **14** дней︰Стоимость: **1800** ${sweet}\n${three} — **30** дней︰Стоимость: **4000** ${sweet}\n`).then(m => {
+            utl.reactionSelector.multiselector(m, msg.author.id,
+                () => {
+                    m.delete()
+                },
+                () => {
+                    m.delete()
+                },
+                () => {
+                    buyRole(msg, m, msg.member, 7 * 24 * 60 * 60, 1000)
+                },
+                () => {
+                    buyRole(msg, m, msg.member, 14 * 24 * 60 * 60, 1800)
+                },
+                () => {
+                    buyRole(msg, m, msg.member, 30 * 24 * 60 * 60, 4000)
+                },
+            )
+        })
     }

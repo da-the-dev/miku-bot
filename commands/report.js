@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
+const { pillar, report, dot } = require('../constants.json').emojies
+const sMsg = 'Жалоба'
 
 /**
  * Generates and validates IDs for new reports
@@ -34,41 +36,32 @@ module.exports =
     async (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember) {
-            utl.embed(msg, 'Не указан участник!')
+            utl.embed.ping(msg, sMsg, 'не указан участник!')
             return
         }
         if(mMember.id == msg.author.id) {
-            utl.embed(msg, 'Не лучшая идея')
+            utl.embed.ping(msg, sMsg, 'не лучшая идея')
             return
         }
 
         args.shift()
         args.shift()
         if(args.length <= 0) {
-            utl.embed(msg, 'Не указана причина!')
+            utl.embed.ping(msg, sMsg, 'не указана причина!')
             return
         }
 
 
         // Reply to report with response message
-        var replyEmbed = new Discord.MessageEmbed()
-            .setDescription(`\`\`\`Жалоба на пользователя ${mMember.user.tag} отправлена на рассмотрение!\`\`\``)
-            .setAuthor(msg.author.tag, msg.author.avatarURL())
-            .setColor('#2F3136')
-            .setFooter(`Hoteru • Жалобы • ${utl.embed.calculateTime(msg)}`, client.user.avatarURL())
-        msg.channel.send(replyEmbed)
+        utl.embed(msg, sMsg, `${pillar}${report}${pillar}Жалоба на пользователя <@${mMember.user.id}> отправлена на рассмотрение!`)
 
         var reportID = await createReportID(msg.guild.id)
-        var reportEmbed = new Discord.MessageEmbed()
-            .setDescription("Жалоба в режиме ожидания, прожмите реакцию, чтобы перейти к рассмотрению.")
-            .setColor('#2F3136')
-            .setAuthor(`${msg.author.tag} • Отправил жалобу `, msg.author.avatarURL())
-            .setFooter(`Report-System • ${utl.embed.calculateTime(msg)} • ID: ${reportID}`, client.user.avatarURL())
-
+        var reportEmbed = utl.embed.build(msg, 'Новая жалоба', 'Жалоба в режиме ожидания, прожмите реакцию, чтобы перейти к рассмотрению')
+            .setFooter(`ID: ${reportID}`)
 
 
         utl.db.createClient(process.env.MURL).then(async db => {
-            var data = { caller: msg.author.id, guilty: mMember.user.tag, description: args.join(' ') }
+            var data = { caller: msg.author.id, guilty: mMember.user.id, description: args.join(' ') }
 
             if(msg.member.voice.channel)
                 data.reportVoiceChannel = (await msg.member.voice.channel.createInvite()).url

@@ -33,7 +33,7 @@ const takeAndNotify = (member, reason) => {
 
     member.user.createDM()
         .then(c => {
-            c.send(utl.embed.sus(member.client, reason))
+            c.send(utl.embed.build(member.client, reason))
         })
 }
 
