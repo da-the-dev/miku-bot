@@ -114,30 +114,29 @@ client.on('message', msg => {
                     return
                 }
 
-            // Regular commands
-            for(i = 0; i < client.commands.length; i++) {
-                var c = client.commands[i]
-                if(c.name == args[0]) {
-                    if(msg.channel.id == constants.channels.general && c.allowedInGeneral) {
-                        msg.delete()
-                            .then(() => {
-                                c.foo(args, msg, client)
-                            })
-                    }
-                    else if(args[0] == 'duel' && msg.channel.id == constants.channels.duels) {
-                        msg.delete()
-                            .then(() => {
-                                c.foo(args, msg, client)
-                            })
-                    }
-                    else if(args[0] != 'duel' && msg.channel.id != constants.channels.general) {
-                        msg.delete()
-                            .then(() => {
-                                c.foo(args, msg, client)
-                            })
-                    }
+            const command = client.commands.find(c => c.name == args[0])
+            if(command)
+                if(msg.channel.id == constants.channels.general && command.allowedInGeneral) {
+                    msg.delete()
+                        .then(() => {
+                            command.foo(args, msg, client)
+                        })
                 }
-            }
+                else if(args[0] == 'duel' && msg.channel.id == constants.channels.duels) {
+                    msg.delete()
+                        .then(() => {
+                            command.foo(args, msg, client)
+                        })
+                }
+                else if(args[0] != 'duel' && msg.channel.id != constants.channels.general) {
+                    msg.delete()
+                        .then(() => {
+                            command.foo(args, msg, client)
+                        })
+                } else {
+                    msg.delete()
+                }
+
 
             // Reactions
             // utl.reactionHandler(args, msg, client)
