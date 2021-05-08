@@ -130,14 +130,12 @@ client.on('message', msg => {
                                 c.foo(args, msg, client)
                             })
                     }
-                    else if(args[0] != 'duel' && msg.channel.id == constants.channels.general && c.allowedInGeneral) {
+                    else if(args[0] != 'duel' && msg.channel.id != constants.channels.general) {
                         msg.delete()
                             .then(() => {
                                 c.foo(args, msg, client)
                             })
                     }
-                    msg.deleted ? null : msg.delete()
-                    return
                 }
             }
 
