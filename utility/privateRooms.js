@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const sMsg = 'Приватные комнаты'
 
 /**
  * @description Create the "creator" voice channel
@@ -113,7 +114,7 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                     channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
 
                     newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
-                        embed: utl.embed.build(msg, 'Приватные комнаты', `Вы были назначены овнером приватной комнаты **${channel.name}**`)
+                        embed: utl.embed.build(msg, sMsg, 'Приватные комнаты', `Вы были назначены овнером приватной комнаты **${channel.name}**`)
                     })
                 })
         }
