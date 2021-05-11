@@ -23,7 +23,7 @@ const updateBanner = async guild => {
         })
     const text = members.toString()
     const font = 'bold 200px "Engravers Gothic"'
-    const args = [text, img.width / 2 - 30, img.height / 2 + 403]
+    const args = [text, img.width / 2 + 30, img.height / 2 + 403]
 
     ctx.fillStyle = '#ffffff'
     ctx.font = font
