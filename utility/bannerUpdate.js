@@ -8,6 +8,7 @@ const updateBanner = async guild => {
     const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
 
+    registerFont(path.resolve(path.join('./', 'fonts', 'EngraversGothic.ttf')), { family: 'Engravers Gothic' })
     const img = await loadImage(path.resolve(path.join('./', 'imgs', 'banner.png')))
     const canvas = createCanvas(img.width, img.height)
 
@@ -21,8 +22,8 @@ const updateBanner = async guild => {
             members += c.members.size
         })
     const text = members.toString()
-    const font = 'bold 25px "Sans"'
-    const args = [text, img.width / 2, img.height - 21]
+    const font = 'bold 200px "Engravers Gothic"'
+    const args = [text, img.width / 2 - 30, img.height / 2 + 403]
 
     ctx.fillStyle = '#ffffff'
     ctx.font = font
