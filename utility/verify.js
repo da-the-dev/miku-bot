@@ -50,6 +50,7 @@ const takeRole = (client, id) => {
     const member = client.guilds.cache.first().member(id)
 
     member.roles.remove(constants.roles.verify)
+    member.roles.add(constants.roles.man)
     console.log(`[VR] Verified user '${member.user.tag}'`)
 
     utl.roles.reapplyRoles(member)
