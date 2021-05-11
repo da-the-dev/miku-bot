@@ -150,14 +150,8 @@ client.on('message', msg => {
             }
             if(!checkFile(msg))
                 msg.delete()
-            else {
-                const embed = new Discord.MessageEmbed()
-                    .setDescription(`<@${msg.author.id}>`)
-                    .setColor('#2F3136')
-                    .setImage(msg.attachments.array()[0].url)
-                msg.channel.send(embed).then(m => m.react(heart))
-                msg.delete()
-            }
+            else
+                msg.react(heart)
         }
     }
 })
