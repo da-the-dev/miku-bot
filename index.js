@@ -5,6 +5,7 @@ require('dotenv').config()
 
 // Constants
 const constants = require('./constants.json')
+const { heart } = constants.emojies
 
 // Utilities
 const utl = require('./utility')
@@ -148,10 +149,10 @@ client.on('message', msg => {
                 const name = msg.attachments.array()[0].name
                 return ['.png', '.gif', '.mp4', '.jpeg', '.jpg'].includes(name.slice(name.lastIndexOf('.')))
             }
-            if(!checkFile(msg))
-                msg.delete()
-            else
+            if(checkFile(msg))
                 msg.react(heart)
+            else
+                msg.delete()
         }
     }
 })
