@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
+const { dot } = constants.emojies
 const utl = require('../utility')
 const sMsg = 'Приватные комнаты'
 
@@ -110,11 +111,15 @@ module.exports.roomDeletion = (oldState, newState, client) => {
             channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
                 .then(c => {
                     var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
-                    if(!newOwner.id) return
+                    if(!newOwner) return
                     channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
 
                     newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
-                        embed: utl.embed.build(msg, sMsg, 'Приватные комнаты', `Вы были назначены овнером приватной комнаты **${channel.name}**`)
+                        embed: new Discord.MessageEmbed()
+                            .setTitle(`${dot}${sMsg}`)
+                            .setDescription(`Вы были назначены овнером приватной комнаты **${channel.name}**`)
+                            .setThumbnail(newOwner.user.displayAvatarURL({ dynamic: true }))
+                            .setColor('#2F3136')
                     })
                 })
         }
