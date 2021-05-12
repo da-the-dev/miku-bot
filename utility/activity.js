@@ -96,7 +96,7 @@ module.exports.chatActivity = (msg) => {
         // Form message data
         var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
         var message = {
-            dayTime: timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16,
+            // dayTime: timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16,
             nightTime: timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6
         }
 
@@ -119,7 +119,7 @@ module.exports.chatActivity = (msg) => {
                     // Form update query based on message info
                     var update = { $inc: {} }
                     arrayMap[i][1].forEach(mI => {
-                        mI.dayTime ? update.$inc.dayMsgs ? update.$inc.dayMsgs++ : update.$inc.dayMsgs = 1 : null
+                        // mI.dayTime ? update.$inc.dayMsgs ? update.$inc.dayMsgs++ : update.$inc.dayMsgs = 1 : null
                         mI.nightTime ? update.$inc.nightMsgs ? update.$inc.nightMsgs++ : update.$inc.nightMsgs = 1 : null
                         update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
                     })
@@ -134,7 +134,7 @@ module.exports.chatActivity = (msg) => {
                 // Give out activity roles to those who want them
                 db.getMany('718537792195657798', {
                     $or: [
-                        { dayMsgs: { $exists: true } },
+                        // { dayMsgs: { $exists: true } },
                         { nightMsgs: { $exists: true } }
                     ]
                 }).then(validData => {
@@ -142,10 +142,9 @@ module.exports.chatActivity = (msg) => {
                         if(!d.notActivity) {
                             var member = msg.guild.member(d.id)
                             if(member) {
-                                if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
-                                    null
-                                // member.roles.add(constants.roles.daylyActive)
-                                else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
+                                // if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
+                                //     member.roles.add(constants.roles.daylyActive)
+                                if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
                                     member.roles.add(constants.roles.nightActive)
                             }
                         }
