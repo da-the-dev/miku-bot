@@ -8,7 +8,7 @@ class DB {
      * @returns Return 'OK' if connected
      */
     connect = async (url) => {
-        this.__connection = await new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
+        this.__connection = await new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true, socketTimeoutMS: 30000 }).connect()
         return 'OK'
     }
     /**
