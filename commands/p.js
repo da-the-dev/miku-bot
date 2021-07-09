@@ -28,7 +28,7 @@ module.exports =
                         },
                         {
                             "name": "> Голосовой онлайн:",
-                            "value": `\`\`\`${utl.time.timeCalculator(userData.voiceTime || 0).replace(/[**]/g, '')}\`\`\``,
+                            "value": `\`\`\`${utl.time.timeCalculator(userData.voiceTime || 0).replace(/[**]/g, '') || '0 м'}\`\`\``,
                             "inline": true
                         },
 
